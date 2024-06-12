@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} 
+Exotic Laces Store
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="text-center">
+    <br>
+    <br>
+    <h1 class="text-center product_title">
+        Thanks for placing your order
+    
+    </h1>
+    <br>
+    <br>
+    <p>Your order numbers is: <b>{{ eds.id }}</b></p>
+    <br>
+    <p>
+        We have recieved your order and will begin processing right away, An email confirmation was sent to you. It contains details of the items you purchased.
+    </p>
+
+</div>
+
+{% endblock %}
