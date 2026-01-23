@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'lacesstore',
-    'pypaystack',
+
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -76,8 +76,9 @@ TEMPLATES = [
                 'lacesstore.context_processors.menu_links',
                 'lacesstore.context_processors.counter',
                 'lacesstore.context_processors.orderid',
-                'allauth.account.context_processors.account',
-                'allauth.socialaccount.context_processors.socialaccount',
+
+               
+
             ],
         },
     },

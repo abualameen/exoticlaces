@@ -41,38 +41,81 @@ Cart
                 </tr>
             </thead>
             {% for cart_item in cart_items %}
-                <tr>
-                    <td>
-                        <a href="cart_item.product.get_url">
-                            <img src="{{cart_item.product.image.url}}" width="100" height="100" alt="">
-                        </a>
-                    </td>
-                    <td class="text-left">
-                        {{cart_item.product.name}}
-                        <br>
-                        SKU: {{cart_item.product.id}}
-                        <br>
-                        Unit Price: # {{cart_item.product.price}}
-                        <br>
-                        Qty: {{cart_item.quantity}} x {{cart_item.product.price}}
-                    </td>
-                    <td>
-                        #{{cart_item.sub_total}}
-                    </td>
-                    {% if cart_item.quantity < cart_item.product.stock %}
-                    <td>
-                        &nbsp;<a href="{% url 'add_cart' cart_item.product.id %}"><i class="fa-solid fa-circle-plus cart_icon"></i></a>
-                        &nbsp;<a href="{% url 'cart_remove' cart_item.product.id %}"><i class="fa-solid fa-circle-minus cart_icon"></i></a>
-                        &nbsp;<a href="{% url 'cart_remove_product' cart_item.product.id %}"><i class="fa-solid fa-trash-alt cart_icon"></i></a>
-                    </td>
-                    {% else %}
-                    <td>
-                        &nbsp;<a href="{% url 'cart_remove' cart_item.product.id %}"><i class="fa-solid fa-circle-minus cart_icon"></i></a>
-                        &nbsp;<a href="{% url 'cart_remove_product' cart_item.product.id %}"><i class="fa-solid fa-trash-alt cart_icon"></i></a>
-                    </td>
+
+            <tr>
+                <!-- Product / Variant Image and Name -->
+                <td>
+                    <a href="{{ cart_item.product.get_url }}">
+                        <img src="{{ cart_item.image_url }}" width="100" height="100" alt="">
+                    </a>
+                    <br>
+                    {{ cart_item.product.name }}
+                    {% if cart_item.variant %}
+                        <br><small>Color: {{ cart_item.variant.color_name }}</small>
                     {% endif %}
-                </tr>
+                    <br>
+                    SKU: {{ cart_item.product.id }}
+                </td>
+
+                <!-- Quantity and Unit Price -->
+                <td class="text-left">
+                    Qty: {{ cart_item.quantity }} x ₦{{ cart_item.product.price|floatformat:2 }}
+                    <br>
+                    Unit Price: ₦{{ cart_item.product.price|floatformat:2 }}
+                </td>
+
+                <!-- Subtotal -->
+                <td>
+                    ₦{{ cart_item.sub_total|floatformat:2 }}
+                </td>
+
+                <!-- Action Buttons: +, -, Delete -->
+                <td>
+                    {% if cart_item.variant %}
+                        {% if cart_item.quantity < cart_item.variant.stock %}
+                            &nbsp;<a href="{% url 'add_cart_variant' cart_item.product.id cart_item.variant.id %}">
+                                <i class="fa-solid fa-circle-plus cart_icon"></i>
+                            </a>
+                        {% endif %}
+                        {% if cart_item.quantity > 0 %}
+                            &nbsp;<a href="{% url 'cart_remove' cart_item.product.id %}">
+                                <i class="fa-solid fa-circle-minus cart_icon"></i>
+                            </a>
+                        {% endif %}
+                        <!-- &nbsp;<a href="{% url 'cart_remove_product' cart_item.product.id %}">
+                            <i class="fa-solid fa-trash-alt cart_icon"></i>
+                        </a> -->
+
+                        {% if cart_item.variant %}
+                            &nbsp;<a href="{% url 'cart_remove_product_variant' cart_item.product.id cart_item.variant.id %}">
+                                <i class="fa-solid fa-trash-alt cart_icon"></i>
+                            </a>
+                        {% else %}
+                            &nbsp;<a href="{% url 'cart_remove_product' cart_item.product.id %}">
+                                <i class="fa-solid fa-trash-alt cart_icon"></i>
+                            </a>
+                        {% endif %}
+
+                    {% else %}
+                        {% if cart_item.quantity < cart_item.product.stock %}
+                            &nbsp;<a href="{% url 'add_cart' cart_item.product.id %}">
+                                <i class="fa-solid fa-circle-plus cart_icon"></i>
+                            </a>
+                        {% endif %}
+                        {% if cart_item.quantity > 0 %}
+                            &nbsp;<a href="{% url 'cart_remove' cart_item.product.id %}">
+                                <i class="fa-solid fa-circle-minus cart_icon"></i>
+                            </a>
+                        {% endif %}
+                        &nbsp;<a href="{% url 'cart_remove_product' cart_item.product.id %}">
+                            <i class="fa-solid fa-trash-alt cart_icon"></i>
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
             {% endfor %}
+
+
         </table>
     </div>
     <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">

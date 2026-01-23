@@ -44,6 +44,23 @@ class Product(models.Model):
     def __str__(self) -> str:
         return self.name   
 
+
+
+class ProductVariant(models.Model):
+    product = models.ForeignKey(Product, related_name='variants', on_delete=models.CASCADE)
+    color_name = models.CharField(max_length=50)
+    color_code = models.CharField(max_length=20, blank=True)  # e.g #FF0000 (optional)
+    image = models.ImageField(upload_to='product_variants')
+    stock = models.IntegerField(default=0)
+    is_default = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('product', 'color_name')
+
+    def __str__(self):
+        return f"{self.product.name} - {self.color_name}"
+
+
 class Cart(models.Model):
     cart_id = models.CharField(max_length=250, blank=True)
     date_added = models.DateField(auto_now_add=True)
@@ -51,11 +68,29 @@ class Cart(models.Model):
         db_table= 'Cart'
         ordering = ['date_added']
 
-        def __str__(self):
-            return self.cart_id
+
+    def __str__(self):
+        return str(self.cart_id)
+
+# class CartItem(models.Model):
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+#     variant = models.ForeignKey(ProductVariant, null=True, blank=True, on_delete=models.SET_NULL)
+#     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+#     quantity = models.IntegerField()
+#     active = models.BooleanField(default=True)
+
+#     class Meta:
+#         db_table = 'CartItem'
+
+#     def sub_total(self):
+#         return self.product.price * self.quantity
+
+#     def __str__(self):
+#         return self.product
 
 class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    variant = models.ForeignKey('ProductVariant', null=True, blank=True, on_delete=models.CASCADE)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     active = models.BooleanField(default=True)
@@ -66,8 +101,26 @@ class CartItem(models.Model):
     def sub_total(self):
         return self.product.price * self.quantity
 
+
+    # def __str__(self):
+    #     return self.product
     def __str__(self):
-        return self.product
+        if self.variant:
+            return f"{self.product.name} - {self.variant.color_name}"
+        return f"{self.product.name}"
+
+
+    def item_price(self):
+        return self.quantity * self.product.price
+
+    def image_url(self):
+        # Return the variant image if exists, else default product image
+        if self.variant and self.variant.image:
+            return self.variant.image.url
+        return self.product.image.url
+
+
+
 
 # Create your models here.
 # ORDER MODEL

@@ -1,10 +1,13 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
-from .models import Category, Product,Cart, CartItem, Order, OrderItem
+
+from .models import Category, Product,Cart, CartItem, Order, OrderItem, ProductVariant  
+
+# from .models import Product,  # add this import at the top
 from .models import Customerr
-from pypaystack import Transaction, Customer,Plan
-import pypaystack
+# from pypaystack import Transaction, Customer,Plan
+# import pypaystack
 from django.conf import settings
 import requests
 import simplejson as json
@@ -17,6 +20,8 @@ from django.template import RequestContext
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from decimal import Decimal  # add at the top of your views.py
+
 
 
 # Create your views here.
@@ -42,13 +47,35 @@ def contactPage(request):
     return render(request, 'contact.html')
     #return HttpResponse("<h1> Contact Page </h1>")
     # return HttpResponse("Hello world")
-def productPage(request, category_slug, product_slug):
-    try:
-        product = Product.objects.get(category__slug=category_slug, slug=product_slug)
-    except Exception as e:
-        raise e
 
-    return render(request, 'product.html', {'product': product})
+# def productPage(request, category_slug, product_slug):
+#     try:
+#         product = Product.objects.get(category__slug=category_slug, slug=product_slug)
+#     except Exception as e:
+#         raise e
+
+#     return render(request, 'product.html', {'product': product})
+
+
+
+
+
+def productPage(request, category_slug, product_slug):
+    product = get_object_or_404(Product, category__slug=category_slug, slug=product_slug, available=True)
+
+    variants = product.variants.all()   # related_name='variants'
+
+    # default variant logic
+    default_variant = variants.filter(is_default=True).first()
+    if not default_variant and variants.exists():
+        default_variant = variants.first()
+
+    return render(request, 'product.html', {
+        'product': product,
+        'variants': variants,
+        'default_variant': default_variant
+    })
+
 
 
 
@@ -58,45 +85,146 @@ def _cart_id(request):
         cart = request.session.create()
     return cart
 
-def add_cart(request, product_id):
+
+
+def add_cart(request, product_id, variant_id=None):
     product = Product.objects.get(id=product_id)
+    variant = None
+    if variant_id:
+        variant = ProductVariant.objects.get(id=variant_id)
+
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
     except Cart.DoesNotExist:
-        cart = Cart.objects.create(
-            cart_id = _cart_id(request)
-        )
+        cart = Cart.objects.create(cart_id=_cart_id(request))
         cart.save()
 
     try:
-        cart_item = CartItem.objects.get(product=product, cart=cart)
-        if cart_item.quantity < cart_item.product.stock:
-
-            cart_item.quantity +=1
+        cart_item = CartItem.objects.get(product=product, cart=cart, variant=variant)
+        # Check stock for variant or product
+        available_stock = variant.stock if variant else product.stock
+        if cart_item.quantity < available_stock:
+            cart_item.quantity += 1
         cart_item.save()
     except CartItem.DoesNotExist:
         cart_item = CartItem.objects.create(
-            product = product,
-            quantity = 1,
-            cart = cart
+            product=product,
+            variant=variant,
+            quantity=1,
+            cart=cart
         )
         cart_item.save()
 
     return redirect('cart_detail')
+
+
+
+# def add_cart_variant(request, product_id, variant_id):
+#     product = Product.objects.get(id=product_id)
+#     variant = ProductVariant.objects.get(id=variant_id)
+    
+#     try:
+#         cart = Cart.objects.get(cart_id=_cart_id(request))
+#     except Cart.DoesNotExist:
+#         cart = Cart.objects.create(cart_id=_cart_id(request))
+#         cart.save()
+
+#     try:
+#         # Include variant in the filter
+#         cart_item = CartItem.objects.get(product=product, variant=variant, cart=cart)
+#         if cart_item.quantity < cart_item.product.stock:
+#             cart_item.quantity += 1
+#         cart_item.save()
+#     except CartItem.DoesNotExist:
+#         cart_item = CartItem.objects.create(
+#             product=product,
+#             variant=variant,
+#             quantity=1,
+#             cart=cart
+#         )
+#         cart_item.save()
+
+#     return redirect('cart_detail')
+
+def add_cart_variant(request, product_id, variant_id):
+    product = get_object_or_404(Product, id=product_id)
+    variant = get_object_or_404(ProductVariant, id=variant_id)
+
+    try:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+    except Cart.DoesNotExist:
+        cart = Cart.objects.create(cart_id=_cart_id(request))
+        cart.save()
+
+    # Check if cart item for this variant exists
+    cart_items = CartItem.objects.filter(product=product, variant=variant, cart=cart)
+    if cart_items.exists():
+        cart_item = cart_items.first()
+        if cart_item.quantity < product.stock:
+            cart_item.quantity += 1
+            cart_item.save()
+    else:
+        cart_item = CartItem.objects.create(
+            product=product,
+            variant=variant,
+            quantity=1,
+            cart=cart
+        )
+        cart_item.save()
+
+    return redirect('cart_detail')
+
+
+
+# def add_cart(request, product_id):
+#     product = Product.objects.get(id=product_id)
+#     try:
+#         cart = Cart.objects.get(cart_id=_cart_id(request))
+#     except Cart.DoesNotExist:
+#         cart = Cart.objects.create(
+#             cart_id = _cart_id(request)
+#         )
+#         cart.save()
+
+#     try:
+#         cart_item = CartItem.objects.get(product=product, cart=cart)
+#         if cart_item.quantity < cart_item.product.stock:
+
+#             cart_item.quantity +=1
+#         cart_item.save()
+#     except CartItem.DoesNotExist:
+#         cart_item = CartItem.objects.create(
+#             product = product,
+#             quantity = 1,
+#             cart = cart
+#         )
+#         cart_item.save()
+
+#     return redirect('cart_detail')
 
 def cart_detail(request, total=0, counter=0, cart_items=None):
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
         cart_items = CartItem.objects.filter(cart=cart, active=True)
         print('great now')
+        # for cart_item in cart_items:
+        #     total += (cart_item.product.price * cart_item.quantity)
+        #     total = float(total)
+        #     print('totall', total)
+        #     counter += cart_item.quantity
+       
+
         for cart_item in cart_items:
-            total += (cart_item.product.price * cart_item.quantity)
-            total = float(total)
-            print('totall', total)
+            total += cart_item.product.price * cart_item.quantity  # keep as Decimal
             counter += cart_item.quantity
+
+        # Convert to float **only when needed** (e.g., for Paystack)
+        
+
     except ObjectDoesNotExist:
         pass
-    pypaystack_total = int(total) * 100
+    # pypaystack_total = int(total) * 100
+    pypaystack_total = int(total * Decimal('100'))  # cents/kobo
     data_key = settings.PAYSTACK_PUBLIC_KEY
     if request.method=='POST':
         try:
@@ -185,24 +313,40 @@ def cart_detail(request, total=0, counter=0, cart_items=None):
 
 
 
-def cart_remove(request, product_id):
+def cart_remove(request, product_id, variant_id=None):
     cart = Cart.objects.get(cart_id =_cart_id(request))
     product = get_object_or_404(Product, id=product_id)
-    cart_item = CartItem.objects.get(product=product, cart= cart)
-    if cart_item.quantity > 1:
-        cart_item.quantity -=1
-        cart_item.save()
+    if variant_id:
+        cart_items = CartItem.objects.filter(product=product, cart=cart, variant_id=variant_id)
     else:
-        cart_item.delete()
+        cart_items = CartItem.objects.filter(product=product, cart= cart)
+    for cart_item in cart_items:
+
+        if cart_item.quantity > 1:
+            cart_item.quantity -=1
+            cart_item.save()
+        else:
+            cart_item.delete()
     return redirect('cart_detail')
 
-def cart_remove_product(request, product_id):
-    cart = Cart.objects.get(cart_id =_cart_id(request))
+# def cart_remove_product(request, product_id, variant_id=None):
+#     cart = Cart.objects.get(cart_id =_cart_id(request))
+#     product = get_object_or_404(Product, id=product_id)
+#     cart_item = CartItem.objects.get(product=product, cart= cart)
+#     cart_item.delete()
+#     return redirect('cart_detail')
+
+def cart_remove_product(request, product_id, variant_id=None):
+    cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=product_id)
-    cart_item = CartItem.objects.get(product=product, cart= cart)
-    cart_item.delete()
-    return redirect('cart_detail')
 
+    if variant_id:
+        cart_items = CartItem.objects.filter(product=product, cart=cart, variant_id=variant_id)
+    else:
+        cart_items = CartItem.objects.filter(product=product, cart=cart)
+
+    cart_items.delete()
+    return redirect('cart_detail')
 
 def thanks_page(request, order_id):
     if order_id:

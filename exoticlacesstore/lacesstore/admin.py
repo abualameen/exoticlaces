@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Category, Product, Order, OrderItem
+from .models import Category, Product, Order, OrderItem, ProductVariant
+
 # Register your models here.
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -8,11 +9,25 @@ class CategoryAdmin(admin.ModelAdmin):
     
 admin.site.register(Category, CategoryAdmin)
 
+# class ProductAdmin(admin.ModelAdmin):
+#     list_display = ['name', 'price','stock', 'available', 'created','updated'] 
+#     list_editable = ['price', 'stock', 'available']
+#     prepopulated_fields = {'slug': ('name',)}
+#     list_per_page = 20 
+
+class ProductVariantInline(admin.TabularInline):
+    model = ProductVariant
+    extra = 1  # How many empty variants to show by default
+    fields = ['color_name', 'color_code', 'image', 'stock', 'is_default']
+    readonly_fields = []  # make any read-only if needed
+
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'price','stock', 'available', 'created','updated'] 
     list_editable = ['price', 'stock', 'available']
     prepopulated_fields = {'slug': ('name',)}
     list_per_page = 20 
+    inlines = [ProductVariantInline]  # <--- Add this line
+
 
 admin.site.register(Product, ProductAdmin)
 
@@ -49,3 +64,10 @@ class OrderAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
+
+class ProductVariantInline(admin.TabularInline):
+    model = ProductVariant
+    extra = 1  # How many empty variants to show by default
+    fields = ['color_name', 'color_code', 'image', 'stock', 'is_default']
+    readonly_fields = []  # make any read-only if needed
