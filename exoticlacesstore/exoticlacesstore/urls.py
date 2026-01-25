@@ -23,6 +23,8 @@ urlpatterns = [
     path('', include("lacesstore.urls")),
     path('accounts/', include('allauth.urls')),
     # path('verify', include('lacesstore.urls')),
+    path('payments/', include('payments.urls')),
+
     
 ]#+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

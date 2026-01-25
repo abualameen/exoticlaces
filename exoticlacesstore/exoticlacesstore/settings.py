@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'lacesstore',
-
+    'payments',
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -164,7 +164,9 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media')
 
 PAYSTACK_PUBLIC_KEY = 'pk_test_3f49c770faba47fb7b236b4cd6c2add919d52628'
-PAYSTACK_SECRET_KEY = 'sk_test_cea9887b6cd805d6a4f8369371be3e170c06543c'
+PAYSTACK_SECRET_KEY = 'sk_test_b84eabdb7c6abe42699454e3673042d94edb1fb7'
+PAYSTACK_BASE_URL = "https://api.paystack.co"
+PAYSTACK_SUPPORTED_CURRENCIES = ["NGN", "GHS", "USD", "XOF"]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
