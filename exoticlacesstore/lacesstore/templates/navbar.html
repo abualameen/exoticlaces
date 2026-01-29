@@ -45,5 +45,24 @@
             </div>
         </div>
     </form>
+        <li class="nav-item d-flex align-items-center px-3">
+            <span class="nav-link text-light text-uppercase font-weight-bold mb-0 mr-2">
+                Select Currency
+            </span>
+
+            <form method="POST" action="{% url 'set_currency' %}" class="mb-0">
+                {% csrf_token %}
+                <select name="currency"
+                        onchange="this.form.submit()"
+                        class="form-control form-control-sm bg-dark text-light border-light"
+                        style="width:auto; min-width:90px;">
+                    <option value="NGN" {% if ACTIVE_CURRENCY == "NGN" %}selected{% endif %}>₦ NGN</option>
+                    <option value="GHS" {% if ACTIVE_CURRENCY == "GHS" %}selected{% endif %}>₵ GHS</option>
+                    <option value="XOF" {% if ACTIVE_CURRENCY == "XOF" %}selected{% endif %}>CFA XOF</option>
+                    <option value="USD" {% if ACTIVE_CURRENCY == "USD" %}selected{% endif %}>$ USD</option>
+                </select>
+            </form>
+        </li>
+
     </div>
 </nav>

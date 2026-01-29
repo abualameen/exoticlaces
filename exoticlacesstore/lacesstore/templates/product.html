@@ -25,7 +25,7 @@
             <div class="mt-4">
                 <strong>Available Colors:</strong>
                 <div class="d-flex flex-wrap mt-2">
-                    <form id="variantForm">
+                    <!-- <form id="variantForm">
                         {% for variant in variants %}
                         <label class="variant-thumb mr-2 mb-2" style="cursor:pointer;">
                             <input type="radio" name="variant_id" value="{{ variant.id }}" style="display:none;" {% if variant.is_default %}checked{% endif %} onchange="changeImage('{{ variant.image.url }}')">
@@ -33,7 +33,25 @@
                             <div style="font-size:11px;text-align:center;">{{ variant.color_name }}</div>
                         </label>
                         {% endfor %}
+                    </form> -->
+                    <form id="variantForm">
+                        {% for variant in variants %}
+                        <label class="variant-thumb mr-2 mb-2" style="cursor:pointer;">
+                            <input 
+                                type="radio" 
+                                name="variant_id" 
+                                value="{{ variant.id }}" 
+                                data-stock="{{ variant.stock }}"
+                                style="display:none;" 
+                                {% if variant.is_default %}checked{% endif %}
+                                onchange="changeImage('{{ variant.image.url }}'); checkVariantStock(this)"
+                            >
+                            <img src="{{ variant.image.url }}" style="width:60px;height:60px;object-fit:cover;border:2px solid #ddd;border-radius:6px;">
+                            <div style="font-size:11px;text-align:center;">{{ variant.color_name }}</div>
+                        </label>
+                        {% endfor %}
                     </form>
+
                 </div>
             </div>
             {% endif %}
@@ -42,11 +60,9 @@
             <div class="mt-4">
                 {% if variants %}
                     {% comment %} Use the default variant for stock check {% endcomment %}
-                    {% if default_variant.stock <= 0 %}
-                        <p><b>Out of Stock</b></p>
-                    {% else %}
-                        <button id="addToCartBtn" class="btn btn-secondary">Add to Cart</button>
-                    {% endif %}
+                    <button id="addToCartBtn" class="btn btn-secondary">Add to Cart</button>
+                    <p id="stockStatus" style="margin-top:10px;font-weight:bold;"></p>
+
                 {% else %}
                     {% if product.stock <= 0 %}
                         <p><b>Out of Stock</b></p>
@@ -57,6 +73,7 @@
                     {% endif %}
                 {% endif %}
             </div>
+            
 
         </div>
     </div>
@@ -86,5 +103,34 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
+
+<script>
+function checkVariantStock(radio) {
+    const stock = parseInt(radio.dataset.stock);
+    const btn = document.getElementById("addToCartBtn");
+    const status = document.getElementById("stockStatus");
+
+    if (stock <= 0) {
+        btn.disabled = true;
+        btn.innerText = "Out of Stock";
+        status.innerText = "This variant is out of stock";
+        status.style.color = "red";
+    } else {
+        btn.disabled = false;
+        btn.innerText = "Add to Cart";
+        status.innerText = "In Stock";
+        status.style.color = "green";
+    }
+}
+
+// Auto-check default variant on load
+window.addEventListener("DOMContentLoaded", function () {
+    const checked = document.querySelector('input[name="variant_id"]:checked');
+    if (checked) {
+        checkVariantStock(checked);
+    }
+});
+</script>
+
 
 {% endblock %}

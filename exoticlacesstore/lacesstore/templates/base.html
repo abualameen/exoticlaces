@@ -25,6 +25,16 @@
     {% endblock %}
 
     {% include 'footer.html' %}
+    <form method="POST" action="{% url 'set_currency' %}" style="display:inline;">
+        {% csrf_token %}
+        <select name="currency" onchange="this.form.submit()">
+            <option value="NGN" {% if ACTIVE_CURRENCY == "NGN" %}selected{% endif %}>₦ NGN</option>
+            <option value="GHS" {% if ACTIVE_CURRENCY == "GHS" %}selected{% endif %}>₵ GHS</option>
+            <option value="XOF" {% if ACTIVE_CURRENCY == "XOF" %}selected{% endif %}>CFA XOF</option>
+            <option value="USD" {% if ACTIVE_CURRENCY == "USD" %}selected{% endif %}>$ USD</option>
+        </select>
+    </form>
+
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

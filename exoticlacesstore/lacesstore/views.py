@@ -22,6 +22,8 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal  # add at the top of your views.py
 
+# from shipping.models import CartShipping
+
 
 
 # Create your views here.
@@ -55,6 +57,12 @@ def contactPage(request):
 #         raise e
 
 #     return render(request, 'product.html', {'product': product})
+
+
+
+def clear_shipping_session(request):
+    if "shipping" in request.session:
+        del request.session["shipping"]
 
 
 
@@ -114,6 +122,8 @@ def add_cart(request, product_id, variant_id=None):
             cart=cart
         )
         cart_item.save()
+    clear_shipping_session(request)
+
 
     return redirect('cart_detail')
 
@@ -150,11 +160,18 @@ def add_cart_variant(request, product_id, variant_id):
     product = get_object_or_404(Product, id=product_id)
     variant = get_object_or_404(ProductVariant, id=variant_id)
 
+
+    if variant.stock <= 0:
+        messages.error(request, "This variant is out of stock.")
+        return redirect(product.get_url())
+
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
     except Cart.DoesNotExist:
         cart = Cart.objects.create(cart_id=_cart_id(request))
         cart.save()
+
+    
 
     # Check if cart item for this variant exists
     cart_items = CartItem.objects.filter(product=product, variant=variant, cart=cart)
@@ -171,7 +188,9 @@ def add_cart_variant(request, product_id, variant_id):
             cart=cart
         )
         cart_item.save()
+    clear_shipping_session(request)
 
+   
     return redirect('cart_detail')
 
 
@@ -206,6 +225,17 @@ def cart_detail(request, total=0, counter=0, cart_items=None):
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
         cart_items = CartItem.objects.filter(cart=cart, active=True)
+
+        # ✅ DEFAULTS (always exist)
+        shipping_cost = Decimal('0.00')
+        shipping_label = None
+
+        shipping_data = request.session.get("shipping", {})
+        if shipping_data:
+            # shipping_cost = shipping_data.get("amount", 0)
+            shipping_cost = Decimal(str(shipping_data.get("amount", 0)))
+            shipping_label = shipping_data.get("label")
+
         print('great now')
         # for cart_item in cart_items:
         #     total += (cart_item.product.price * cart_item.quantity)
@@ -216,91 +246,107 @@ def cart_detail(request, total=0, counter=0, cart_items=None):
 
         for cart_item in cart_items:
             total += cart_item.product.price * cart_item.quantity  # keep as Decimal
+            # grand_total = total + int(shipping_cost)  #total + int(shipping_cost)
             counter += cart_item.quantity
 
         # Convert to float **only when needed** (e.g., for Paystack)
-        
+
+        # ✅ compute after loop
+        grand_total = total + shipping_cost
+    
 
     except ObjectDoesNotExist:
-        pass
+        cart_items = []
+        total = Decimal('0.00')
+        grand_total = Decimal('0.00')
+        shipping_cost = Decimal('0.00')
+        shipping_label = None
+        counter = 0
+        # pass
     # pypaystack_total = int(total) * 100
-    pypaystack_total = int(total * Decimal('100'))  # cents/kobo
+    pypaystack_total = int(grand_total * Decimal('100'))  # cents/kobo
     data_key = settings.PAYSTACK_PUBLIC_KEY
-    if request.method=='POST':
-        try:
-            transaction = Transaction(authorization_key=settings.PAYSTACK_SECRET_KEY)
-            try:
-                response = transaction.verify(request.POST.get('referenceid'))
-            except Exception as e:
-                print(f'An error occurred while verifying the customer: {e}')
-                return JsonResponse({'error': 'An error occurred while verifying the customer.'}, status=500)
 
-            data = JsonResponse(response, safe=False)
-            try:
-                res_tupple1= response[3]
-                authorization_code = res_tupple1['authorization']['authorization_code']
-                email = request.POST['emailaddress']
-                customer, created = Customerr.objects.update_or_create(
-                    email=email,
-                    defaults={
-                        'firstName': request.POST['firstname'],
-                        'lastName': request.POST['lastname'],
-                        'phonenumber': request.POST['phonenumber'],
-                        'authorization_code': authorization_code
-                    }
-                )
-                customer.save()
-                costo_email = request.POST['emailaddress']
-                customer = get_object_or_404(Customerr, email=costo_email)
-                if customer.authorization_code:
-                    print('am using the custo author')
-                    response = transaction.charge(costo_email, customer.authorization_code, pypaystack_total)
-                else:
-                    pass
-            except Exception as e:
-                print(f'An error occurred while charging the customer: {e}')
-                return JsonResponse({'error': 'An error occurred while chargeing the customer.'}, status=500)
-            res_tupple = response[3]
-            if res_tupple['status'] == 'success':
-                emailAddress = request.POST['emailaddress']
-                firstName = request.POST['firstname']
-                lastName = request.POST['lastname']
-                country = request.POST['country']
-                state = request.POST['state']
-                phonenumber = request.POST['phonenumber']
-                try:
+
+    
+    
+
+
+    # if request.method=='POST':
+    #     try:
+    #         transaction = Transaction(authorization_key=settings.PAYSTACK_SECRET_KEY)
+    #         try:
+    #             response = transaction.verify(request.POST.get('referenceid'))
+    #         except Exception as e:
+    #             print(f'An error occurred while verifying the customer: {e}')
+    #             return JsonResponse({'error': 'An error occurred while verifying the customer.'}, status=500)
+
+    #         data = JsonResponse(response, safe=False)
+    #         try:
+    #             res_tupple1= response[3]
+    #             authorization_code = res_tupple1['authorization']['authorization_code']
+    #             email = request.POST['emailaddress']
+    #             customer, created = Customerr.objects.update_or_create(
+    #                 email=email,
+    #                 defaults={
+    #                     'firstName': request.POST['firstname'],
+    #                     'lastName': request.POST['lastname'],
+    #                     'phonenumber': request.POST['phonenumber'],
+    #                     'authorization_code': authorization_code
+    #                 }
+    #             )
+    #             customer.save()
+    #             costo_email = request.POST['emailaddress']
+    #             customer = get_object_or_404(Customerr, email=costo_email)
+    #             if customer.authorization_code:
+    #                 print('am using the custo author')
+    #                 response = transaction.charge(costo_email, customer.authorization_code, pypaystack_total)
+    #             else:
+    #                 pass
+    #         except Exception as e:
+    #             print(f'An error occurred while charging the customer: {e}')
+    #             return JsonResponse({'error': 'An error occurred while chargeing the customer.'}, status=500)
+    #         res_tupple = response[3]
+    #         if res_tupple['status'] == 'success':
+    #             emailAddress = request.POST['emailaddress']
+    #             firstName = request.POST['firstname']
+    #             lastName = request.POST['lastname']
+    #             country = request.POST['country']
+    #             state = request.POST['state']
+    #             phonenumber = request.POST['phonenumber']
+    #             try:
                 
-                    order_details = Order.objects.create(
-                        total = total,
-                        emailAddress = emailAddress,
-                        country = country,
-                        firstName = firstName,
-                        lastName = lastName,
-                        state = state,
-                        phonenumber = phonenumber
-                    )
-                    order_details.save()
-                    for order_item in cart_items:
-                        or_item = OrderItem.objects.create(
-                            product = order_item.product.name,
-                            quantity = order_item.quantity,
-                            price = order_item.product.price,
-                            order = order_details
-                        )
-                        or_item.save()
-                        # reduce stock
-                        products = Product.objects.get(id=order_item.product.id)
-                        products.stock = int(order_item.product.stock - order_item.quantity)
-                        products.save()
-                        order_item.delete()
-                    print('the order has been created')
-                    return JsonResponse({'status': 'success', 'order_id': order_details.id})
-                except ObjectDoesNotExist:
-                    pass
-        except:
-            print('An error has Occured')
+    #                 order_details = Order.objects.create(
+    #                     total = total,
+    #                     emailAddress = emailAddress,
+    #                     country = country,
+    #                     firstName = firstName,
+    #                     lastName = lastName,
+    #                     state = state,
+    #                     phonenumber = phonenumber
+    #                 )
+    #                 order_details.save()
+    #                 for order_item in cart_items:
+    #                     or_item = OrderItem.objects.create(
+    #                         product = order_item.product.name,
+    #                         quantity = order_item.quantity,
+    #                         price = order_item.product.price,
+    #                         order = order_details
+    #                     )
+    #                     or_item.save()
+    #                     # reduce stock
+    #                     products = Product.objects.get(id=order_item.product.id)
+    #                     products.stock = int(order_item.product.stock - order_item.quantity)
+    #                     products.save()
+    #                     order_item.delete()
+    #                 print('the order has been created')
+    #                 return JsonResponse({'status': 'success', 'order_id': order_details.id})
+    #             except ObjectDoesNotExist:
+    #                 pass
+    #     except:
+    #         print('An error has Occured')
            
-    return render(request, 'cart.html', dict(cart_items = cart_items, total = total, counter = counter, data_key = data_key, pypaystack_total=pypaystack_total))
+    return render(request, 'cart.html', dict(cart_items = cart_items, total = total,  grand_total= grand_total, counter = counter, data_key = data_key, pypaystack_total=pypaystack_total, shipping=shipping_cost, shipping_label=shipping_label,))
 
 # def verifyy(request, id):
 #     transaction = Transaction(authorization_key=settings.PAYSTACK_SECRET_KEY)
@@ -327,6 +373,7 @@ def cart_remove(request, product_id, variant_id=None):
             cart_item.save()
         else:
             cart_item.delete()
+    clear_shipping_session(request)
     return redirect('cart_detail')
 
 # def cart_remove_product(request, product_id, variant_id=None):
@@ -346,6 +393,7 @@ def cart_remove_product(request, product_id, variant_id=None):
         cart_items = CartItem.objects.filter(product=product, cart=cart)
 
     cart_items.delete()
+    clear_shipping_session(request)
     return redirect('cart_detail')
 
 def thanks_page(request, order_id):

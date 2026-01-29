@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'lacesstore',
     'payments',
+    'shipping',
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -175,3 +176,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DEFAULT_CURRENCY = "NGN"
+SUPPORTED_CURRENCIES = ["NGN", "GHS", "XOF", "USD"]
+

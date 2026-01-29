@@ -82,9 +82,7 @@ Cart
                                 <i class="fa-solid fa-circle-minus cart_icon"></i>
                             </a>
                         {% endif %}
-                        <!-- &nbsp;<a href="{% url 'cart_remove_product' cart_item.product.id %}">
-                            <i class="fa-solid fa-trash-alt cart_icon"></i>
-                        </a> -->
+                     
 
                         {% if cart_item.variant %}
                             &nbsp;<a href="{% url 'cart_remove_product_variant' cart_item.product.id cart_item.variant.id %}">
@@ -138,9 +136,23 @@ Cart
                 <tr>
                     <td class="text-left">
                         Your total is: <strong>{{total}}</strong>
+                      
+
                         
                     </td>
                 </tr>
+             
+                <tr>
+                    <td>Shipping</td>
+                    <td id="shipping_label_ui">—</td>
+                    <td id="shipping_cost_ui">₦0</td>
+                </tr>
+
+                <tr>
+                    <td><strong>Grand Total</strong></td>
+                    <td colspan="2"><strong id="grand_total_ui">₦{{ total }}</strong></td>
+                </tr>
+
 
             </tbody>
         </table>
@@ -184,25 +196,93 @@ Cart
                 <label>State</label>
                 <input type="text" id="state" class="form-control" required />
             </div>
-            <div class="form-submit">
+          
+
+          
+                <select id="shipping_method" onchange="applyShipping()">
+                    <option value="">Select shipping</option>
+                    <option value="seller">Seller Shipping</option>
+                    <option value="dhl">DHL Express</option>
+                </select>
+
                 
-                <!-- <button type="submit" name="button" class="btn btn-secondary"> 
-                <span style="display: block; min-height: 30px;">Pay with card</span>
-                </button> -->
-            </div>
+                <script>
+                function applyShipping(){
+                    const method = document.getElementById("shipping_method").value;
+                    const country = document.getElementById("country").value;
+                    const state = document.getElementById("state").value;
+
+                    if(!method){
+                        alert("Select shipping method");
+                        return;
+                    }
+
+                    fetch("/shipping/set-shipping/", {
+                        method:"POST",
+                        headers: {
+                            "Content-Type":"application/json",
+                            "X-CSRFToken": "{{ csrf_token }}"
+                        },
+                        body: JSON.stringify({
+                            method: method,
+                            country: country,
+                            state: state
+                        })
+                    })
+                    .then(res=>res.json())
+                    .then(data=>{
+
+                        if(!data.shipping){
+                            alert("Shipping error");
+                            return;
+                        }
+
+                        const shipping = parseFloat(data.shipping.amount);
+
+                        // ✅ Live UI update
+                        document.getElementById("shipping_cost_ui").innerText = "₦" + shipping.toLocaleString();
+                        document.getElementById("shipping_label_ui").innerText = data.shipping.label;
+
+                        const cartTotal = parseFloat("{{ total }}");
+                        const grandTotal = cartTotal + shipping;
+
+                        document.getElementById("grand_total_ui").innerText = "₦" + grandTotal.toLocaleString();
+
+                        // ✅ Enable payment
+                        document.getElementById("payBtn").disabled = false;
+                        document.getElementById("payBtn").classList.remove("btn-secondary");
+                        document.getElementById("payBtn").classList.add("btn-success");
+                    })
+                }
+                </script>
+
+
+
+
+
         
 
-            <button id="payBtn" class="btn btn-lg btn-block btn-secondary">
+            <!-- <button id="payBtn" class="btn btn-lg btn-block btn-secondary">
+                Pay Securely with Paystack
+            </button> -->
+            <button id="payBtn" class="btn btn-lg btn-block btn-secondary" disabled>
                 Pay Securely with Paystack
             </button>
 
-            <script src="https://js.paystack.co/v1/inline.js"></script>
+               
+            <a href="{% url 'home' %}" 
+                id="ctnshopBtn" 
+                class="btn btn-lg btn-block btn-info text-white text-center">
+                    Continue Shopping
+            </a>
+
+            <!-- <script src="https://js.paystack.co/v1/inline.js"></script>
             <script>
             document.getElementById("payBtn").addEventListener("click", function(){
 
                 let email = document.getElementById("email-address").value;
                 let currency = document.getElementById("currency").value;
-                let amount = "{{ pypaystack_total }}";  // total in kobo
+                // let amount = "{{ pypaystack_total }}";  // total in kobo
                 let phonenumber =  document.getElementById("phone-number").value;
                 let firstName =  document.getElementById("first-name").value;
                 let lastName =  document.getElementById("last-name").value;
@@ -222,7 +302,7 @@ Cart
                     },
                     body: new URLSearchParams({
                         email: email,
-                        amount: amount,
+                        // amount: amount,
                         currency: currency,
                         country:country, 
                         state: state, 
@@ -257,7 +337,53 @@ Cart
                     handler.openIframe();
                 });
             });
-            </script>
+            </script> -->
+            <!-- <script src="https://js.paystack.co/v1/inline.js"></script> -->
+
+            <script>
+                document.getElementById("payBtn").addEventListener("click", function(){
+
+                    let email = document.getElementById("email-address").value;
+                    let currency = document.getElementById("currency").value;
+                    let phonenumber = document.getElementById("phone-number").value;
+                    let firstName = document.getElementById("first-name").value;
+                    let lastName = document.getElementById("last-name").value;
+                    let country = document.getElementById("country").value;
+                    let state = document.getElementById("state").value;
+
+                    if(!email){
+                        alert("Please enter your email");
+                        return;
+                    }
+
+                    fetch("{% url 'init_payment' %}", {
+                        method: "POST",
+                        headers:{
+                            "X-CSRFToken": "{{ csrf_token }}",
+                            "Content-Type":"application/x-www-form-urlencoded"
+                        },
+                        body: new URLSearchParams({
+                            email: email,
+                            currency: currency,
+                            phonenumber: phonenumber,
+                            firstName: firstName,
+                            lastName: lastName,
+                            country: country,
+                            state: state
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(!data.status){
+                            alert(data.message || "Payment init failed");
+                            return;
+                        }
+
+                        // ✅ Redirect to Paystack
+                        window.location.href = data.paystack_url;
+                    });
+                });
+                </script>
 
 
         </div>
