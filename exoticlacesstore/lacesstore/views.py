@@ -21,6 +21,22 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal  # add at the top of your views.py
+from payments.services.exchange import get_exchange_rate
+
+from decimal import Decimal
+from django.shortcuts import render
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
+
+
+from payments.models import ExchangeRate
+
+
+
+
+
+
+
 
 # from shipping.models import CartShipping
 
@@ -35,8 +51,9 @@ def home(request, category_slug=None):
         products = Product.objects.filter(category=category_page, available=True)
     else:
         products = Product.objects.all().filter(available=True)
+    active_currency = request.session.get("currency", "NGN")
 
-    return render(request, 'home.html', {'category': category_page, 'products': products})
+    return render(request, 'home.html', {'category': category_page, 'products': products, 'currency':active_currency})
 
 
 def aboutPage(request):
@@ -221,51 +238,69 @@ def add_cart_variant(request, product_id, variant_id):
 
 #     return redirect('cart_detail')
 
-def cart_detail(request, total=0, counter=0, cart_items=None):
-    try:
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-        cart_items = CartItem.objects.filter(cart=cart, active=True)
+# def cart_detail(request, total=0, counter=0, cart_items=None):
+#     try:
+#         cart = Cart.objects.get(cart_id=_cart_id(request))
+#         cart_items = CartItem.objects.filter(cart=cart, active=True)
 
-        # ✅ DEFAULTS (always exist)
-        shipping_cost = Decimal('0.00')
-        shipping_label = None
+#         shipping_cost_ngn = Decimal('0.00')
+#         shipping_label = None
 
-        shipping_data = request.session.get("shipping", {})
-        if shipping_data:
-            # shipping_cost = shipping_data.get("amount", 0)
-            shipping_cost = Decimal(str(shipping_data.get("amount", 0)))
-            shipping_label = shipping_data.get("label")
 
-        print('great now')
-        # for cart_item in cart_items:
-        #     total += (cart_item.product.price * cart_item.quantity)
-        #     total = float(total)
-        #     print('totall', total)
-        #     counter += cart_item.quantity
-       
+#         "amount_ngn": float(shipping_cost_ngn),
+#         "amount_fx": shipping_cost_fx,
+#         "label": rate_data["label"],
+#         "currency": active_currency,
+      
+#         currency = request.session.get("currency", "NGN")
+#         amount_ngn = request.session.get("amount_ngn")
+#         shipping_cost_fx
+#         rate = get_exchange_rate(currency)
 
-        for cart_item in cart_items:
-            total += cart_item.product.price * cart_item.quantity  # keep as Decimal
-            # grand_total = total + int(shipping_cost)  #total + int(shipping_cost)
-            counter += cart_item.quantity
+#         cart_total_ngn = amount_ngn
+#         shipping_cost_ngn = amount_fx
+#         grand_total_ngn = cart_total_ngn + shipping_cost_ngn
+#         grand_total_fx = round(grand_total_ngn * rate, 2),
 
-        # Convert to float **only when needed** (e.g., for Paystack)
-
-        # ✅ compute after loop
-        grand_total = total + shipping_cost
+#         # ✅ DEFAULTS (always exist)
     
 
-    except ObjectDoesNotExist:
-        cart_items = []
-        total = Decimal('0.00')
-        grand_total = Decimal('0.00')
-        shipping_cost = Decimal('0.00')
-        shipping_label = None
-        counter = 0
-        # pass
-    # pypaystack_total = int(total) * 100
-    pypaystack_total = int(grand_total * Decimal('100'))  # cents/kobo
-    data_key = settings.PAYSTACK_PUBLIC_KEY
+#         shipping_data = request.session.get("shipping", {})
+#         if shipping_data:
+#             # shipping_cost = shipping_data.get("amount", 0)
+#             # shipping_cost = Decimal(str(shipping_data.get("amount", 0)))
+#             shipping_label = shipping_data.get("label")
+
+#         print('great now')
+#         # for cart_item in cart_items:
+#         #     total += (cart_item.product.price * cart_item.quantity)
+#         #     total = float(total)
+#         #     print('totall', total)
+#         #     counter += cart_item.quantity
+       
+
+#         for cart_item in cart_items:
+#             total += cart_item.product.price * cart_item.quantity  # keep as Decimal
+#             # grand_total = total + int(shipping_cost)  #total + int(shipping_cost)
+#             counter += cart_item.quantity
+
+#         # Convert to float **only when needed** (e.g., for Paystack)
+
+#         # # ✅ compute after loop
+#         # grand_total = total + shipping_cost
+    
+
+#     except ObjectDoesNotExist:
+#         cart_items = []
+#         total = Decimal('0.00')
+#         grand_total = Decimal('0.00')
+#         shipping_cost = Decimal('0.00')
+#         shipping_label = None
+#         counter = 0
+#         # pass
+#     # pypaystack_total = int(total) * 100
+#     pypaystack_total = int(grand_total * Decimal('100'))  # cents/kobo
+#     data_key = settings.PAYSTACK_PUBLIC_KEY
 
 
     
@@ -346,7 +381,9 @@ def cart_detail(request, total=0, counter=0, cart_items=None):
     #     except:
     #         print('An error has Occured')
            
-    return render(request, 'cart.html', dict(cart_items = cart_items, total = total,  grand_total= grand_total, counter = counter, data_key = data_key, pypaystack_total=pypaystack_total, shipping=shipping_cost, shipping_label=shipping_label,))
+    # return render(request, 'cart.html', dict(cart_items = cart_items, total = total,  grand_total= grand_total, counter = counter, data_key = data_key, pypaystack_total=pypaystack_total, shipping=shipping_cost, shipping_label=shipping_label,))
+    
+    # return remder(request, 'cart.html', dict(total_ngn = cart_total_ngn, grand_total_ngn = grand_total_ngn, grand_total_fx=grand_total_fx, currency= currency,))
 
 # def verifyy(request, id):
 #     transaction = Transaction(authorization_key=settings.PAYSTACK_SECRET_KEY)
@@ -356,6 +393,113 @@ def cart_detail(request, total=0, counter=0, cart_items=None):
 #     data = JsonResponse(response, safe=False)
 #     print('data',data)
 #     return data
+
+
+
+
+def cart_detail(request):
+    try:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+        cart_items = CartItem.objects.filter(cart=cart, active=True)
+
+        total_ngn = Decimal("0.00")
+        counter = 0
+
+        # 1️⃣ CART TOTAL (NGN ONLY)
+        for item in cart_items:
+            total_ngn += item.product.price * item.quantity
+            counter += item.quantity
+
+        # 2️⃣ SHIPPING (FROM SESSION)
+        shipping_data = request.session.get("shipping", {})
+        shipping_cost_ngn = Decimal(str(shipping_data.get("amount_ngn", 0)))
+        shipping_label = shipping_data.get("label")
+
+        # 3️⃣ GRAND TOTAL (NGN ONLY)
+        grand_total_ngn = total_ngn + shipping_cost_ngn
+
+        # 4️⃣ FX (DISPLAY ONLY)
+        active_currency = request.session.get("currency", "NGN")
+        fx_rate, rate_source = get_exchange_rate(active_currency)
+
+        total_fx = round(total_ngn * Decimal(str(fx_rate)), 2)
+        shipping_fx = round(shipping_cost_ngn * Decimal(str(fx_rate)), 2)
+        grand_total_fx = round(grand_total_ngn * Decimal(str(fx_rate)), 2)
+
+    except ObjectDoesNotExist:
+        cart_items = []
+        total_ngn = Decimal("0.00")
+        shipping_cost_ngn = Decimal("0.00")
+        grand_total_ngn = Decimal("0.00")
+        total_fx = Decimal("0.00")
+        shipping_fx = Decimal("0.00")
+        grand_total_fx = Decimal("0.00")
+        shipping_label = None
+        counter = 0
+        active_currency = "NGN"
+
+    # 5️⃣ PAYSTACK (ALWAYS NGN)
+    paystack_amount = int(grand_total_ngn * 100)
+
+    return render(request, "cart.html", {
+        "cart_items": cart_items,
+
+        # NGN (truth)
+        "total_ngn": total_ngn,
+        "shipping_ngn": shipping_cost_ngn,
+        "grand_total_ngn": grand_total_ngn,
+
+        # FX (display)
+        "total_fx": total_fx,
+        "shipping_fx": shipping_fx,
+        "grand_total_fx": grand_total_fx,
+
+        "currency": active_currency,
+        "shipping_label": shipping_label,
+        "counter": counter,
+
+        "pypaystack_total": paystack_amount,
+        "data_key": settings.PAYSTACK_PUBLIC_KEY,
+    })
+
+
+
+# def order_detail(request, order_id):
+#     order = Order.objects.get(id=order_id)
+#     order_items = OrderItem.objects.filter(order=order)
+
+#     active_currency = request.session.get("currency", order.currency or "NGN")
+#     print('active_currency:',active_currency )
+#     exchange_rate = Decimal("1.0")
+
+#     if active_currency != "NGN":
+#         rate = ExchangeRate.objects.filter(
+#             base="NGN",
+#             target=active_currency
+#         ).first()
+
+#         if rate:
+#             exchange_rate = Decimal(str(rate.rate))
+
+#     total_converted = order.total * exchange_rate
+#     print(' total_converted:', total_converted )
+#     shipping_converted = Decimal(str(order.shipping_cost)) * exchange_rate
+#     print('shipping_converted:', shipping_converted )
+#     grand_total_converted = order.grand_total * exchange_rate
+#     print('grand_total_converted:',grand_total_converted )
+
+#     context = {
+#         "edss": order,
+#         "order_items": order_items,
+#         "currency": active_currency,
+#         "total_converted": total_converted,
+#         "shipping_converted": shipping_converted,
+#         "grand_total_converted": grand_total_converted,
+#     }
+
+#     return render(request, "order_detail.html", context)
+
+
 
 
 
@@ -467,7 +611,46 @@ def viewOrder(request, order_id):
         email = str(request.user.email)
         order = Order.objects.get(id=order_id, emailAddress=email)
         order_items = OrderItem.objects.filter(order=order)
-    return render(request, 'order_detail.html', {'order_items': order_items})
+
+
+
+    
+        order = Order.objects.get(id=order_id)
+        order_items = OrderItem.objects.filter(order=order)
+
+        active_currency = request.session.get("currency", order.currency or "NGN")
+        print('active_currency:',active_currency )
+        # exchange_rate = Decimal("1.0")
+
+        # if active_currency != "NGN":
+        #     rate = ExchangeRate.objects.filter(
+        #         base="NGN",
+        #         target=active_currency
+        #     ).first()
+
+        #     if rate:
+        #         exchange_rate = Decimal(str(rate.rate))
+
+        # order_total = order.total 
+        
+        # print(' order_total:', order.total )
+        # shipping_converted = Decimal(str(order.shipping_cost)) * exchange_rate
+        # print('shipping_converted:', shipping_converted )
+        # grand_total_converted = order.grand_total * int(exchange_rate)
+        # print('grand_total_converted:',grand_total_converted )
+
+        context = {
+            "edss": order,
+            "order_items": order_items,
+            "currency": active_currency,
+            # "order_total": order_total,
+            # "total_converted": total_converted,
+            # "shipping_converted": shipping_converted,
+            # "grand_total_converted": grand_total_converted,
+        }
+
+    return render(request, "order_detail.html", context)
+    # return render(request, 'order_detail.html', {'order_items': order_items})
 
 
 def search(request):

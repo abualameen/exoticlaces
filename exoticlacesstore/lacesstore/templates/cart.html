@@ -58,16 +58,28 @@ Cart
                 </td>
 
                 <!-- Quantity and Unit Price -->
-                <td class="text-left">
+                <!-- <td class="text-left">
                     Qty: {{ cart_item.quantity }} x ₦{{ cart_item.product.price|floatformat:2 }}
                     <br>
                     Unit Price: ₦{{ cart_item.product.price|floatformat:2 }}
-                </td>
+                </td> -->
+                <td class="text-left">
+                    {% load currency_filters %}
+                    Qty: {{ cart_item.quantity }} x {{ cart_item.product.price|money:ACTIVE_CURRENCY }}
+                    <br>
+                    Unit Price: {{ cart_item.product.price|money:ACTIVE_CURRENCY }}
+                </td> 
+
 
                 <!-- Subtotal -->
-                <td>
+                <!-- <td>
                     ₦{{ cart_item.sub_total|floatformat:2 }}
+                </td> -->
+                <td>
+                    {{ cart_item.sub_total|money:ACTIVE_CURRENCY }}
+
                 </td>
+
 
                 <!-- Action Buttons: +, -, Delete -->
                 <td>
@@ -134,137 +146,239 @@ Cart
                     </td>
                 </tr>
                 <tr>
+                    <!-- <td class="text-left">
+                        Your total is: <strong>{{total}}</strong>    
+                    </td> -->
+                   
                     <td class="text-left">
-                        Your total is: <strong>{{total}}</strong>
-                      
+                 
+                         {% if currency == "NGN" %}
+                           Your total is: <strong>{{ total_ngn|money:"NGN" }}</strong>   
+                        {% else %}
+                          
 
-                        
+                            Your total is: <strong>{{ total_ngn|money:currency }}</strong> 
+                        {% endif %}
+
+
                     </td>
+
+
                 </tr>
              
                 <tr>
                     <td>Shipping</td>
-                    <td id="shipping_label_ui">—</td>
-                    <td id="shipping_cost_ui">₦0</td>
+                    <td id="shipping_label_ui"></td>
+                    <td>
+                        <span id="shipping_costng_ui" style="display:none"></span>
+                        <span id="shipping_costfx_ui" style="display:none"></span>
+                    </td>
                 </tr>
 
                 <tr>
                     <td><strong>Grand Total</strong></td>
-                    <td colspan="2"><strong id="grand_total_ui">₦{{ total }}</strong></td>
+                    <td></td>
+                    <td>
+                        <strong id="grand_totalng_ui" style="display:none"></strong>
+                        <strong id="grand_totalfx_ui" style="display:none"></strong>
+                    </td>
                 </tr>
 
 
             </tbody>
         </table>
         <div class="mx-auto">
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" id="email-address" class="form-control" required />
-            </div>
 
-            <div class="form-group">
-                <label>Select Currency</label>
-                <select id="currency" class="form-control">
-                    <option value="NGN">₦ Naira (NGN)</option>
-                    <option value="GHS">₵ Cedis (GHS)</option>
-                    <option value="USD">$ Dollar (USD)</option>
-                    <option value="XOF">CFA Franc (XOF)</option>
-                </select>
-            </div>
-        
-            <div class="form-group">
-                <label>Phone Number</label>
-                <input type="tel" id="phone-number" class="form-control" required />
-            </div>
+    <div class="mb-3">
+        <input type="email" id="email-address" class="form-control"
+               placeholder="Email Address" required
+               aria-label="Email Address">
+    </div>
 
-            <div class="form-group">
-                <label>First Name</label>
-                <input type="text" id="first-name" class="form-control" required />
-            </div>
+    <div class="mb-3">
+        <input type="tel" id="phone-number" class="form-control"
+               placeholder="Phone Number" required
+               aria-label="Phone Number">
+    </div>
 
-            <div class="form-group">
-                <label>Last Name</label>
-                <input type="text" id="last-name" class="form-control" required />
-            </div>
+    <div class="mb-3">
+        <input type="text" id="first-name" class="form-control"
+               placeholder="First Name" required
+               aria-label="First Name">
+    </div>
 
-            <div class="form-group">
-                <label>Country</label>
-                <input type="text" id="country" class="form-control" required />
-            </div>
+    <div class="mb-3">
+        <input type="text" id="last-name" class="form-control"
+               placeholder="Last Name" required
+               aria-label="Last Name">
+    </div>
 
-            <div class="form-group">
-                <label>State</label>
-                <input type="text" id="state" class="form-control" required />
-            </div>
-          
+    <div class="mb-3">
+        <select id="country" class="form-control" required
+                aria-label="Country">
+            <option value="">Country</option>
 
-          
-                <select id="shipping_method" onchange="applyShipping()">
-                    <option value="">Select shipping</option>
-                    <option value="seller">Seller Shipping</option>
-                    <option value="dhl">DHL Express</option>
-                </select>
+            <option value="NG">Nigeria</option>
+            <option value="US">United States</option>
+            <option value="GB">United Kingdom</option>
+            <option value="AT">Austria</option>
+            <option value="AU">Australia</option>
+            <option value="CA">Canada</option>
+            <option value="GH">Ghana</option>
 
-                
+            <!-- CFA West -->
+            <option value="BJ">Benin</option>
+            <option value="BF">Burkina Faso</option>
+            <option value="CI">Côte d’Ivoire</option>
+            <option value="GW">Guinea-Bissau</option>
+            <option value="ML">Mali</option>
+            <option value="NE">Niger</option>
+            <option value="SN">Senegal</option>
+            <option value="TG">Togo</option>
+
+            <!-- CFA Central -->
+            <option value="CM">Cameroon</option>
+            <option value="CF">Central African Republic</option>
+            <option value="TD">Chad</option>
+            <option value="CG">Republic of the Congo</option>
+            <option value="GQ">Equatorial Guinea</option>
+            <option value="GA">Gabon</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <input type="text" id="state" class="form-control"
+               placeholder="State" required
+               aria-label="State">
+    </div>
+
+    <div class="mb-3">
+        <select id="shipping_method" class="form-control"
+                onchange="applyShipping()"
+                aria-label="Shipping Method">
+            <option value="">Shipping Method</option>
+            <option value="seller">Seller Shipping</option>
+            <option value="dhl">DHL Express</option>
+        </select>
+    </div>
+
+</div>
+
+
+
+
                 <script>
-                function applyShipping(){
-                    const method = document.getElementById("shipping_method").value;
-                    const country = document.getElementById("country").value;
-                    const state = document.getElementById("state").value;
+                    function requiredShippingFieldsFilled() {
+                        const country = document.getElementById("country").value;
+                        const state = document.getElementById("state").value.trim();
+                        const email = document.getElementById("email-address").value.trim();
+                        const phone = document.getElementById("phone-number").value.trim();
+                        
 
-                    if(!method){
-                        alert("Select shipping method");
+                        return country && state && email && phone;
+                    }
+                </script>
+                
+               
+                <script>
+                    function applyShipping(){
+
+                        if (!requiredShippingFieldsFilled()) {
+                        alert(
+                            "Please fill in your contact details and delivery address before selecting a shipping method."
+                        );
+
+                        // Reset shipping selection
+                        document.getElementById("shipping_method").value = "";
                         return;
                     }
 
-                    fetch("/shipping/set-shipping/", {
-                        method:"POST",
-                        headers: {
-                            "Content-Type":"application/json",
-                            "X-CSRFToken": "{{ csrf_token }}"
-                        },
-                        body: JSON.stringify({
-                            method: method,
-                            country: country,
-                            state: state
+                        const method = document.getElementById("shipping_method").value;
+                        const country = document.getElementById("country").value;
+                        const state = document.getElementById("state").value;
+
+
+                        fetch("/shipping/set-shipping/", {
+                            method:"POST",
+                            headers: {
+                                "Content-Type":"application/json",
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            },
+                            body: JSON.stringify({ method, country, state })
                         })
-                    })
-                    .then(res=>res.json())
-                    .then(data=>{
+                        .then(res => res.json())
+                        .then(data => {
 
-                        if(!data.shipping){
-                            alert("Shipping error");
-                            return;
-                        }
+                            const currency = "{{ ACTIVE_CURRENCY }}";
 
-                        const shipping = parseFloat(data.shipping.amount);
+                            const shippingNGN = parseFloat(data.shipping.amount_ngn);
+                            const shippingFX  = parseFloat(data.shipping.amount_fx);
 
-                        // ✅ Live UI update
-                        document.getElementById("shipping_cost_ui").innerText = "₦" + shipping.toLocaleString();
-                        document.getElementById("shipping_label_ui").innerText = data.shipping.label;
+                            const cartTotalNGN = parseFloat("{{ total_ngn }}");
+                            const cartTotalFX  = parseFloat("{{ total_fx }}");
 
-                        const cartTotal = parseFloat("{{ total }}");
-                        const grandTotal = cartTotal + shipping;
+                            const grandTotalNGN = cartTotalNGN + shippingNGN;
+                            const grandTotalFX  = cartTotalFX  + shippingFX;
 
-                        document.getElementById("grand_total_ui").innerText = "₦" + grandTotal.toLocaleString();
+                            console.log({
+                            cartTotalNGN,
+                            shippingNGN,
+                            grandTotalNGN,
+                            cartTotalFX,
+                            shippingFX,
+                            grandTotalFX
+                            });
 
-                        // ✅ Enable payment
-                        document.getElementById("payBtn").disabled = false;
-                        document.getElementById("payBtn").classList.remove("btn-secondary");
-                        document.getElementById("payBtn").classList.add("btn-success");
-                    })
-                }
-                </script>
+                            function format(amount){
+                                if(currency === "NGN") return "₦" + amount.toLocaleString();
+                                if(currency === "GHS") return "₵" + amount.toLocaleString();
+                                if(currency === "USD") return "$" + amount.toLocaleString();
+                                if(currency === "XOF") return "CFA " + amount.toLocaleString();
+                                return amount.toLocaleString();
+                            }
+                            if(currency === "NGN"){
+                                document.getElementById("shipping_costng_ui").style.display = "inline";
+                                document.getElementById("grand_totalng_ui").style.display = "inline";
+
+                                document.getElementById("shipping_costfx_ui").style.display = "none";
+                                document.getElementById("grand_totalfx_ui").style.display = "none";
+
+                                document.getElementById("shipping_costng_ui").innerText = format(shippingNGN);
+                                document.getElementById("grand_totalng_ui").innerText = format(grandTotalNGN);
+                            } else {
+                                document.getElementById("shipping_costfx_ui").style.display = "inline";
+                                document.getElementById("grand_totalfx_ui").style.display = "inline";
+
+                                document.getElementById("shipping_costng_ui").style.display = "none";
+                                document.getElementById("grand_totalng_ui").style.display = "none";
+
+                                document.getElementById("shipping_costfx_ui").innerText = format(shippingFX);
+                                document.getElementById("grand_totalfx_ui").innerText = format(grandTotalFX);
+}
+
+                            document.getElementById("shipping_label_ui").innerText = data.shipping.label;
+
+
+
+
+                            document.getElementById("payBtn").disabled = false;
+                            document.getElementById("payBtn").classList.remove("btn-secondary");
+                            document.getElementById("payBtn").classList.add("btn-success");
+                        });
+
+                    }
+
+                    
+
+                    </script>
+                    
 
 
 
 
 
-        
 
-            <!-- <button id="payBtn" class="btn btn-lg btn-block btn-secondary">
-                Pay Securely with Paystack
-            </button> -->
+    
             <button id="payBtn" class="btn btn-lg btn-block btn-secondary" disabled>
                 Pay Securely with Paystack
             </button>
@@ -276,75 +390,11 @@ Cart
                     Continue Shopping
             </a>
 
-            <!-- <script src="https://js.paystack.co/v1/inline.js"></script>
-            <script>
-            document.getElementById("payBtn").addEventListener("click", function(){
-
-                let email = document.getElementById("email-address").value;
-                let currency = document.getElementById("currency").value;
-                // let amount = "{{ pypaystack_total }}";  // total in kobo
-                let phonenumber =  document.getElementById("phone-number").value;
-                let firstName =  document.getElementById("first-name").value;
-                let lastName =  document.getElementById("last-name").value;
-                let country =  document.getElementById("country").value;
-                let state =  document.getElementById("state").value;
-
-                if(!email){
-                    alert("Please enter your email");
-                    return;
-                }
-
-                fetch("{% url 'init_payment' %}", {
-                    method: "POST",
-                    headers:{
-                        "X-CSRFToken": "{{ csrf_token }}",
-                        "Content-Type":"application/x-www-form-urlencoded"
-                    },
-                    body: new URLSearchParams({
-                        email: email,
-                        // amount: amount,
-                        currency: currency,
-                        country:country, 
-                        state: state, 
-                        firstName: firstName, 
-                        lastName: lastName,
-                        phonenumber: phonenumber,
-                        // ref: data.data.reference,
-                   
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if(!data.status){
-                        alert("Payment initialization failed");
-                        return;
-                    }
-
-                    let handler = PaystackPop.setup({
-                        key: "{{ data_key }}",
-                        email: email,
-                        amount: amount,
-                        currency: currency,
-                        ref: data.data.reference,   // ✅ FORCE SAME REF
-                        callback: function(response){
-                            window.location.href = "{% url 'verify_payment' %}?reference=" + response.reference;
-                        },
-                        onClose: function(){
-                            alert("Payment window closed");
-                        }
-                    });
-
-                    handler.openIframe();
-                });
-            });
-            </script> -->
-            <!-- <script src="https://js.paystack.co/v1/inline.js"></script> -->
-
             <script>
                 document.getElementById("payBtn").addEventListener("click", function(){
 
                     let email = document.getElementById("email-address").value;
-                    let currency = document.getElementById("currency").value;
+                    let currency = "{{ ACTIVE_CURRENCY }}";
                     let phonenumber = document.getElementById("phone-number").value;
                     let firstName = document.getElementById("first-name").value;
                     let lastName = document.getElementById("last-name").value;
@@ -364,7 +414,6 @@ Cart
                         },
                         body: new URLSearchParams({
                             email: email,
-                            currency: currency,
                             phonenumber: phonenumber,
                             firstName: firstName,
                             lastName: lastName,
@@ -384,6 +433,11 @@ Cart
                     });
                 });
                 </script>
+
+
+            
+
+
 
 
         </div>

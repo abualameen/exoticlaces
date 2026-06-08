@@ -153,7 +153,9 @@ def init_payment(request):
 
     # 🔹 Get user info
     email = request.POST.get('email')
+    print('this email:', email)
     currency = request.POST.get('currency', 'NGN')
+    print("this is currency0", currency)
 
     if not email:
         return JsonResponse({"status": False, "message": "Email required"}, status=400)
@@ -174,20 +176,25 @@ def init_payment(request):
 
     cart_total = Decimal('0.00')
     for item in cart_items:
-        cart_total += item.product.price * item.quantity
+        cart_total += Decimal(item.product.price * item.quantity)
 
-    shipping_cost = Decimal(shipping.get("amount", 0))
+    # shipping_cost = Decimal(shipping.get("amount", 0))
+    shipping_cost = Decimal(shipping.get("amount_ngn", 0))  # NGN
+
     grand_total = cart_total + shipping_cost
     amount_kobo = int(grand_total * Decimal('100'))  # convert to kobo
 
+
     # 🔹 DEBUG
     print("\n========== PAYSTACK INIT DEBUG ==========")
-    print("CART TOTAL:", cart_total)
-    print("SHIPPING COST:", shipping_cost)
-    print("GRAND TOTAL:", grand_total)
+    print("CART TOTAL (NGN):", cart_total)
+    print("SHIPPING COST (NGN):", shipping_cost)
+    print("GRAND TOTAL (NGN):", grand_total)
     print("PAYSTACK AMOUNT (KOBO):", amount_kobo)
+    print("ACTIVE CURRENCY (UI):", currency)
     print("SHIPPING METHOD:", shipping.get("method"))
     print("========================================\n")
+
 
     # 🔹 Init Paystack
     headers = {
@@ -285,6 +292,8 @@ def verify_payment(request):
 
     # Create Order
     shipping = request.session.get("shipping", {})
+    shipping_amount = shipping.get("amount_ngn", 0)
+    print("SESSION SHIPPING:", request.session.get("shipping"))
 
    
     order = Order.objects.create(
@@ -296,8 +305,9 @@ def verify_payment(request):
     state=state,
     phonenumber=phonenumber,
     shipping_method=shipping.get("method"),
-    shipping_cost=shipping.get("amount", 0),
-    grand_total=total + int(shipping.get("amount", 0)),
+    shipping_cost=shipping_amount,
+    grand_total=total + int(shipping_amount),
+    currency=request.session.get("currency", "NGN"),
     )
     
 
@@ -329,20 +339,6 @@ def verify_payment(request):
 ##################################################################################
 
 
-    # selected_method = request.session.get('shipping_method', 'seller')
-
-    # method_obj = ShippingMethod.objects.get(provider=selected_method)
-
-    # shipment_data = create_provider_shipment(selected_method, order)
-
-    # Shipment.objects.create(
-    #     order=order,
-    #     method=method_obj,
-    #     cost=Decimal(shipment_data.get('amount', 0)),
-    #     tracking_number=shipment_data.get('tracking_number'),
-    #     provider_response=shipment_data.get('raw'),
-    #     status="pending"
-    # )
 
 
     
@@ -369,14 +365,7 @@ def verify_payment(request):
     if "shipping" in request.session:
         del request.session["shipping"]
 
-    # Send Email receipt
-    # send_mail(
-    #     subject=f"Order #{order.id} Confirmation",
-    #     message=f"Thank you for your order. Your order ID is {order.id}. Total: {order.total} {transaction.currency}.",
-    #     from_email=settings.DEFAULT_FROM_EMAIL,
-    #     recipient_list=[transaction.email],
-    #     fail_silently=True
-    # )
+   
 
     return redirect('thanks_page', order_id=order.id)
 

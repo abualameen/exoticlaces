@@ -1,14 +1,5 @@
 from .registry import PROVIDERS
 
-# def get_shipping_rates(method, **kwargs):
-#     provider = PROVIDERS.get(method)
-#     if not provider:
-#         raise Exception("Invalid shipping provider")
-#     return provider.get_rate(**kwargs)
-
-# def create_provider_shipment(method, order):
-#     provider = PROVIDERS.get(method)
-#     return provider.create_shipment(order)
 
 
 def get_shipping_rates(provider, **kwargs):

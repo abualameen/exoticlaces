@@ -18,12 +18,30 @@ Order Details
         <table class="table table-bordered">
         <tr>
             <td class="text-left" colspan="2">
+                {% load currency_filters %}
                 <b>Order:</b> #{{ eds.id }} <br>
                 <b>Date: </b>{{eds.created|date:"d M Y"}} <br>
-                <b>Order Total:</b>N{{ eds.total }} <br>
+                <b>Order Total:</b> {{ eds.total |money:currency }} <br>
+                <b>Subtotal:</b>
+                {{ eds.total |money:currency }}
+                <small class="text-muted">₦{{ eds.total }}</small>
+                 <br>
                 <b>Order Status:</b><i class="fas fa-check"></i> Complete.
+
+
+
+
+                <!-- <td>{{ item.price|money:currency }}</td>
+<td>{{ item.sub_total|money:currency }}</td>
+
+<td>{{ eds.shipping_cost|money:currency }}</td>
+
+<td>{{ eds.total|money:currency }}</td>
+
+<td><b>{{ eds.grand_total|money:currency }}</b></td> -->
+               
             </td>
-            <td class="text-left" colspan="2">
+            <!-- <td class="text-left" colspan="2">
                 <b>Billing Address:</b><br>
                 {{ eds.firstName }} <br>
                 {{ eds.lastName }} <br>
@@ -31,6 +49,13 @@ Order Details
                 {{ eds.state }} <br>
                 {{ eds.phonenumber }} <br>
 
+            </td> -->
+            <td colspan="2">
+                    <b>Billing / Shipping Address:</b><br>
+                    {{ eds.firstName }} {{ eds.lastName }}<br>
+                    {{ eds.state }}, {{ eds.country }}<br>
+                    {{ eds.phonenumber }}<br>
+                    {{ eds.emailAddress }}
             </td>
         </tr>
         <tr>
@@ -43,27 +68,39 @@ Order Details
         <tr>
             <td>{{ item.product }}</td>
             <td>{{ item.quantity }}</td>
-            <td>N{{ item.price }}</td>
-            <td>N{{ item.sub_total}}</td>
+            <td>{{ item.price |money:currency }}</td>
+            <td>{{ item.sub_total |money:currency}}</td>
         </tr>
         {% endfor %}
+         <!-- SHIPPING -->
+            <tr>
+                <td colspan="3" class="text-right">
+                    <b>Shipping ({{ eds.shipping_method|title }})</b>
+                </td>
+                <td>{{ eds.shipping_cost |money:currency }}</td>
+            </tr>
         <tr>
             <td class="text-right" colspan="3"><b>Total</b></td>
-            <td>N{{ eds.total }}</td>
+            <td>{{ eds.total |money:currency }}</td>
         </tr>
+          
+
+            <!-- GRAND TOTAL -->
+            <tr>
+                <td colspan="3" class="text-right"><b>Grand Total</b></td>
+                <td><b>{{ eds.grand_total |money:currency }}</b></td>
+            </tr>
         <tr>
             <td class="text-right" colspan="3"><b>Total Paid</b></td>
-            <td>N{{ eds.total }}</td>
+            <td><b>{{ eds.grand_total |money:currency }}</b></td>
         </tr>
         <tr>
             <td class="text-left" colspan="2">
-                <b>Shipping Address:</b><br>
-                <b>Billing Address:</b><br>
-                {{eds.firstName}} <br>
-                {{ eds.lastName }} <br>
-                {{ eds.country }} <br>
-                {{ eds.state }} <br>
-                {{ eds.phonenumber}} <br>
+                <b>Billing / Shipping Address:</b><br>
+                {{ eds.firstName }} {{ eds.lastName }}<br>
+                {{ eds.state }}, {{ eds.country }}<br>
+                {{ eds.phonenumber }}<br>
+                {{ eds.emailAddress }}
 
             </td>
             <td class="text-left" colspan="2">

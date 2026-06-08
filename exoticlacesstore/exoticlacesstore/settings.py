@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'lacesstore',
     'payments',
     'shipping',
+    'currency',
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -77,6 +78,7 @@ TEMPLATES = [
                 'lacesstore.context_processors.menu_links',
                 'lacesstore.context_processors.counter',
                 'lacesstore.context_processors.orderid',
+                'currency.context_processors.currency_context',
 
                
 
@@ -178,5 +180,11 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEFAULT_CURRENCY = "NGN"
-SUPPORTED_CURRENCIES = ["NGN", "GHS", "XOF", "USD"]
+SUPPORTED_CURRENCIES = ["NGN", "GHS", "XOF", "USD", "EUR"]
+
+
+
+
+EXCHANGE_RATE_API_KEY = os.getenv("EXCHANGE_RATE_API_KEY")
+
 

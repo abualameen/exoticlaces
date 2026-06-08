@@ -2,12 +2,14 @@ from django.db import models
 from django.conf import settings
 from decimal import Decimal
 
+
 class Transaction(models.Model):
     CURRENCY_CHOICES = [
         ('NGN', 'Naira'),
         ('USD', 'US Dollar'),
         ('GHS', 'Cedi'),
         ('XOF', 'CFA'),
+        ('EUR', 'EURO')
     ]
 
     reference = models.CharField(max_length=100, unique=True)
@@ -21,3 +23,20 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"{self.reference} - {self.status}"
+
+
+
+
+
+class ExchangeRate(models.Model):
+    base = models.CharField(max_length=10, default="NGN")
+    target = models.CharField(max_length=10)
+    rate = models.FloatField()
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ("base", "target")
+
+    def __str__(self):
+        return f"{self.base} → {self.target}: {self.rate}"
+

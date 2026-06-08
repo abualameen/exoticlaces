@@ -137,6 +137,8 @@ class Order(models.Model):
     shipping_method = models.CharField(max_length=50, null=True, blank=True)
     shipping_cost = models.FloatField(default=0)
     grand_total = models.FloatField(default=0)
+    currency = models.CharField(max_length=15, default='NGN')
+
     # billingName = models.CharField(max_length=250, blank=True)
     # billingAddress1 = models.CharField(max_length=250, blank=True)
     # billingCity = models.CharField(max_length=250, blank=True)
