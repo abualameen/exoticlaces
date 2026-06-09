@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'shipping',
     'currency',
     'crispy_forms',
+    'crispy_bootstrap4',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -145,12 +146,21 @@ SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_REQUIRED = True
 
+
+# Add these new lines to redirect allauth to your custom pages
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_LOGIN_URL = '/account/signin/'
+LOGIN_URL = '/account/signin/'
+ACCOUNT_SIGNUP_REDIRECT_URL = '/account/create/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'exoticlacesandmore@gmail.com'
-EMAIL_HOST_PASSWORD = 'rqoepxlpoahtnurg'
+EMAIL_HOST_PASSWORD = 'ztfkhylfehqeedmt'
 EMAIL_FROM = 'exoticlacesandmore@gmail.com'
 
 LOGIN_REDIRECT_URL = '/'
@@ -172,6 +182,7 @@ PAYSTACK_BASE_URL = "https://api.paystack.co"
 PAYSTACK_SUPPORTED_CURRENCIES = ["NGN", "GHS", "USD", "XOF"]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 
 # Default primary key field type

@@ -15,6 +15,7 @@ from django.http import JsonResponse
 import json
 from django.contrib.auth.models import Group, User
 from allauth.account.utils import send_email_confirmation
+from django.contrib import messages
 from .forms import SignUpForm
 from django.template import RequestContext
 from django.contrib.auth.forms import AuthenticationForm
@@ -557,7 +558,7 @@ def signupView(request):
                 # messages.error(request, 'An account with this email already exists.')
             
             user = form.save(commit=False)
-            user.is_active = False  # Deactivate account until email confirmation
+            #user.is_active = False  # Deactivate account until email confirmation
             user.save()
             #form.save()
             username = form.cleaned_data.get('username')
@@ -566,6 +567,7 @@ def signupView(request):
             customer_group.user_set.add(signup_user)
 
             send_email_confirmation(request, user)  # Send confirmation email
+            request.session['confirmation_email'] = email
             return redirect('email_confirmation')  # Redirect to a page indicating that email verification is sent
     else:
         form = SignUpForm()
@@ -573,23 +575,65 @@ def signupView(request):
         # return render(request, 'signup.html',
         #    context_instance=RequestContext(request))
 
+# def email_confirmation(request):
+#     return render(request, 'account/email_confirmation.html')
+
 def email_confirmation(request):
-    return render(request, 'account/email_confirmation.html')
+    # Get email from session (set in signupView)
+    email = request.session.get('confirmation_email', '')
+    return render(request, 'account/email_confirm.html', {'email': email})
+
+
+
+
+
+# def signinView(request):
+#     if request.method == 'POST':
+#         form = AuthenticationForm(data=request.POST)
+#         if form.is_valid():
+#             username = request.POST['username']
+#             password = request.POST['password']
+#             user = authenticate(username=username, password=password)
+#             if user is not None:
+#                 login(request,user)
+#                 return redirect('home')
+#             else:
+#                 return redirect('signup')
+#     else:
+#         form = AuthenticationForm()
+#     return render(request, 'signin.html', {'form': form})
 
 def signinView(request):
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
+        print("=" * 50)
+        print("POST data received:", request.POST)
+        form = AuthenticationForm(request, data=request.POST)
+        
         if form.is_valid():
-            username = request.POST['username']
-            password = request.POST['password']
+            print("Form is valid")
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            print(f"Username: {username}")
+            print(f"Password provided: {'*' * len(password) if password else 'None'}")
+            
             user = authenticate(username=username, password=password)
             if user is not None:
-                login(request,user)
+                print(f"User authenticated: {user.username}")
+                login(request, user)
+                print("User logged in, redirecting to home")
+                messages.success(request, f"Welcome back, {username}!")
                 return redirect('home')
             else:
-                return redirect('signup')
+                print("Authentication failed - user is None")
+                messages.error(request, "Invalid username or password.")
+        else:
+            print("Form is invalid")
+            print("Form errors:", form.errors)
+            messages.error(request, "Invalid username or password.")
     else:
         form = AuthenticationForm()
+    
+    print("Rendering login page again")
     return render(request, 'signin.html', {'form': form})
 
 
