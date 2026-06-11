@@ -155,13 +155,21 @@ LOGIN_URL = '/account/signin/'
 ACCOUNT_SIGNUP_REDIRECT_URL = '/account/create/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
+
+
+
+# settings.py - Try port 465 instead
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'exoticlacesandmore@gmail.com'
-EMAIL_HOST_PASSWORD = 'ztfkhylfehqeedmt'
-EMAIL_FROM = 'exoticlacesandmore@gmail.com'
+EMAIL_HOST = 'smtp.resend.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True  # Change from TLS to SSL
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = 'resend'
+EMAIL_HOST_PASSWORD = "REPLACED_KEY"          #os.environ.get("RESEND_API_KEY")
+DEFAULT_FROM_EMAIL = 'noreply@mail.exoticlaces.com'
+
+
+
 
 LOGIN_REDIRECT_URL = '/'
 

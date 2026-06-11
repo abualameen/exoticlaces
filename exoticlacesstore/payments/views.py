@@ -12,7 +12,8 @@ from django.urls import reverse
 import uuid
 
 from django.core.mail import send_mail
-
+# In payments/views.py
+from lacesstore.views import sendEmail
 from shipping.engine import create_provider_shipment
 from shipping.models import Shipment, ShippingMethod
 
@@ -160,15 +161,36 @@ def init_payment(request):
     if not email:
         return JsonResponse({"status": False, "message": "Email required"}, status=400)
 
-    # 🔹 Save checkout form to session
-    request.session['checkout_data'] = {
-        'email': request.POST.get('email'),
+    # # 🔹 Save checkout form to session
+    # request.session['checkout_data'] = {
+    #     'email': request.POST.get('email'),
+    #     'phonenumber': request.POST.get('phonenumber'),
+    #     'firstName': request.POST.get('firstName'),
+    #     'lastName': request.POST.get('lastName'),
+    #     'country': request.POST.get('country'),
+    #     'state': request.POST.get('state'),
+    # }
+
+
+    
+    checkout_data = {
         'phonenumber': request.POST.get('phonenumber'),
         'firstName': request.POST.get('firstName'),
         'lastName': request.POST.get('lastName'),
         'country': request.POST.get('country'),
         'state': request.POST.get('state'),
     }
+    
+    # Force use of logged-in user's email
+    if request.user.is_authenticated:
+        checkout_data['email'] = request.user.email
+        print(f"Using authenticated user email: {request.user.email}")
+    else:
+        checkout_data['email'] = request.POST.get('email')
+    
+    request.session['checkout_data'] = checkout_data
+
+    
 
     # 🔹 Calculate totals SERVER-SIDE
     cart = Cart.objects.get(cart_id=_cart_id(request))
@@ -247,6 +269,7 @@ def init_payment(request):
 def verify_payment(request):
 
     checkout_data = request.session.get('checkout_data', {})
+    
 
     email = checkout_data.get('email')
     phonenumber = checkout_data.get('phonenumber')
@@ -310,7 +333,16 @@ def verify_payment(request):
     currency=request.session.get("currency", "NGN"),
     )
     
+    # After successful order creation
+    
+    # try:
+    #     email_sent = sendEmail(order.id)
 
+    #     print("Customer notified via email")
+    # except IOError as e:
+    #     return e
+
+        
 
 
     # Save order items & reduce stock
@@ -334,7 +366,13 @@ def verify_payment(request):
         item.delete()
 
    ###########################################################################
-
+    
+    #After successful order creation
+    email_sent = sendEmail(request, order.id)
+    if email_sent:
+        print("Customer notified via email")
+    else:
+        print("Failed to send email notification")
     
 ##################################################################################
 

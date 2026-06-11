@@ -190,9 +190,20 @@ Cart
         <div class="mx-auto">
 
     <div class="mb-3">
-        <input type="email" id="email-address" class="form-control"
-               placeholder="Email Address" required
-               aria-label="Email Address">
+
+        {% if user.is_authenticated %}
+      
+            <input type="email" id="email-address" name="email" 
+                value="{{ user.email }}" readonly 
+                class="form-control bg-light" 
+                aria-label="Email Address"
+                style="background-color: #e9ecef; opacity: 1;">
+        {% else %}
+        
+            <input type="email" id="email-address" class="form-control"
+                placeholder="Email Address" required
+                aria-label="Email Address">
+         {% endif %}
     </div>
 
     <div class="mb-3">

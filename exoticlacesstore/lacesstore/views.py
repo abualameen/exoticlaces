@@ -24,6 +24,9 @@ from django.contrib.auth.decorators import login_required
 from decimal import Decimal  # add at the top of your views.py
 from payments.services.exchange import get_exchange_rate
 
+from django.template.loader import get_template
+from django.core.mail import EmailMessage
+
 from decimal import Decimal
 from django.shortcuts import render
 from django.conf import settings
@@ -646,7 +649,11 @@ def signoutView(request):
 def orderHistory(request):
     if request.user.is_authenticated:
         email = str(request.user.email)
+        print(f"User email: {email}")
         order_details = Order.objects.filter(emailAddress=email)
+        print(f"Orders found: {order_details.count()}")
+        for order in order_details:
+            print(f"Order ID: {order.id}, Email: {order.emailAddress}")
     return render(request, 'orders_list.html', {'order_details': order_details})
 
 @login_required(redirect_field_name='next', login_url='signin')
@@ -697,6 +704,61 @@ def viewOrder(request, order_id):
     # return render(request, 'order_detail.html', {'order_items': order_items})
 
 
+# def search(request):
+#     products = Product.objects.filter(name__contains=request.GET['title'])
+#     return render(request, 'home.html', {'products': products})
+
+
 def search(request):
     products = Product.objects.filter(name__contains=request.GET['title'])
-    return render(request, 'home.html', {'products': products})
+    
+    # Get currency from session or default
+    currency = request.session.get('currency', 'NGN')
+    
+    # Add any other context processors you need
+    context = {
+        'products': products,
+        'currency': currency,
+    }
+    
+    return render(request, 'home.html', context)
+
+
+
+from django.core.mail import EmailMessage
+from django.template.loader import get_template
+from django.core.mail import get_connection
+
+def sendEmail(request, order_id):
+    transaction = Order.objects.get(id=order_id)
+    order_items = OrderItem.objects.filter(order=transaction)
+    print('orderitem:', order_items)
+    print('transaction:', transaction)
+    
+    try:
+        subject = f"Exotic Laces - New Order #{transaction.id}"
+        to = [transaction.emailAddress]  # Simplified
+        from_email = settings.DEFAULT_FROM_EMAIL  # Fixed variable name
+
+        active_currency = request.session.get("currency", "NGN")
+        
+        order_information = {
+            'transaction': transaction,
+            'order_items': order_items,
+            'ACTIVE_CURRENCY': active_currency,
+        }
+        
+        message = get_template('email/email.html').render(order_information)
+        
+        msg = EmailMessage(subject, message, to=to, from_email=from_email)
+        msg.content_subtype = 'html'  # Fixed typo: 'subtype' not 'subttpe'
+        msg.send()
+
+        print(f"Order confirmation email sent for order {order_id}")
+        
+        return True  # Return success indicator
+        
+    except Exception as e:
+        # Log the error for debugging
+        print(f"Email sending failed for order {order_id}: {str(e)}")
+        return False  # Return failure indicator
