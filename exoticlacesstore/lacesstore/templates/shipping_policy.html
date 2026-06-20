@@ -1,0 +1,67 @@
+<!-- lacesstore/templates/shipping_policy.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shipping Policy{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Shipping Policy</h1>
+            <p class="text-muted text-center">Last Updated: {% now "F j, Y" %}</p>
+            <hr>
+
+            <h4>1. Order Processing</h4>
+            <p>Orders are typically processed within 1–3 business days after payment confirmation. Orders placed on weekends or public holidays may be processed on the next business day. Processing time does not include shipping transit time.</p>
+
+            <h4>2. Shipping Methods</h4>
+            <p>We may offer one or more of the following shipping options:</p>
+            <ul>
+                <li>Seller Shipping</li>
+                <li>DHL Express</li>
+                <li>Other courier partners as available</li>
+            </ul>
+            <p>Available shipping methods and charges are displayed during checkout.</p>
+
+            <h4>3. Domestic Shipping (Nigeria)</h4>
+            <p>Delivery times within Nigeria typically range between 2–7 business days depending on destination and courier availability.</p>
+
+            <h4>4. International Shipping</h4>
+            <p>International delivery times vary by destination country:</p>
+            <ul>
+                <li>West Africa: 5–14 business days</li>
+                <li>Europe: 5–15 business days</li>
+                <li>North America: 7–20 business days</li>
+                <li>Other regions: 7–25 business days</li>
+            </ul>
+            <p>Actual delivery times may vary.</p>
+
+            <h4>5. Shipping Charges</h4>
+            <p>Shipping costs are calculated based on:</p>
+            <ul>
+                <li>Destination country</li>
+                <li>State or region</li>
+                <li>Weight and size of order</li>
+                <li>Selected shipping method</li>
+            </ul>
+            <p>Shipping fees are displayed before payment.</p>
+
+            <h4>6. Customs Duties and Import Taxes</h4>
+            <p>International customers may be responsible for customs duties, import taxes, and clearance fees. These charges are determined by local authorities and are not included in product prices unless explicitly stated.</p>
+
+            <h4>7. Tracking Orders</h4>
+            <p>Where available, tracking information will be provided after shipment. Customers can use the tracking number supplied to monitor shipment progress.</p>
+
+            <h4>8. Incorrect Shipping Information</h4>
+            <p>Customers are responsible for providing accurate shipping information. Exotic Laces Store is not responsible for delays or losses resulting from incorrect names, addresses, phone numbers, or delivery details.</p>
+
+            <h4>9. Lost or Delayed Packages</h4>
+            <p>If your shipment is delayed or appears lost, contact us immediately. We will assist in communicating with the shipping carrier. Investigation times depend on the carrier's policies.</p>
+
+            <hr>
+            <p class="text-muted text-center"><small>© {% now "Y" %} Exotic Laces. All rights reserved.</small></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -24,3 +24,24 @@ def menu_links(request):
 def orderid(request):
     eds = Order.objects.latest('id')
     return dict(eds=eds)
+
+
+
+
+# lacesstore/context_processors.py
+def social_links(request):
+    return {
+        'SOCIAL_LINKS': {
+            'facebook': 'https://www.facebook.com/profile.php?id=61573582768272&mibextid=ZbWKwL',
+            'instagram': 'https://www.instagram.com/exoticlaces_and_more?igsh=OGQ5ZDc2ODk2ZA==',
+            'youtube': 'https://www.youtube.com/channel/UCiET439BjAQNE00DstJWJcw?sub_confirmation=1',
+            'tiktok': 'https://www.tiktok.com/@exotic_laces_webstore?_r=1&_t=ZS-97LTPlLQI9n',
+            'whatsapp': 'https://wa.me/2347012162731',  # Replace with your WhatsApp number
+        }
+    }
+
+
+def facebook_pixel(request):
+    return {
+        'FACEBOOK_PIXEL_ID': '1333267468229990',  
+    }

@@ -53,3 +53,86 @@
     background-color: #0427f1 !important;
     margin-bottom: 5px;
 } */
+
+
+
+
+/* Trust Seals - Paystack Version */
+.trust-seals {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.trust-seals .payment-logos img {
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: grayscale(0);
+    opacity: 0.9;
+}
+
+.trust-seals .payment-logos img:hover {
+    transform: scale(1.15);
+    filter: grayscale(0);
+    opacity: 1;
+}
+
+.trust-seals .payment-icons i {
+    transition: transform 0.3s ease;
+    opacity: 0.9;
+}
+
+.trust-seals .payment-icons i:hover {
+    transform: scale(1.2);
+    opacity: 1;
+}
+
+.trust-seals .badge {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+}
+
+.trust-seals .badge i {
+    margin-right: 6px;
+}
+
+.trust-seals .badge-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.trust-seals .badge-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.trust-seals .badge-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.trust-seals .badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .trust-seals .payment-logos img {
+        width: 35px !important;
+    }
+    
+    .trust-seals .payment-icons i {
+        font-size: 2rem !important;
+    }
+    
+    .trust-seals .badge {
+        font-size: 0.65rem;
+        padding: 4px 10px;
+        margin-bottom: 4px;
+    }
+}

@@ -1,0 +1,171 @@
+<!-- lacesstore/templates/faq.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Frequently Asked Questions{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Frequently Asked Questions</h1>
+            <hr>
+
+            <div class="accordion" id="faqAccordion">
+                <div class="card">
+                    <div class="card-header" id="heading1">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse1">
+                                How many yards are included in one lace fabric purchase?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse1" class="collapse show" data-parent="#faqAccordion">
+                        <div class="card-body">
+                            Most lace fabrics sold by Exotic Laces Store are supplied in standard lengths as stated on the product page. Please review individual product descriptions for exact measurements.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" id="heading2">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse2">
+                                Do you ship internationally?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse2" class="collapse" data-parent="#faqAccordion">
+                        <div class="card-body">
+                            Yes. We ship to many countries worldwide using available shipping partners.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" id="heading3">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse3">
+                                How long does delivery take?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse3" class="collapse" data-parent="#faqAccordion">
+                        <div class="card-body">
+                            Delivery times depend on your location and shipping method. Typical estimates: Nigeria: 2–7 business days, International: 5–25 business days.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" id="heading4">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse4">
+                                Can I order wholesale quantities?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse4" class="collapse" data-parent="#faqAccordion">
+                        <div class="card-body">
+                            Yes. We welcome wholesale orders from retailers, fashion designers, boutique owners, event planners, and fabric resellers. Please contact us for bulk pricing.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" id="heading5">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse5">
+                                Are the product colors exactly the same as shown online?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse5" class="collapse" data-parent="#faqAccordion">
+                        <div class="card-body">
+                            We make every effort to display accurate colors. However, slight differences may occur due to screen settings, device displays, and photography lighting.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" id="heading6">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse6">
+                                Can I cancel my order?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse6" class="collapse" data-parent="#faqAccordion">
+                        <div class="card-body">
+                            Orders may be cancelled before shipment. Once an order has been shipped, cancellation may no longer be possible.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" id="heading7">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse7">
+                                What payment methods do you accept?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse7" class="collapse" data-parent="#faqAccordion">
+                        <div class="card-body">
+                            Available payment methods are displayed during checkout and may include debit cards, credit cards, bank transfers, and other supported payment options.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" id="heading8">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse8">
+                                Can I return a lace fabric?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse8" class="collapse" data-parent="#faqAccordion">
+                        <div class="card-body">
+                            Returns are subject to our Refund and Return Policy. Products must generally be unused and in original condition.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" id="heading9">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse9">
+                                How can I track my order?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse9" class="collapse" data-parent="#faqAccordion">
+                        <div class="card-body">
+                            Where tracking is available, a tracking number will be provided after shipment.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" id="heading10">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse10">
+                                How do I contact customer support?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse10" class="collapse" data-parent="#faqAccordion">
+                        <div class="card-body">
+                            You can contact us through the contact information provided on our website.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <p class="text-muted text-center"><small>© {% now "Y" %} Exotic Laces. All rights reserved.</small></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

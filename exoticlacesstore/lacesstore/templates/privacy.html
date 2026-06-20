@@ -1,0 +1,100 @@
+<!-- lacesstore/templates/privacy.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Privacy Policy{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Privacy Policy</h1>
+            <p class="text-muted text-center">Last Updated: {% now "F j, Y" %}</p>
+            <hr>
+
+            <h4>1. Information We Collect</h4>
+            <p><strong>Personal Information:</strong></p>
+            <ul>
+                <li>Name</li>
+                <li>Email address</li>
+                <li>Phone number</li>
+                <li>Country</li>
+                <li>State</li>
+                <li>Shipping information</li>
+            </ul>
+            <p><strong>Order Information:</strong></p>
+            <ul>
+                <li>Purchased products</li>
+                <li>Order history</li>
+                <li>Transaction references</li>
+            </ul>
+            <p><strong>Technical Information:</strong></p>
+            <ul>
+                <li>IP address</li>
+                <li>Browser type</li>
+                <li>Device information</li>
+                <li>Cookies</li>
+            </ul>
+
+            <h4>2. How We Use Your Information</h4>
+            <ul>
+                <li>Process orders</li>
+                <li>Deliver products</li>
+                <li>Provide customer support</li>
+                <li>Improve website functionality</li>
+                <li>Prevent fraud</li>
+                <li>Send order updates</li>
+            </ul>
+
+            <h4>3. Payment Information</h4>
+            <p>Payments are processed through secure third-party payment providers. Exotic Laces Store does not store:</p>
+            <ul>
+                <li>Card numbers</li>
+                <li>CVV codes</li>
+                <li>Banking credentials</li>
+            </ul>
+
+            <h4>4. Cookies</h4>
+            <p>Our website may use cookies to:</p>
+            <ul>
+                <li>Remember user preferences</li>
+                <li>Improve browsing experience</li>
+                <li>Analyze website traffic</li>
+            </ul>
+            <p>Users may disable cookies through their browser settings.</p>
+
+            <h4>5. Information Sharing</h4>
+            <p>We do not sell customer information. Information may be shared only with:</p>
+            <ul>
+                <li>Payment processors</li>
+                <li>Shipping carriers</li>
+                <li>Service providers necessary for order fulfillment</li>
+                <li>Government authorities when legally required</li>
+            </ul>
+
+            <h4>6. Data Security</h4>
+            <p>We implement reasonable security measures to protect customer information against unauthorized access, disclosure, or misuse.</p>
+
+            <h4>7. Customer Rights</h4>
+            <p>Customers may request:</p>
+            <ul>
+                <li>Access to their personal information</li>
+                <li>Correction of inaccurate information</li>
+                <li>Deletion of personal information where legally permissible</li>
+            </ul>
+
+            <h4>8. Retention of Data</h4>
+            <p>We retain information only as long as necessary for order fulfillment, legal compliance, and business operations.</p>
+
+            <h4>9. Policy Updates</h4>
+            <p>We may update this Privacy Policy periodically. Changes will be posted on this page with the revised effective date.</p>
+
+            <h4>10. Contact Us</h4>
+            <p>If you have questions regarding this Privacy Policy or your personal information, please contact Exotic Laces Store through the contact details provided on the website.</p>
+
+            <hr>
+            <p class="text-muted text-center"><small>© {% now "Y" %} Exotic Laces. All rights reserved.</small></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

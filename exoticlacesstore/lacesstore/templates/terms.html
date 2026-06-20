@@ -1,0 +1,79 @@
+<!-- lacesstore/templates/terms.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Terms and Conditions{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Terms and Conditions</h1>
+            <p class="text-muted text-center">Last Updated: {% now "F j, Y" %}</p>
+            <hr>
+
+            <h4>1. About Us</h4>
+            <p>Exotic Laces Store specializes in the retail and wholesale sale of lace fabrics and related textile products.</p>
+
+            <h4>2. Products</h4>
+            <p>We strive to display our products, colors, and descriptions as accurately as possible. However:</p>
+            <ul>
+                <li>Actual product colors may vary slightly due to monitor and device settings.</li>
+                <li>Product images are provided for illustration purposes and may differ slightly from the final product.</li>
+                <li>Availability of products is subject to stock levels.</li>
+            </ul>
+
+            <h4>3. Pricing</h4>
+            <ul>
+                <li>All prices displayed on the website are subject to change without prior notice.</li>
+                <li>Prices may be displayed in different currencies for customer convenience.</li>
+                <li>Payments are processed in accordance with the payment gateway requirements and applicable exchange rates.</li>
+            </ul>
+
+            <h4>4. Orders</h4>
+            <p>An order is considered confirmed only after successful payment. We reserve the right to:</p>
+            <ul>
+                <li>Cancel orders due to pricing errors.</li>
+                <li>Refuse suspicious or fraudulent transactions.</li>
+                <li>Limit quantities purchased by a customer.</li>
+            </ul>
+
+            <h4>5. Shipping</h4>
+            <p>Shipping costs are calculated separately and added during checkout. Delivery times are estimates and may vary due to:</p>
+            <ul>
+                <li>Customs clearance</li>
+                <li>Courier delays</li>
+                <li>Public holidays</li>
+                <li>Weather conditions</li>
+                <li>Other circumstances beyond our control</li>
+            </ul>
+
+            <h4>6. Customer Responsibilities</h4>
+            <p>Customers are responsible for providing accurate:</p>
+            <ul>
+                <li>Name</li>
+                <li>Phone number</li>
+                <li>Email address</li>
+                <li>Delivery address</li>
+                <li>Country and state information</li>
+            </ul>
+            <p>Incorrect information may result in delivery delays or failed deliveries.</p>
+
+            <h4>7. Intellectual Property</h4>
+            <p>All website content including images, product descriptions, logos, designs, and graphics are the property of Exotic Laces Store and may not be copied, reproduced, or used without permission.</p>
+
+            <h4>8. Limitation of Liability</h4>
+            <p>Exotic Laces Store shall not be liable for indirect, incidental, or consequential damages resulting from the use of our products or website.</p>
+
+            <h4>9. Changes to Terms</h4>
+            <p>We reserve the right to update these Terms and Conditions at any time. Continued use of the website constitutes acceptance of any changes.</p>
+
+            <h4>10. Contact Information</h4>
+            <p>For inquiries regarding these Terms and Conditions, please contact us through the contact information provided on our website.</p>
+
+            <hr>
+            <p class="text-muted text-center"><small>© {% now "Y" %} Exotic Laces. All rights reserved.</small></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

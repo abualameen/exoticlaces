@@ -39,23 +39,31 @@ Create a New Account
             
         </div>
     {% else %}
-        <div class="mx-auto">
-            <br>
-            <h1 class="product_title text-center">
-                Your account has been successfully created
-            </h1>
-            <br>
-            <div class="container">
-                <p>
-                    Dear Customer,
-                    <br>
-                    <br>
-                    Your account has been created and it is ready to use.
-                    <br>
-                    <a href="{% url 'home' %}">Continue shopping</a> and enjoy the variety of fabric products that we have at Exotic Laces.
-                </p>
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h4>Check Your Email</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                <i class="fas fa-envelope"></i>
+                                <strong>Confirmation email sent to {{ email }}!</strong>
+                            </div>
+                            <p>We've sent a confirmation link to your email address.</p>
+                            <p>Please check your inbox and click the link to activate your account.</p>
+                            <div class="alert alert-warning">
+                                <small>
+                                    <i class="fas fa-info-circle"></i>
+                                    Didn't receive the email? Check your spam folder.
+                                </small>
+                            </div>
+                            <a href="{% url 'home' %}" class="btn btn-primary">Continue Shopping</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-
         </div>
            
     {% endif %}

@@ -1,5 +1,80 @@
+
+{% load static %}
+
 <footer class="bg-dark text-white mt-5 p-5">
-    <div class="container">
-        <p class="laed text-center">Copyright &copy; 2023 Store</p>
+
+      <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'aboutPage' %}">About Us</a></li>
+                    <li><a href="{% url 'contactPage' %}">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Customer Service</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'terms' %}">Terms & Conditions</a></li>
+                    <li><a href="{% url 'privacy' %}">Privacy Policy</a></li>
+                    <li><a href="{% url 'refund' %}">Refund Policy</a></li>
+                    <li><a href="{% url 'shipping_policy' %}">Shipping Policy</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>More</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'faq' %}">FAQ</a></li>
+                    <li><a href="{% url 'wholesale_policy' %}">Wholesale Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- Social Media Column -->
+        <div class="col-md-4">
+            <h5>Connect with Us</h5>
+            <div class="social-icons">
+                <a href="{{ SOCIAL_LINKS.facebook }}" target="_blank" aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="{{ SOCIAL_LINKS.instagram }}" target="_blank" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+               
+                <a href="{{ SOCIAL_LINKS.youtube }}" target="_blank" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="{{ SOCIAL_LINKS.tiktok }}" target="_blank" aria-label="TikTok">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+                <a href="{{ SOCIAL_LINKS.whatsapp }}" target="_blank" aria-label="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+            <p class="text-muted mt-3">
+                <small>
+                    <i class="fas fa-envelope"></i> info@exoticlaces.com<br>
+                    <i class="fas fa-phone"></i> +234 701 216 2731, +234 738 329 792
+                </small>
+            </p>
+            <p class="text-muted mt-2">
+                <small>
+                    <i class="fas fa-comment"></i> 
+                    <a href="{{ SOCIAL_LINKS.whatsapp }}" target="_blank">Chat with us on WhatsApp</a>
+                </small>
+            </p>
+        </div>
     </div>
+
+
+
+
+        <hr>
+        <p class="text-center text-muted">
+            &copy; {% now "Y" %} Exotic Laces. All rights reserved.
+        </p>
+    </div>
+    <!-- <div class="container">
+        <p class="laed text-center">Copyright &copy; 2023 Store</p>
+    </div> -->
 </footer>

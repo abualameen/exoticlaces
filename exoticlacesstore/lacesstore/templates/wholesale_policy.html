@@ -1,0 +1,65 @@
+<!-- lacesstore/templates/wholesale_policy.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Wholesale Purchase Policy{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Wholesale Purchase Policy</h1>
+            <p class="text-muted text-center">Last Updated: {% now "F j, Y" %}</p>
+            <hr>
+
+            <h4>1. Wholesale Eligibility</h4>
+            <p>Wholesale purchases are available to:</p>
+            <ul>
+                <li>Fabric retailers</li>
+                <li>Boutique owners</li>
+                <li>Fashion designers</li>
+                <li>Tailoring businesses</li>
+                <li>Event planners</li>
+                <li>Resellers</li>
+            </ul>
+
+            <h4>2. Minimum Order Quantities</h4>
+            <p>Minimum order quantities may apply to selected products. Requirements may vary depending on product type, product availability, and manufacturer requirements.</p>
+
+            <h4>3. Wholesale Pricing</h4>
+            <p>Wholesale pricing is available for qualifying orders. Pricing may depend on quantity purchased, product category, and current market conditions. Please contact us for a custom quotation.</p>
+
+            <h4>4. Product Availability</h4>
+            <p>Wholesale orders are subject to stock availability. In some cases, products may need to be sourced directly from manufacturers. Additional lead times may apply.</p>
+
+            <h4>5. Payment Terms</h4>
+            <p>Wholesale orders typically require full payment before shipment. Alternative payment arrangements may be considered for approved business customers.</p>
+
+            <h4>6. Shipping</h4>
+            <p>Wholesale orders may be shipped through Seller Shipping, DHL Express, freight services, or other logistics partners. Shipping costs are calculated separately unless otherwise agreed.</p>
+
+            <h4>7. Returns and Refunds</h4>
+            <p>Wholesale purchases are generally non-refundable except where wrong products were supplied, products arrive damaged, or the error originates from Exotic Laces Store.</p>
+
+            <h4>8. Custom Orders</h4>
+            <p>Custom designs and special orders may require additional production time, advance deposits, and manufacturer approval. Custom orders may not be eligible for cancellation or refund after production begins.</p>
+
+            <h4>9. International Wholesale Orders</h4>
+            <p>International buyers are responsible for customs duties, import taxes, and regulatory compliance in their destination country.</p>
+
+            <h4>10. Contact for Wholesale Inquiries</h4>
+            <p>For wholesale quotations and partnership opportunities, please contact Exotic Laces Store with:</p>
+            <ul>
+                <li>Desired products</li>
+                <li>Required quantities</li>
+                <li>Destination country</li>
+                <li>Business information</li>
+            </ul>
+            <p>We will provide a customized quotation and shipping estimate.</p>
+
+            <hr>
+            <p class="text-muted text-center"><small>© {% now "Y" %} Exotic Laces. All rights reserved.</small></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,133 @@
+<!-- lacesstore/templates/admin/dashboard.html -->
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Dashboard - Exotic Laces{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="page-header">Visitor Dashboard</h1>
+    
+    <!-- Summary Cards -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Active Now</div>
+                <div class="card-body">
+                    <h1 class="card-title display-4">{{ active_visitors }}</h1>
+                    <p class="card-text">
+                        {{ active_users }} registered, {{ active_guests }} guests
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Today's Visitors</div>
+                <div class="card-body">
+                    <h1 class="card-title display-4">{{ today_visitors }}</h1>
+                    <p class="card-text">Unique visitors today</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Total Visitors</div>
+                <div class="card-body">
+                    <h1 class="card-title display-4">{{ total_visitors }}</h1>
+                    <p class="card-text">All time unique visitors</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-header">Today's Date</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ today }}</h5>
+                    <p class="card-text">Last 7 days stats below</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Last 7 Days Chart -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Visitors - Last 7 Days</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="visitorChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Visitors -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Recent Visitors</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Session</th>
+                                    <th>User</th>
+                                    <th>IP Address</th>
+                                    <th>Last Visit</th>
+                                    <th>Visit Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for visitor in recent_visitors %}
+                                <tr>
+                                    <td>{{ visitor.session_key|truncatechars:10 }}</td>
+                                    <td>{{ visitor.user|default:"Guest" }}</td>
+                                    <td>{{ visitor.ip_address }}</td>
+                                    <td>{{ visitor.last_visit|timesince }} ago</td>
+                                    <td>{{ visitor.visit_count }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Chart.js for visitor data
+    const ctx = document.getElementById('visitorChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{% for day in last_7_days %}'{{ day.date }}',{% endfor %}],
+            datasets: [{
+                label: 'Unique Visitors',
+                data: [{% for day in last_7_days %}{{ day.visitors }},{% endfor %}],
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

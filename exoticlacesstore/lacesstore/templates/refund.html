@@ -1,0 +1,74 @@
+<!-- lacesstore/templates/refund.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Refund and Return Policy{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Refund and Return Policy</h1>
+            <p class="text-muted text-center">Last Updated: {% now "F j, Y" %}</p>
+            <hr>
+
+            <h4>1. Returns</h4>
+            <p>You may request a return if:</p>
+            <ul>
+                <li>The wrong product was delivered.</li>
+                <li>The product arrived damaged.</li>
+                <li>The product received significantly differs from the product ordered.</li>
+            </ul>
+            <p>Return requests must be submitted within <strong>7 days</strong> of receiving the product.</p>
+
+            <h4>2. Conditions for Return</h4>
+            <p>Returned items must:</p>
+            <ul>
+                <li>Be unused.</li>
+                <li>Be in their original condition.</li>
+                <li>Include original packaging where applicable.</li>
+            </ul>
+            <p>We reserve the right to reject returns that do not meet these conditions.</p>
+
+            <h4>3. Non-Returnable Items</h4>
+            <p>The following items are generally non-returnable:</p>
+            <ul>
+                <li>Cut fabrics requested to custom measurements.</li>
+                <li>Clearance or discounted items.</li>
+                <li>Products damaged due to customer handling.</li>
+                <li>Customized or specially ordered products.</li>
+            </ul>
+
+            <h4>4. Refunds</h4>
+            <p>Once a returned item is received and inspected:</p>
+            <ul>
+                <li>Approved refunds will be processed to the original payment method.</li>
+                <li>Processing times may vary depending on banks and payment providers.</li>
+            </ul>
+
+            <h4>5. Shipping Costs</h4>
+            <p>Shipping fees are generally non-refundable except when:</p>
+            <ul>
+                <li>The wrong item was shipped.</li>
+                <li>The product arrived damaged.</li>
+                <li>The error originated from Exotic Laces Store.</li>
+            </ul>
+
+            <h4>6. Order Cancellation</h4>
+            <p>Orders may be cancelled before shipment. Once an order has been shipped, cancellation may not be possible.</p>
+
+            <h4>7. Contact for Returns</h4>
+            <p>To initiate a return or refund request, contact our customer support team with:</p>
+            <ul>
+                <li>Order number</li>
+                <li>Product details</li>
+                <li>Description of the issue</li>
+                <li>Photos (if applicable)</li>
+            </ul>
+
+            <hr>
+            <p class="text-muted text-center"><small>© {% now "Y" %} Exotic Laces. All rights reserved.</small></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

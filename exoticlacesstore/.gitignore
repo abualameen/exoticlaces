@@ -1,0 +1,40 @@
+# .gitignore
+
+# Python
+*.pyc
+__pycache__/
+*.log
+*.pot
+*.pyc
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Virtual Environment
+venv/
+env/
+minenv310/
+*.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Django
+staticfiles/
+media/
+db.sqlite3
+
+# Deployment
+*.pid
+*.lock
+.DS_Store
+
+# Secrets
+*_secret_key.txt
+*.pem

@@ -1,9 +1,7 @@
-
-
-
-
-
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Confirm Your Email{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
@@ -11,18 +9,24 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h4>Confirm Your Email</h4>
+                    <h4 class="mb-0">Confirm Your Email Address</h4>
                 </div>
                 <div class="card-body">
                     {% if confirmation %}
-                        <p>Please confirm that <strong>{{ confirmation.email_address.email }}</strong> is your email address.</p>
+                        <p class="mb-3">Please confirm that <strong>{{ confirmation.email_address.email }}</strong> is your email address.</p>
                         
                         <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-primary">Confirm</button>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-check-circle"></i> Confirm Email
+                            </button>
                         </form>
                     {% else %}
-                        <p>This confirmation link has expired or is invalid.</p>
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            This confirmation link has expired or is invalid.
+                        </div>
+                        <p>Please <a href="{% url 'signup' %}">register again</a> to receive a new confirmation link.</p>
                     {% endif %}
                 </div>
             </div>

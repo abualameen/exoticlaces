@@ -23,10 +23,18 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('about/', views.aboutPage, name='aboutPage'),
     path('contact/', views.contactPage, name='contactPage'),
-    path('email_confirmation/', views.email_confirmation, name='email_confirmation'),
-
-    # path('cart/add/<int:product_id>/', views.add_cart, name='add_cart'),
     path('cart/add/<int:product_id>/<int:variant_id>/', views.add_cart_variant, name='add_cart_variant'),
+
+    path('terms/', views.terms, name='terms'),
+    path('privacy/', views.privacy, name='privacy'),
+    path('refund/', views.refund, name='refund'),
+    path('shipping-policy/', views.shipping_policy, name='shipping_policy'),
+    path('faq/', views.faq, name='faq'),
+    path('wholesale-policy/', views.wholesale_policy, name='wholesale_policy'),
+
+
+    path('admin/dashboard/', views.dashboard, name='admin_dashboard'),
+   
 
 
 

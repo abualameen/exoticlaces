@@ -1,28 +1,44 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %} 
-Exotic Laces Store
 
-{% endblock %}
-
+{% block title %}Thank You - Exotic Laces{% endblock %}
 
 {% block content %}
-
 <div class="text-center">
     <br>
     <br>
     <h1 class="text-center product_title">
         Thanks for placing your order
-    
     </h1>
     <br>
     <br>
-    <p>Your order numbers is: <b>{{ eds.id }}</b></p>
+    <p>Your order number is: <b>{{ eds.id }}</b></p>
     <br>
     <p>
-        We have recieved your order and will begin processing right away, An email confirmation was sent to you. It contains details of the items you purchased.
+        We have received your order and will begin processing right away. 
+        An email confirmation was sent to you. It contains details of the items you purchased.
     </p>
-
 </div>
 
+<<script>
+    const purchaseData = {
+        transaction_id: "{{ eds.id }}",
+        value: parseFloat("{{ eds.grand_total|floatformat:2 }}"),
+        currency: "NGN",
+        items: [
+            {% for item in order_items %}
+            {
+                item_id: "{{ item.id }}",
+                item_name: "{{ item.product }}",
+                quantity: parseInt("{{ item.quantity }}"),
+                price: parseFloat("{{ item.price|floatformat:2 }}")
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ]
+    };
+
+    if (typeof gtag !== "undefined") {
+        gtag("event", "purchase", purchaseData);
+    }
+</script>
 {% endblock %}

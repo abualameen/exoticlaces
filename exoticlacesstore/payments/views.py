@@ -5,12 +5,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from decimal import Decimal
 from lacesstore.models import Cart, CartItem
-from lacesstore.models import Product, ProductVariant, Order, OrderItem
+from lacesstore.models import Product, ProductVariant, Order, OrderItem, Customer 
 from .models import Transaction
 from lacesstore.views import _cart_id  # adjust 'store' to your actual app name
 from django.urls import reverse
 import uuid
-
 from django.core.mail import send_mail
 # In payments/views.py
 from lacesstore.views import sendEmail
@@ -29,104 +28,7 @@ from django.http import HttpResponse
 def get_cart(request):
     return Cart.objects.get(cart_id=_cart_id(request))
 
-# Initialize Payment
-# def init_payment(request):
 
-#     shipping = request.session.get("shipping")
-
-#     if not shipping:
-#         return JsonResponse({
-#             "status": False,
-#             "message": "Shipping method not selected"
-#         }, status=400)
-
-#     if request.method != 'POST':
-#         return JsonResponse({"status": False, "message": "Invalid request"}, status=400)
-    
-#     email = request.POST.get('email')
-#     currency = request.POST.get('currency', 'NGN')
-#     amount = Decimal(request.POST.get('amount', 0))
-
-#     if request.method == "POST":
-#         request.session['checkout_data'] = {
-#             'email': request.POST.get('email'),
-#             'phonenumber': request.POST.get('phonenumber'),
-#             'firstName': request.POST.get('firstName'),
-#             'lastName': request.POST.get('lastName'),
-#             'country': request.POST.get('country'),
-#             'state': request.POST.get('state'),
-#         }
-
-    
-#     if not email or amount <= 0:
-#         return JsonResponse({"status": False, "message": "Email and valid amount required"})
-
-#     # Initialize transaction in Paystack
-#     headers = {
-#         "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}",
-#         "Content-Type": "application/json",
-#     }
-#     ref = f"EXOTIC-{uuid.uuid4().hex[:12]}"
-
-#     data = {
-#         "email": email,
-#         "amount": int(amount),  # in kobo / cent
-#         "currency": currency,
-#         #"callback_url": request.build_absolute_uri("/payments/verify/")
-#         "reference": ref,  # ✅ CONTROLLED REF
-#         "callback_url": request.build_absolute_uri(reverse('verify_payment'))
-
-#     }
-
-#     response = requests.post(
-#         "https://api.paystack.co/transaction/initialize",
-#         headers=headers,
-#         json=data
-#     ).json()
-
-#     # if response.get('status'):
-#     #     # Save transaction locally
-#     #     Transaction.objects.create(
-#     #         reference=response['data']['reference'],
-#     #         email=email,
-#     #         amount=amount,  # convert back to major unit
-#     #         currency=currency,
-#     #         status='pending'
-#     #     )
-
-#     #     return JsonResponse(response)
-#     if response.get('status') and response.get('data'):
-#         ref = ref
-#         print("PAYSTACK REF:", ref)   # ✅ DEBUG
-#         Transaction.objects.create(
-#             reference=ref,
-#             email=email,
-#             amount=amount / 100,  # store in kobo for consistency
-#             currency=currency,
-#             status='pending'
-#         )
-#         return JsonResponse(response)
-#     else:
-#         return JsonResponse({
-#             "status": False,
-#             "message": "Paystack init failed",
-#             "paystack_response": response
-#         }, status=400)
-
-#     cart_id = _cart_id(request)
-#     # shipping = CartShipping.objects.filter(cart_id=cart_id).first()
-
-#     shipping_cost = shipping.cost if shipping else 0
-#     print( 'shipping cost',shipping_cost)
-#     total = cart_total + shipping_cost
-    
-#     print('total', total)
-
-    
-#     return JsonResponse({"status": False, "message": "Paystack initialization failed"})
-
-
-# payments/views.py
 
 from decimal import Decimal
 import uuid
@@ -160,16 +62,6 @@ def init_payment(request):
 
     if not email:
         return JsonResponse({"status": False, "message": "Email required"}, status=400)
-
-    # # 🔹 Save checkout form to session
-    # request.session['checkout_data'] = {
-    #     'email': request.POST.get('email'),
-    #     'phonenumber': request.POST.get('phonenumber'),
-    #     'firstName': request.POST.get('firstName'),
-    #     'lastName': request.POST.get('lastName'),
-    #     'country': request.POST.get('country'),
-    #     'state': request.POST.get('state'),
-    # }
 
 
     
@@ -318,8 +210,33 @@ def verify_payment(request):
     shipping_amount = shipping.get("amount_ngn", 0)
     print("SESSION SHIPPING:", request.session.get("shipping"))
 
-   
+    customer = None
+    
+    if request.user.is_authenticated:
+        # Try to get existing customer, or create one
+        customer, created = Customer.objects.get_or_create(
+            user=request.user,
+            defaults={
+                'email': request.user.email,
+                'firstName': request.user.first_name,
+                'lastName': request.user.last_name,
+                'phonenumber': phonenumber,
+            }
+        )
+    else:
+        # Guest user - create customer by email
+        customer, created = Customer.objects.get_or_create(
+            email=email,
+            defaults={
+                'firstName': firstName,
+                'lastName': lastName,
+                'phonenumber': phonenumber,
+            }
+        )
+
+
     order = Order.objects.create(
+    customer=customer,
     total=total,
     emailAddress=email,
     firstName=firstName,
@@ -349,6 +266,7 @@ def verify_payment(request):
     for item in cart_items:
         OrderItem.objects.create(
             product=item.product.name,
+            product_image=item.variant.image if item.variant else item.product.image,
             quantity=item.quantity,
             price=item.product.price,
             order=order

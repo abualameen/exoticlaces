@@ -1,0 +1,214 @@
+/* /home/yaqs/exoticlaces/exoticladesstore/lacesstore/static/css/social.css */
+
+/* ========================================
+   SOCIAL MEDIA ICONS - FOOTER
+   ======================================== */
+
+.social-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.social-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #f8f9fa;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.social-icons a:hover {
+    background: #8B4513;
+    color: #fff;
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+    text-decoration: none;
+}
+
+.social-icons a i {
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+/* Individual brand colors on hover */
+.social-icons a:hover .fa-facebook-f {
+    color: #1877f2;
+}
+.social-icons a:hover .fa-instagram {
+    color: #e4405f;
+}
+.social-icons a:hover .fa-twitter {
+    color: #1da1f2;
+}
+.social-icons a:hover .fa-youtube {
+    color: #ff0000;
+}
+.social-icons a:hover .fa-tiktok {
+    color: #000000;
+}
+.social-icons a:hover .fa-whatsapp {
+    color: #25d366;
+}
+.social-icons a:hover .fa-linkedin-in {
+    color: #0a66c2;
+}
+.social-icons a:hover .fa-pinterest-p {
+    color: #e60023;
+}
+
+/* ========================================
+   WHATSAPP FLOATING BUTTON
+   ======================================== */
+
+.whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #25d366;
+    color: #fff;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    animation: whatsapp-pulse 2s infinite;
+}
+
+.whatsapp-float:hover {
+    background-color: #128C7E;
+    color: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+    text-decoration: none;
+}
+
+.whatsapp-float:focus {
+    outline: none;
+    text-decoration: none;
+}
+
+.whatsapp-tooltip {
+    position: absolute;
+    right: 70px;
+    background: #333;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 0.3px;
+}
+
+.whatsapp-tooltip::after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left: 6px solid #333;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+}
+
+.whatsapp-float:hover .whatsapp-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* WhatsApp Pulse Animation */
+@keyframes whatsapp-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+    }
+}
+
+/* ========================================
+   SOCIAL MEDIA NAVBAR (Optional)
+   ======================================== */
+
+.social-nav {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.social-nav a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    color: #666;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.social-nav a:hover {
+    color: #8B4513;
+    background: rgba(139, 69, 19, 0.1);
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .social-icons a {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .social-icons a i {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .whatsapp-float {
+        width: 50px;
+        height: 50px;
+        font-size: 25px;
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .whatsapp-tooltip {
+        display: none;
+    }
+    
+    .social-icons a {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .social-icons a i {
+        font-size: 14px;
+    }
+}

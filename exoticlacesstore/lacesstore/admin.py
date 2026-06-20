@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import Category, Product, Order, OrderItem, ProductVariant
+from .models import Category, Product, Order, OrderItem, ProductVariant, Customer, Visitor, DailyVisitorStats
+from django.utils.html import format_html
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
+from django.utils import timezone
+import datetime
+
+
 
 # Register your models here.
 
@@ -9,11 +16,7 @@ class CategoryAdmin(admin.ModelAdmin):
     
 admin.site.register(Category, CategoryAdmin)
 
-# class ProductAdmin(admin.ModelAdmin):
-#     list_display = ['name', 'price','stock', 'available', 'created','updated'] 
-#     list_editable = ['price', 'stock', 'available']
-#     prepopulated_fields = {'slug': ('name',)}
-#     list_per_page = 20 
+
 
 class ProductVariantInline(admin.TabularInline):
     model = ProductVariant
@@ -31,17 +34,39 @@ class ProductAdmin(admin.ModelAdmin):
 
 admin.site.register(Product, ProductAdmin)
 
+
+
+
+
 class OrderItemAdmin(admin.TabularInline):
     model = OrderItem
-    fieldsets = [
-        ('Product', {'fields': ['product'],}),
-        ('Quantity', {'fields': ['quantity'],}),
-        ('Price', {'fields': ['price'],}),
-        
-    ]
-    readonly_fields = ['product', 'quantity', 'price']
+    extra = 0
     can_delete = False
     max_num = 0
+
+    readonly_fields = [
+        'product',
+        'quantity',
+        'price',
+        'image_preview',
+    ]
+
+    fields = [
+        'product',
+        'quantity',
+        'price',
+        'image_preview',
+    ]
+
+    def image_preview(self, obj):
+        if obj.product_image:
+            return format_html(
+                '<img src="{}" width="80" height="80" style="object-fit:cover;border-radius:5px;" />',
+                obj.product_image.url
+            )
+        return "No Image"
+
+    image_preview.short_description = "Product Image"
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
@@ -71,3 +96,95 @@ class ProductVariantInline(admin.TabularInline):
     extra = 1  # How many empty variants to show by default
     fields = ['color_name', 'color_code', 'image', 'stock', 'is_default']
     readonly_fields = []  # make any read-only if needed
+
+
+
+
+
+
+class CustomerInline(admin.StackedInline):
+    model = Customer
+    can_delete = False
+    verbose_name_plural = 'Customer Profile'
+
+class CustomUserAdmin(UserAdmin):
+    inlines = (CustomerInline,)
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'has_customer_profile')
+    
+    def has_customer_profile(self, obj):
+        return hasattr(obj, 'customer')
+    has_customer_profile.boolean = True
+    has_customer_profile.short_description = 'Has Customer Profile'
+
+# Unregister the default User admin
+admin.site.unregister(User)
+# Register the custom User admin
+admin.site.register(User, CustomUserAdmin)
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ('id', 'email', 'firstName', 'lastName', 'phonenumber', 'user')
+    search_fields = ('email', 'firstName', 'lastName', 'phonenumber')
+    list_filter = ('user__is_staff',)
+
+
+
+
+
+######################usres onsite on any time ########################################
+
+
+
+@admin.register(Visitor)
+class VisitorAdmin(admin.ModelAdmin):
+    list_display = ['session_key', 'user', 'ip_address', 'last_visit', 'visit_count', 'time_online']
+    list_filter = ['first_visit']
+    search_fields = ['session_key', 'ip_address', 'user__username', 'user__email']
+    readonly_fields = ['session_key', 'ip_address', 'user_agent', 'referer', 'first_visit', 'last_visit', 'visit_count']
+    date_hierarchy = 'last_visit'
+    
+    def time_online(self, obj):
+        """Show how long since last visit"""
+        delta = timezone.now() - obj.last_visit
+        if delta.seconds < 60:
+            return f"{delta.seconds} seconds ago"
+        elif delta.seconds < 3600:
+            return f"{delta.seconds // 60} minutes ago"
+        elif delta.seconds < 86400:
+            return f"{delta.seconds // 3600} hours ago"
+        else:
+            return f"{delta.days} days ago"
+    time_online.short_description = "Last Activity"
+    
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+    
+    def has_add_permission(self, request):
+        return False
+    
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(DailyVisitorStats)
+class DailyVisitorStatsAdmin(admin.ModelAdmin):
+    list_display = ['date', 'unique_visitors', 'registered_users', 'guest_users', 'total_page_views']
+    list_filter = ['date']
+    search_fields = ['date']
+    date_hierarchy = 'date'
+    ordering = ['-date']
+    
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+    
+    def has_add_permission(self, request):
+        return False
+    
+    def has_delete_permission(self, request, obj=None):
+        return False

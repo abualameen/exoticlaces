@@ -1,0 +1,8643 @@
+[
+{
+  "model": "lacesstore.category",
+  "pk": 1,
+  "fields": {
+    "name": "Swiss",
+    "slug": "swiss",
+    "description": "this is a unique kind of lace,comes in multiple designs and vaarieties of colours",
+    "image": "category/-15352011152141129182.jpg"
+  }
+},
+{
+  "model": "lacesstore.category",
+  "pk": 2,
+  "fields": {
+    "name": "swarovksi",
+    "slug": "swarovksi",
+    "description": "stone coded lattest lace fabric",
+    "image": "category/619319090_1200699148855219_5010734634733463548_n_85t6305.jpg"
+  }
+},
+{
+  "model": "lacesstore.product",
+  "pk": 1,
+  "fields": {
+    "name": "swiss-001",
+    "slug": "swiss-001",
+    "description": "this is a unique  swiss lace design, situable for all kind of fashion design",
+    "category": 1,
+    "price": "60000.00",
+    "image": "product/865739434-1422271208.jpg",
+    "stock": 0,
+    "available": true,
+    "created": "2024-06-10T13:22:34.595Z",
+    "updated": "2026-01-24T19:49:53.293Z"
+  }
+},
+{
+  "model": "lacesstore.product",
+  "pk": 2,
+  "fields": {
+    "name": "swarovksi",
+    "slug": "swarovksi",
+    "description": "stone code lace fabric from dubia",
+    "category": 2,
+    "price": "130000.00",
+    "image": "product/619320105_1200699165521884_6656964418931221000_n.jpg",
+    "stock": 10,
+    "available": true,
+    "created": "2026-01-23T19:29:27.679Z",
+    "updated": "2026-06-17T14:08:35.769Z"
+  }
+},
+{
+  "model": "lacesstore.product",
+  "pk": 3,
+  "fields": {
+    "name": "swiss lace",
+    "slug": "swiss-lace",
+    "description": "latest design of swiss lace from austra",
+    "category": 1,
+    "price": "90000.00",
+    "image": "product/27.jpg",
+    "stock": 10,
+    "available": true,
+    "created": "2026-01-23T19:31:50.967Z",
+    "updated": "2026-06-17T14:10:08.040Z"
+  }
+},
+{
+  "model": "lacesstore.productvariant",
+  "pk": 1,
+  "fields": {
+    "product": 2,
+    "color_name": "blue",
+    "color_code": "01",
+    "image": "product_variants/619319090_1200699148855219_5010734634733463548_n_0zevsLy.jpg",
+    "stock": 9,
+    "is_default": true
+  }
+},
+{
+  "model": "lacesstore.productvariant",
+  "pk": 2,
+  "fields": {
+    "product": 2,
+    "color_name": "yellow",
+    "color_code": "02",
+    "image": "product_variants/619320105_1200699165521884_6656964418931221000_n_A7jDDGC.jpg",
+    "stock": 8,
+    "is_default": false
+  }
+},
+{
+  "model": "lacesstore.productvariant",
+  "pk": 3,
+  "fields": {
+    "product": 2,
+    "color_name": "green",
+    "color_code": "03",
+    "image": "product_variants/619257841_1200699295521871_4019743708574169869_n_7lgbgK2.jpg",
+    "stock": 10,
+    "is_default": false
+  }
+},
+{
+  "model": "lacesstore.productvariant",
+  "pk": 4,
+  "fields": {
+    "product": 2,
+    "color_name": "brown",
+    "color_code": "04",
+    "image": "product_variants/619390045_1200699285521872_8341482843560988867_n_T3L4oSH.jpg",
+    "stock": 10,
+    "is_default": false
+  }
+},
+{
+  "model": "lacesstore.productvariant",
+  "pk": 5,
+  "fields": {
+    "product": 3,
+    "color_name": "blue",
+    "color_code": "001",
+    "image": "product_variants/27_pNg2OWE.jpg",
+    "stock": 7,
+    "is_default": true
+  }
+},
+{
+  "model": "lacesstore.productvariant",
+  "pk": 6,
+  "fields": {
+    "product": 3,
+    "color_name": "yellow",
+    "color_code": "002",
+    "image": "product_variants/26_bk2a2Sn.jpg",
+    "stock": 10,
+    "is_default": false
+  }
+},
+{
+  "model": "lacesstore.productvariant",
+  "pk": 7,
+  "fields": {
+    "product": 3,
+    "color_name": "green",
+    "color_code": "003",
+    "image": "product_variants/25_jLs0kWx.jpg",
+    "stock": 10,
+    "is_default": false
+  }
+},
+{
+  "model": "lacesstore.productvariant",
+  "pk": 8,
+  "fields": {
+    "product": 3,
+    "color_name": "goldwirhblue",
+    "color_code": "004",
+    "image": "product_variants/24_baEQjp7.jpg",
+    "stock": 10,
+    "is_default": false
+  }
+},
+{
+  "model": "lacesstore.productvariant",
+  "pk": 9,
+  "fields": {
+    "product": 3,
+    "color_name": "whitewithgold",
+    "color_code": "006",
+    "image": "product_variants/23_690CAIn.jpg",
+    "stock": 10,
+    "is_default": false
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 1,
+  "fields": {
+    "cart_id": "wnz9dm6vise8reo0l97xeoqapm8x3e1j",
+    "date_added": "2024-06-10"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 2,
+  "fields": {
+    "cart_id": "832b7m3c5ck6v4qg4uvfqmxhon5slx6a",
+    "date_added": "2024-06-11"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 3,
+  "fields": {
+    "cart_id": "vyv3iqmz9ll5hhuuq9gexf233kg4f0ph",
+    "date_added": "2024-06-11"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 4,
+  "fields": {
+    "cart_id": "biytrhdh6ggsribge7vvulmiqvzkcqqb",
+    "date_added": "2026-01-23"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 5,
+  "fields": {
+    "cart_id": "d82a79bqvxv331kgmu1xuhvymosaauft",
+    "date_added": "2026-01-23"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 6,
+  "fields": {
+    "cart_id": "nqc59bthhmon4o3r8su4y0wsu69dq7in",
+    "date_added": "2026-03-26"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 7,
+  "fields": {
+    "cart_id": "fk1tmlt8f9qnl3fw2nzms0yhr5zmt8fk",
+    "date_added": "2026-03-26"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 8,
+  "fields": {
+    "cart_id": "th43wcf7nke0nbkwydm7lkesflpz62qg",
+    "date_added": "2026-06-10"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 9,
+  "fields": {
+    "cart_id": "ko6cmfu5xdrlsx0w75j1rvkq0lbbza3j",
+    "date_added": "2026-06-10"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 10,
+  "fields": {
+    "cart_id": "umjey68e2ohbm2a2sqlqs9gktd04nu5z",
+    "date_added": "2026-06-10"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 11,
+  "fields": {
+    "cart_id": "xvq8kodo1dm61mcvlmrunawbesm0ijmg",
+    "date_added": "2026-06-10"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 12,
+  "fields": {
+    "cart_id": "o68a8aw21cz71oeaknizwbc7lqr9id4r",
+    "date_added": "2026-06-10"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 13,
+  "fields": {
+    "cart_id": "3nabv26sqnmt66qonbhmwsn5dmx09v37",
+    "date_added": "2026-06-10"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 14,
+  "fields": {
+    "cart_id": "0ibwksjr0jljpascj46e3650ok8vw85t",
+    "date_added": "2026-06-11"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 15,
+  "fields": {
+    "cart_id": "porjo5iay61vd775h50fwqtmti0qd29f",
+    "date_added": "2026-06-11"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 16,
+  "fields": {
+    "cart_id": "atixj7cy4tapa0c7r50miw15hcnntlvv",
+    "date_added": "2026-06-12"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 17,
+  "fields": {
+    "cart_id": "sufn57iypi1sfgu833d4uw7ukeugip4o",
+    "date_added": "2026-06-12"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 18,
+  "fields": {
+    "cart_id": "biqjzbvzgv6fa1grfccwktp11twohv6a",
+    "date_added": "2026-06-12"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 19,
+  "fields": {
+    "cart_id": "ke3ljmm6odjni8f31xb108w34a5paj4f",
+    "date_added": "2026-06-12"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 20,
+  "fields": {
+    "cart_id": "cou828r5tys5qxqneqvzxv87sxbn3cgl",
+    "date_added": "2026-06-12"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 21,
+  "fields": {
+    "cart_id": "tm3flgcu5wn5i3n8q8tqd0ll714jel2y",
+    "date_added": "2026-06-16"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 22,
+  "fields": {
+    "cart_id": "pf9adtnrs9kxbal1aa3ehwhyeys6zeww",
+    "date_added": "2026-06-16"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 23,
+  "fields": {
+    "cart_id": "6sthnr6au8sj8fb0v3ubq48yup3aivdo",
+    "date_added": "2026-06-17"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 24,
+  "fields": {
+    "cart_id": "gph9a6nihmtef3fbrocl77no86a9svbm",
+    "date_added": "2026-06-17"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 25,
+  "fields": {
+    "cart_id": "ubjgrklpjknw2hfgxdj80xddehmlvnf4",
+    "date_added": "2026-06-17"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 26,
+  "fields": {
+    "cart_id": "k4xf77d6xbiaveuwkletkm5ilu2i1onn",
+    "date_added": "2026-06-17"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 27,
+  "fields": {
+    "cart_id": "zoci52rzpj3ilj60vhd9yt0gdtjc8kyi",
+    "date_added": "2026-06-17"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 28,
+  "fields": {
+    "cart_id": "8h8q932vzz5ex6h3lj4o3nv53odezpus",
+    "date_added": "2026-06-17"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 29,
+  "fields": {
+    "cart_id": "o6v6jfdlic9k4vrja5saocx7qi5z0xk2",
+    "date_added": "2026-06-17"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 30,
+  "fields": {
+    "cart_id": "efscmpsmlwkj7g2ddq6dcgbnf0tbw6f4",
+    "date_added": "2026-06-18"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 31,
+  "fields": {
+    "cart_id": "l0lft3lzbeizqk42gvfcczsv3dimeet7",
+    "date_added": "2026-06-18"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 32,
+  "fields": {
+    "cart_id": "m0pv5n0mygv03ympyzos13nvnhv8kozy",
+    "date_added": "2026-06-18"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 33,
+  "fields": {
+    "cart_id": "m8gfetfh9zbckzpk0vrvxxjrorjz68lv",
+    "date_added": "2026-06-18"
+  }
+},
+{
+  "model": "lacesstore.cart",
+  "pk": 34,
+  "fields": {
+    "cart_id": "u5v5p5ik8nc3o13oitvskwvmydlwiwyt",
+    "date_added": "2026-06-20"
+  }
+},
+{
+  "model": "lacesstore.cartitem",
+  "pk": 13,
+  "fields": {
+    "product": 1,
+    "variant": null,
+    "cart": 1,
+    "quantity": 1,
+    "active": true
+  }
+},
+{
+  "model": "lacesstore.cartitem",
+  "pk": 14,
+  "fields": {
+    "product": 1,
+    "variant": null,
+    "cart": 2,
+    "quantity": 1,
+    "active": true
+  }
+},
+{
+  "model": "lacesstore.cartitem",
+  "pk": 95,
+  "fields": {
+    "product": 3,
+    "variant": 8,
+    "cart": 5,
+    "quantity": 1,
+    "active": true
+  }
+},
+{
+  "model": "lacesstore.cartitem",
+  "pk": 128,
+  "fields": {
+    "product": 2,
+    "variant": 1,
+    "cart": 16,
+    "quantity": 1,
+    "active": true
+  }
+},
+{
+  "model": "lacesstore.cartitem",
+  "pk": 129,
+  "fields": {
+    "product": 2,
+    "variant": 1,
+    "cart": 17,
+    "quantity": 1,
+    "active": true
+  }
+},
+{
+  "model": "lacesstore.cartitem",
+  "pk": 131,
+  "fields": {
+    "product": 2,
+    "variant": 1,
+    "cart": 19,
+    "quantity": 1,
+    "active": true
+  }
+},
+{
+  "model": "lacesstore.cartitem",
+  "pk": 132,
+  "fields": {
+    "product": 2,
+    "variant": 1,
+    "cart": 20,
+    "quantity": 1,
+    "active": true
+  }
+},
+{
+  "model": "lacesstore.cartitem",
+  "pk": 136,
+  "fields": {
+    "product": 2,
+    "variant": 3,
+    "cart": 22,
+    "quantity": 1,
+    "active": true
+  }
+},
+{
+  "model": "lacesstore.cartitem",
+  "pk": 147,
+  "fields": {
+    "product": 3,
+    "variant": 8,
+    "cart": 24,
+    "quantity": 1,
+    "active": true
+  }
+},
+{
+  "model": "lacesstore.cartitem",
+  "pk": 149,
+  "fields": {
+    "product": 3,
+    "variant": 8,
+    "cart": 26,
+    "quantity": 1,
+    "active": true
+  }
+},
+{
+  "model": "lacesstore.cartitem",
+  "pk": 152,
+  "fields": {
+    "product": 2,
+    "variant": 4,
+    "cart": 29,
+    "quantity": 1,
+    "active": true
+  }
+},
+{
+  "model": "lacesstore.cartitem",
+  "pk": 158,
+  "fields": {
+    "product": 3,
+    "variant": 6,
+    "cart": 32,
+    "quantity": 1,
+    "active": true
+  }
+},
+{
+  "model": "lacesstore.cartitem",
+  "pk": 160,
+  "fields": {
+    "product": 2,
+    "variant": 1,
+    "cart": 32,
+    "quantity": 1,
+    "active": true
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 1,
+  "fields": {
+    "customer": null,
+    "total": "300000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2024-06-10T14:12:15.930Z",
+    "firstName": "yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Minna",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 2,
+  "fields": {
+    "customer": null,
+    "total": "60000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2024-06-10T14:23:48.300Z",
+    "firstName": "yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Minna",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 3,
+  "fields": {
+    "customer": null,
+    "total": "60000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2024-06-10T14:34:24.765Z",
+    "firstName": "yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Abuja",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 4,
+  "fields": {
+    "customer": null,
+    "total": "60000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2024-06-10T14:51:35.656Z",
+    "firstName": "yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 5,
+  "fields": {
+    "customer": null,
+    "total": "60000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2024-06-10T14:52:36.552Z",
+    "firstName": "yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 6,
+  "fields": {
+    "customer": null,
+    "total": "60000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2024-06-10T14:53:37.280Z",
+    "firstName": "yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 7,
+  "fields": {
+    "customer": null,
+    "total": "60000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2024-06-10T19:02:51.878Z",
+    "firstName": "yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 8,
+  "fields": {
+    "customer": null,
+    "total": "60000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2024-06-10T19:10:25.154Z",
+    "firstName": "yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Minna",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 9,
+  "fields": {
+    "customer": null,
+    "total": "120000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2024-06-10T19:51:03.008Z",
+    "firstName": "yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 10,
+  "fields": {
+    "customer": null,
+    "total": "60000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2024-06-10T20:33:26.097Z",
+    "firstName": "yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 11,
+  "fields": {
+    "customer": null,
+    "total": "60000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2024-06-10T21:16:34.368Z",
+    "firstName": "yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 12,
+  "fields": {
+    "customer": null,
+    "total": "60000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2024-06-11T12:09:10.645Z",
+    "firstName": "yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 13,
+  "fields": {
+    "customer": null,
+    "total": "60000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2024-06-12T10:25:45.020Z",
+    "firstName": "yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Minna",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 14,
+  "fields": {
+    "customer": null,
+    "total": "250000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-24T19:49:53.239Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 15,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-24T19:58:32.293Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 16,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-25T13:41:00.319Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 17,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-25T14:21:07.614Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 0.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 18,
+  "fields": {
+    "customer": null,
+    "total": "350000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-25T21:03:59.715Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 6000.0,
+    "grand_total": 356000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 19,
+  "fields": {
+    "customer": null,
+    "total": "180000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-27T17:54:06.071Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 4000.0,
+    "grand_total": 184000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 20,
+  "fields": {
+    "customer": null,
+    "total": "390000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-27T18:03:17.136Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 9087675555,
+    "shipping_method": "seller",
+    "shipping_cost": 6000.0,
+    "grand_total": 396000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 21,
+  "fields": {
+    "customer": null,
+    "total": "270000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-27T18:04:18.344Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 9087675555,
+    "shipping_method": "seller",
+    "shipping_cost": 6000.0,
+    "grand_total": 276000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 22,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-27T19:24:07.122Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 9087675555,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 23,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-28T11:54:12.518Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 24,
+  "fields": {
+    "customer": null,
+    "total": "260000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-28T11:55:20.042Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 4000.0,
+    "grand_total": 264000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 25,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-28T11:56:09.361Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 26,
+  "fields": {
+    "customer": null,
+    "total": "390000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-28T12:00:12.512Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 6000.0,
+    "grand_total": 396000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 27,
+  "fields": {
+    "customer": null,
+    "total": "390000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-28T13:29:57.432Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 6000.0,
+    "grand_total": 396000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 28,
+  "fields": {
+    "customer": null,
+    "total": "390000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-28T13:43:36.116Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 6000.0,
+    "grand_total": 396000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 29,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-28T13:44:41.397Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 30,
+  "fields": {
+    "customer": null,
+    "total": "260000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-28T14:34:57.496Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 4000.0,
+    "grand_total": 264000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 31,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-28T15:33:14.705Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 32,
+  "fields": {
+    "customer": null,
+    "total": "310000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-29T15:16:29.311Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 6000.0,
+    "grand_total": 316000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 33,
+  "fields": {
+    "customer": null,
+    "total": "260000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-29T20:17:37.424Z",
+    "firstName": "dfdfd",
+    "lastName": "sfdsee",
+    "country": "Ghana",
+    "state": "Accra",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 260000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 34,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-29T20:22:56.295Z",
+    "firstName": "dscd",
+    "lastName": "ddsee",
+    "country": "Ghana",
+    "state": "Accra",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 90000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 35,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-30T09:13:58.489Z",
+    "firstName": "fgrg",
+    "lastName": "hjy",
+    "country": "Ghana",
+    "state": "Accra",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 90000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 36,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-30T14:35:30.198Z",
+    "firstName": "hdflshld",
+    "lastName": "ffgrr",
+    "country": "Niger",
+    "state": "Niamey",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 130000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 37,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-31T14:24:19.219Z",
+    "firstName": "djdj;od",
+    "lastName": "flsdpor",
+    "country": "Niger",
+    "state": "Niamey",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 130000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 38,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-31T14:25:17.640Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "Nigeria",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 130000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 39,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-31T14:27:23.256Z",
+    "firstName": "ddsg",
+    "lastName": "yytty",
+    "country": "Ghana",
+    "state": "Accra",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 90000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 40,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-31T18:26:39.758Z",
+    "firstName": "DDDFD",
+    "lastName": "WWWW",
+    "country": "Ghana",
+    "state": "Accra",
+    "phonenumber": 908766,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 90000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 41,
+  "fields": {
+    "customer": null,
+    "total": "180000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-01-31T23:09:01.556Z",
+    "firstName": "dfdf",
+    "lastName": "sdd",
+    "country": "Ghana",
+    "state": "Accra",
+    "phonenumber": 908766,
+    "shipping_method": null,
+    "shipping_cost": 0.0,
+    "grand_total": 180000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 42,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-02T11:28:26.243Z",
+    "firstName": "dgfdf",
+    "lastName": "httw",
+    "country": "Ghana",
+    "state": "Accra",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 90000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 43,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-02T11:35:40.324Z",
+    "firstName": "fefewwef",
+    "lastName": "gtgtgt",
+    "country": "Niger",
+    "state": "Niamey",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 90000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 44,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-02T14:22:38.327Z",
+    "firstName": "dfgf",
+    "lastName": "fgfgr",
+    "country": "United States",
+    "state": "Florida",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 90000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 45,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-02T17:07:53.968Z",
+    "firstName": "fddgfj",
+    "lastName": "ujuu",
+    "country": "United States",
+    "state": "Florida",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 90000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 46,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-03T10:52:31.176Z",
+    "firstName": "dfds",
+    "lastName": "dfd",
+    "country": "US",
+    "state": "Florida",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 90000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 47,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-03T10:53:15.566Z",
+    "firstName": "DWEWE",
+    "lastName": "DGGGR",
+    "country": "US",
+    "state": "Florida",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 90000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 48,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-03T14:54:18.346Z",
+    "firstName": "cvdfd",
+    "lastName": "ghth",
+    "country": "AT",
+    "state": "vienna",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 90000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 49,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-05T00:38:06.882Z",
+    "firstName": "fgfd",
+    "lastName": "hty",
+    "country": "AT",
+    "state": "vienna",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 90000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 50,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-04T19:23:31.499Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 130000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 51,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-04T20:35:46.368Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 90000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 52,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-04T20:38:55.712Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 0.0,
+    "grand_total": 90000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 53,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-04T20:54:06.270Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 54,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-04T20:57:10.994Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 55,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-04T22:09:54.125Z",
+    "firstName": "httrht",
+    "lastName": "fgfdg",
+    "country": "GH",
+    "state": "Accra",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 8000.0,
+    "grand_total": 98000.0,
+    "currency": "GHS"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 56,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-04T22:13:21.815Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "GH",
+    "state": "Accra",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 8000.0,
+    "grand_total": 98000.0,
+    "currency": "GHS"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 57,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-04T22:22:18.544Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "GH",
+    "state": "Accra",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 8000.0,
+    "grand_total": 98000.0,
+    "currency": "GHS"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 58,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-02-04T22:50:21.620Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "GH",
+    "state": "Accra",
+    "phonenumber": 908766,
+    "shipping_method": "seller",
+    "shipping_cost": 8000.0,
+    "grand_total": 98000.0,
+    "currency": "GHS"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 59,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-03-26T09:32:29.537Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "GH",
+    "state": "Accra",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 8000.0,
+    "grand_total": 98000.0,
+    "currency": "GHS"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 60,
+  "fields": {
+    "customer": null,
+    "total": "310000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-03-26T12:31:23.296Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "GH",
+    "state": "Accra",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 24000.0,
+    "grand_total": 334000.0,
+    "currency": "GHS"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 61,
+  "fields": {
+    "customer": null,
+    "total": "220000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-03-26T12:42:39.390Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "GH",
+    "state": "Accra",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 16000.0,
+    "grand_total": 236000.0,
+    "currency": "GHS"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 62,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-03-26T12:46:03.108Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "ML",
+    "state": "Niamey",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 16000.0,
+    "grand_total": 146000.0,
+    "currency": "XOF"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 63,
+  "fields": {
+    "customer": null,
+    "total": "260000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-03-26T13:30:13.108Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "GH",
+    "state": "Accra",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 16000.0,
+    "grand_total": 276000.0,
+    "currency": "GHS"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 64,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-10T14:36:45.456Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 65,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqss@gmail.com",
+    "created": "2026-06-10T14:57:37.001Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 66,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abuldyaqs@gmail.com",
+    "created": "2026-06-10T15:02:38.163Z",
+    "firstName": "HAUWA",
+    "lastName": "Abdullahi",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 67,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "yaksabdul@gmail.com",
+    "created": "2026-06-10T17:59:47.873Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 68,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abualmashkur@gmail.com",
+    "created": "2026-06-10T19:41:43.519Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 69,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abualmashkur@gmail.com",
+    "created": "2026-06-10T20:29:34.533Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 70,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "yaqsabdul@gmail.com",
+    "created": "2026-06-10T20:36:04.000Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 71,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-11T09:28:54.975Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 72,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-11T09:36:22.987Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 73,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-11T10:39:52.432Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 74,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-11T14:51:24.365Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 75,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-11T14:52:59.325Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 76,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-11T14:58:23.289Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 77,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-11T15:07:30.013Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 78,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-11T15:12:45.687Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 79,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-11T15:53:37.744Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 80,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-11T15:56:08.408Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 81,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-11T16:06:00.673Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 82,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-11T16:22:22.473Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 83,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-11T16:38:21.383Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 84,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-11T16:44:38.617Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 85,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-11T16:49:29.579Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 86,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-11T16:53:01.211Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 87,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-11T17:02:32.395Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 88,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-11T17:05:29.231Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 89,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-11T17:12:51.607Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 90,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-15T16:34:49.423Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 91,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-16T10:52:41.198Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 92,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-16T12:12:11.418Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 93,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-16T13:01:40.770Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 94,
+  "fields": {
+    "customer": null,
+    "total": "220000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-16T13:23:58.402Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 4000.0,
+    "grand_total": 224000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 95,
+  "fields": {
+    "customer": null,
+    "total": "440000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-16T13:38:10.010Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 8000.0,
+    "grand_total": 448000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 96,
+  "fields": {
+    "customer": null,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-16T14:13:17.942Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 97,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-17T12:13:09.707Z",
+    "firstName": "mean",
+    "lastName": "new",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 98,
+  "fields": {
+    "customer": null,
+    "total": "130000.00",
+    "emailAddress": "abualmashkur@gmail.com",
+    "created": "2026-06-17T12:27:38.943Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 99,
+  "fields": {
+    "customer": 2,
+    "total": "90000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-17T13:34:02.392Z",
+    "firstName": "Man",
+    "lastName": "Musa",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7038329792,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 100,
+  "fields": {
+    "customer": 2,
+    "total": "90000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-17T13:51:13.082Z",
+    "firstName": "Man",
+    "lastName": "Musa",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7038329792,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 101,
+  "fields": {
+    "customer": 2,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-18T14:47:02.551Z",
+    "firstName": "Man",
+    "lastName": "Musa",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7038329792,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 102,
+  "fields": {
+    "customer": 3,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul@gmail.com",
+    "created": "2026-06-18T14:53:41.080Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 103,
+  "fields": {
+    "customer": 2,
+    "total": "130000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-18T17:16:16.704Z",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 132000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 104,
+  "fields": {
+    "customer": 2,
+    "total": "90000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-20T10:33:04.087Z",
+    "firstName": "Man",
+    "lastName": "Musa",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7038329792,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 105,
+  "fields": {
+    "customer": 1,
+    "total": "90000.00",
+    "emailAddress": "abulyaqs@gmail.com",
+    "created": "2026-06-20T10:44:48.447Z",
+    "firstName": "Yakubu",
+    "lastName": "Abdullahi",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7039453076,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.order",
+  "pk": 106,
+  "fields": {
+    "customer": 2,
+    "total": "90000.00",
+    "emailAddress": "yaksabdul30@gmail.com",
+    "created": "2026-06-20T11:08:59.544Z",
+    "firstName": "Man",
+    "lastName": "Musa",
+    "country": "NG",
+    "state": "Lagos",
+    "phonenumber": 7038329792,
+    "shipping_method": "seller",
+    "shipping_cost": 2000.0,
+    "grand_total": 92000.0,
+    "currency": "NGN"
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 1,
+  "fields": {
+    "product": "swiss-001",
+    "product_image": "",
+    "quantity": 5,
+    "price": "60000.00",
+    "order": 1
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 2,
+  "fields": {
+    "product": "swiss-001",
+    "product_image": "",
+    "quantity": 1,
+    "price": "60000.00",
+    "order": 2
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 3,
+  "fields": {
+    "product": "swiss-001",
+    "product_image": "",
+    "quantity": 1,
+    "price": "60000.00",
+    "order": 3
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 4,
+  "fields": {
+    "product": "swiss-001",
+    "product_image": "",
+    "quantity": 1,
+    "price": "60000.00",
+    "order": 4
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 5,
+  "fields": {
+    "product": "swiss-001",
+    "product_image": "",
+    "quantity": 1,
+    "price": "60000.00",
+    "order": 5
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 6,
+  "fields": {
+    "product": "swiss-001",
+    "product_image": "",
+    "quantity": 1,
+    "price": "60000.00",
+    "order": 6
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 7,
+  "fields": {
+    "product": "swiss-001",
+    "product_image": "",
+    "quantity": 1,
+    "price": "60000.00",
+    "order": 7
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 8,
+  "fields": {
+    "product": "swiss-001",
+    "product_image": "",
+    "quantity": 1,
+    "price": "60000.00",
+    "order": 8
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 9,
+  "fields": {
+    "product": "swiss-001",
+    "product_image": "",
+    "quantity": 2,
+    "price": "60000.00",
+    "order": 9
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 10,
+  "fields": {
+    "product": "swiss-001",
+    "product_image": "",
+    "quantity": 1,
+    "price": "60000.00",
+    "order": 10
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 11,
+  "fields": {
+    "product": "swiss-001",
+    "product_image": "",
+    "quantity": 1,
+    "price": "60000.00",
+    "order": 11
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 12,
+  "fields": {
+    "product": "swiss-001",
+    "product_image": "",
+    "quantity": 1,
+    "price": "60000.00",
+    "order": 12
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 13,
+  "fields": {
+    "product": "swiss-001",
+    "product_image": "",
+    "quantity": 1,
+    "price": "60000.00",
+    "order": 13
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 14,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 14
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 15,
+  "fields": {
+    "product": "swiss-001",
+    "product_image": "",
+    "quantity": 2,
+    "price": "60000.00",
+    "order": 14
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 16,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 15
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 17,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 16
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 18,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 17
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 19,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 2,
+    "price": "130000.00",
+    "order": 18
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 20,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 18
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 21,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 2,
+    "price": "90000.00",
+    "order": 19
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 22,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 3,
+    "price": "130000.00",
+    "order": 20
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 23,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 3,
+    "price": "90000.00",
+    "order": 21
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 24,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 22
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 25,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 23
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 26,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 2,
+    "price": "130000.00",
+    "order": 24
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 27,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 25
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 28,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 3,
+    "price": "130000.00",
+    "order": 26
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 29,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 27
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 30,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 2,
+    "price": "130000.00",
+    "order": 27
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 31,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 3,
+    "price": "130000.00",
+    "order": 28
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 32,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 29
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 33,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 30
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 34,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 30
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 35,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 31
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 36,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 2,
+    "price": "90000.00",
+    "order": 32
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 37,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 32
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 38,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 33
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 39,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 33
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 40,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 34
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 41,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 35
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 42,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 36
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 43,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 37
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 44,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 38
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 45,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 39
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 46,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 40
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 47,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 2,
+    "price": "90000.00",
+    "order": 41
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 48,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 42
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 49,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 43
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 50,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 44
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 51,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 45
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 52,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 46
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 53,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 47
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 54,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 48
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 55,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 49
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 56,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 50
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 57,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 51
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 58,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 52
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 59,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 53
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 60,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 54
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 61,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 55
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 62,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 56
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 63,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 57
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 64,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 58
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 65,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 59
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 66,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 60
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 67,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 60
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 68,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 60
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 69,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 61
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 70,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 61
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 71,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 62
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 72,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 2,
+    "price": "130000.00",
+    "order": 63
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 73,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 64
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 74,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 65
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 75,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 66
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 76,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 67
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 77,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 68
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 78,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 69
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 79,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 70
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 80,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 72
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 81,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 73
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 82,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 74
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 83,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 75
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 84,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 76
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 85,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 77
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 86,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 78
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 87,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 79
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 88,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 80
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 89,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 81
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 90,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 82
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 91,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 83
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 92,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 85
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 93,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 86
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 94,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 87
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 95,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 88
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 96,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 89
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 97,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 90
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 98,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "product_variants/619320105_1200699165521884_6656964418931221000_n_A7jDDGC.jpg",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 91
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 99,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "product_variants/24_baEQjp7.jpg",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 92
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 100,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "product_variants/23_690CAIn.jpg",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 93
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 101,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "product_variants/619257841_1200699295521871_4019743708574169869_n_7lgbgK2.jpg",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 94
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 102,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "product_variants/24_baEQjp7.jpg",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 94
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 103,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "product_variants/619320105_1200699165521884_6656964418931221000_n_A7jDDGC.jpg",
+    "quantity": 2,
+    "price": "130000.00",
+    "order": 95
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 104,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "product_variants/23_690CAIn.jpg",
+    "quantity": 2,
+    "price": "90000.00",
+    "order": 95
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 105,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "product_variants/23_690CAIn.jpg",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 96
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 106,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "product_variants/619257841_1200699295521871_4019743708574169869_n_7lgbgK2.jpg",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 97
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 107,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "product_variants/619257841_1200699295521871_4019743708574169869_n_7lgbgK2.jpg",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 98
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 108,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "product_variants/24_baEQjp7.jpg",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 99
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 109,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "product_variants/23_690CAIn.jpg",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 100
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 110,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "product_variants/619319090_1200699148855219_5010734634733463548_n_0zevsLy.jpg",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 101
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 111,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "product_variants/619320105_1200699165521884_6656964418931221000_n_A7jDDGC.jpg",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 102
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 112,
+  "fields": {
+    "product": "swarovksi",
+    "product_image": "product_variants/619320105_1200699165521884_6656964418931221000_n_A7jDDGC.jpg",
+    "quantity": 1,
+    "price": "130000.00",
+    "order": 103
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 113,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "product_variants/27_pNg2OWE.jpg",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 104
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 114,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "product_variants/27_pNg2OWE.jpg",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 105
+  }
+},
+{
+  "model": "lacesstore.orderitem",
+  "pk": 115,
+  "fields": {
+    "product": "swiss lace",
+    "product_image": "product_variants/27_pNg2OWE.jpg",
+    "quantity": 1,
+    "price": "90000.00",
+    "order": 106
+  }
+},
+{
+  "model": "lacesstore.customer",
+  "pk": 1,
+  "fields": {
+    "user": null,
+    "email": "abulyaqs@gmail.com",
+    "firstName": "yakubu",
+    "lastName": "Abdullahi",
+    "phonenumber": 7039453076,
+    "authorization_code": "AUTH_kxzwas2zcz"
+  }
+},
+{
+  "model": "lacesstore.customer",
+  "pk": 2,
+  "fields": {
+    "user": 43,
+    "email": "yaksabdul30@gmail.com",
+    "firstName": "Man",
+    "lastName": "Musa",
+    "phonenumber": 7038329792,
+    "authorization_code": null
+  }
+},
+{
+  "model": "lacesstore.customer",
+  "pk": 3,
+  "fields": {
+    "user": null,
+    "email": "yaksabdul@gmail.com",
+    "firstName": "HAUWA",
+    "lastName": "G",
+    "phonenumber": 7039453076,
+    "authorization_code": null
+  }
+},
+{
+  "model": "lacesstore.visitor",
+  "pk": 1,
+  "fields": {
+    "session_key": "m0pv5n0mygv03ympyzos13nvnhv8kozy",
+    "ip_address": "127.0.0.1",
+    "user": 2,
+    "first_visit": "2026-06-18T16:26:45.574Z",
+    "last_visit": "2026-06-20T10:32:22.951Z",
+    "visit_count": 69,
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+    "referer": "http://127.0.0.1:8000/terms/"
+  }
+},
+{
+  "model": "lacesstore.visitor",
+  "pk": 2,
+  "fields": {
+    "session_key": "m8gfetfh9zbckzpk0vrvxxjrorjz68lv",
+    "ip_address": "127.0.0.1",
+    "user": null,
+    "first_visit": "2026-06-18T17:14:20.151Z",
+    "last_visit": "2026-06-20T13:02:14.689Z",
+    "visit_count": 30,
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+    "referer": ""
+  }
+},
+{
+  "model": "lacesstore.visitor",
+  "pk": 3,
+  "fields": {
+    "session_key": "u5v5p5ik8nc3o13oitvskwvmydlwiwyt",
+    "ip_address": "127.0.0.1",
+    "user": 43,
+    "first_visit": "2026-06-20T10:32:25.115Z",
+    "last_visit": "2026-06-20T11:38:04.597Z",
+    "visit_count": 27,
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+    "referer": "http://127.0.0.1:8000/account/signin/"
+  }
+},
+{
+  "model": "lacesstore.visitor",
+  "pk": 4,
+  "fields": {
+    "session_key": "ml8l1qmdho2gw8nl1wx2up20kry9u6x3",
+    "ip_address": "127.0.0.1",
+    "user": 2,
+    "first_visit": "2026-06-20T11:38:36.292Z",
+    "last_visit": "2026-06-20T13:02:26.513Z",
+    "visit_count": 11,
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+    "referer": "http://127.0.0.1:8000/thankyou/104"
+  }
+},
+{
+  "model": "lacesstore.dailyvisitorstats",
+  "pk": 1,
+  "fields": {
+    "date": "2026-06-18",
+    "unique_visitors": 0,
+    "total_page_views": 0,
+    "registered_users": 0,
+    "guest_users": 0
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 1,
+  "fields": {
+    "reference": "cx9d537ecq",
+    "email": "abulyaqs@gmail.com",
+    "amount": "250000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-24T15:15:49.733Z",
+    "updated_at": "2026-01-24T15:15:49.733Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 2,
+  "fields": {
+    "reference": "wji2tq042z",
+    "email": "abulyaqs@gmail.com",
+    "amount": "250000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-24T16:02:58.380Z",
+    "updated_at": "2026-01-24T16:03:06.476Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 3,
+  "fields": {
+    "reference": "wct4ndw4ty",
+    "email": "abulyaqs@gmail.com",
+    "amount": "250000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-24T16:24:59.864Z",
+    "updated_at": "2026-01-24T16:25:07.572Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 4,
+  "fields": {
+    "reference": "qdld377pc9",
+    "email": "abulyaqs@gmail.com",
+    "amount": "250000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-24T17:33:50.230Z",
+    "updated_at": "2026-01-24T17:33:57.166Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 5,
+  "fields": {
+    "reference": "by1rskbp6s",
+    "email": "abulyaqs@gmail.com",
+    "amount": "250000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-24T17:40:57.949Z",
+    "updated_at": "2026-01-24T17:41:07.791Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 6,
+  "fields": {
+    "reference": "s4rcdk51s2",
+    "email": "abulyaqs@gmail.com",
+    "amount": "250000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-24T17:50:31.795Z",
+    "updated_at": "2026-01-24T17:50:38.527Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 7,
+  "fields": {
+    "reference": "1trcjs2d1l",
+    "email": "abulyaqs@gmail.com",
+    "amount": "250000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-24T18:32:17.868Z",
+    "updated_at": "2026-01-24T18:32:17.868Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 8,
+  "fields": {
+    "reference": "nck3et9euk",
+    "email": "abulyaqs@gmail.com",
+    "amount": "25000000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-24T19:23:39.648Z",
+    "updated_at": "2026-01-24T19:23:39.648Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 9,
+  "fields": {
+    "reference": "lmxr3p9elk",
+    "email": "abulyaqs@gmail.com",
+    "amount": "25000000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-24T19:29:31.701Z",
+    "updated_at": "2026-01-24T19:29:31.701Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 10,
+  "fields": {
+    "reference": "EXOTIC-bf3867eeea43",
+    "email": "abulyaqs@gmail.com",
+    "amount": "250000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-24T19:41:46.734Z",
+    "updated_at": "2026-01-24T19:41:46.734Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 11,
+  "fields": {
+    "reference": "EXOTIC-6a4e0850f2af",
+    "email": "abulyaqs@gmail.com",
+    "amount": "250000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-24T19:49:46.402Z",
+    "updated_at": "2026-01-24T19:49:53.222Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 12,
+  "fields": {
+    "reference": "EXOTIC-e761af121b99",
+    "email": "abulyaqs@gmail.com",
+    "amount": "130000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-24T19:58:25.055Z",
+    "updated_at": "2026-01-24T19:58:32.276Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 13,
+  "fields": {
+    "reference": "EXOTIC-44122047e7df",
+    "email": "abulyaqs@gmail.com",
+    "amount": "130000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-25T13:40:53.355Z",
+    "updated_at": "2026-01-25T13:41:00.304Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 14,
+  "fields": {
+    "reference": "EXOTIC-0671e289d0f4",
+    "email": "abulyaqs@gmail.com",
+    "amount": "90000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-25T14:21:01.136Z",
+    "updated_at": "2026-01-25T14:21:07.599Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 15,
+  "fields": {
+    "reference": "EXOTIC-7d5c523f1c5b",
+    "email": "abulyaqs@gmail.com",
+    "amount": "350000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-25T20:57:10.228Z",
+    "updated_at": "2026-01-25T20:57:10.228Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 16,
+  "fields": {
+    "reference": "EXOTIC-dea22dc679ef",
+    "email": "abulyaqs@gmail.com",
+    "amount": "356000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-25T21:02:19.590Z",
+    "updated_at": "2026-01-25T21:02:30.342Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 17,
+  "fields": {
+    "reference": "EXOTIC-fdf47a991866",
+    "email": "abulyaqs@gmail.com",
+    "amount": "356000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-25T21:03:51.276Z",
+    "updated_at": "2026-01-25T21:03:59.700Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 18,
+  "fields": {
+    "reference": "EXOTIC-3c7d13081037",
+    "email": "abulyaqs@gmail.com",
+    "amount": "314000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T14:14:14.785Z",
+    "updated_at": "2026-01-27T14:14:14.785Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 19,
+  "fields": {
+    "reference": "EXOTIC-26ccf69ca660",
+    "email": "abulyaqs@gmail.com",
+    "amount": "184000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-27T17:53:50.029Z",
+    "updated_at": "2026-01-27T17:54:06.050Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 20,
+  "fields": {
+    "reference": "EXOTIC-4ef82b6180d8",
+    "email": "abulyaqs@gmail.com",
+    "amount": "390000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-27T18:03:08.970Z",
+    "updated_at": "2026-01-27T18:03:17.120Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 21,
+  "fields": {
+    "reference": "EXOTIC-ab92abefec43",
+    "email": "abulyaqs@gmail.com",
+    "amount": "270000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-27T18:04:10.909Z",
+    "updated_at": "2026-01-27T18:04:18.324Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 22,
+  "fields": {
+    "reference": "EXOTIC-e7d27c36d4a5",
+    "email": "abulyaqs@gmail.com",
+    "amount": "260000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T18:05:30.282Z",
+    "updated_at": "2026-01-27T18:05:30.282Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 23,
+  "fields": {
+    "reference": "EXOTIC-833e2541b7b7",
+    "email": "abulyaqs@gmail.com",
+    "amount": "350000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T18:44:25.900Z",
+    "updated_at": "2026-01-27T18:44:25.900Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 24,
+  "fields": {
+    "reference": "EXOTIC-e143ec5e5720",
+    "email": "abulyaqs@gmail.com",
+    "amount": "356000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T18:46:16.028Z",
+    "updated_at": "2026-01-27T18:46:16.028Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 25,
+  "fields": {
+    "reference": "EXOTIC-0cb6b7dd0d18",
+    "email": "abulyaqs@gmail.com",
+    "amount": "480000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T18:46:58.334Z",
+    "updated_at": "2026-01-27T18:46:58.334Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 26,
+  "fields": {
+    "reference": "EXOTIC-78b744e804d0",
+    "email": "abulyaqs@gmail.com",
+    "amount": "488000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T18:47:46.543Z",
+    "updated_at": "2026-01-27T18:47:46.543Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 27,
+  "fields": {
+    "reference": "EXOTIC-5a11ab8a0ecc",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T19:03:47.923Z",
+    "updated_at": "2026-01-27T19:03:47.923Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 28,
+  "fields": {
+    "reference": "EXOTIC-eb1d7e5ca76e",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T19:19:02.642Z",
+    "updated_at": "2026-01-27T19:19:02.642Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 29,
+  "fields": {
+    "reference": "EXOTIC-09830f29f0b9",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T19:22:47.469Z",
+    "updated_at": "2026-01-27T19:22:47.469Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 30,
+  "fields": {
+    "reference": "EXOTIC-42898ab752f1",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-27T19:23:57.033Z",
+    "updated_at": "2026-01-27T19:24:07.106Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 31,
+  "fields": {
+    "reference": "EXOTIC-412f039da7da",
+    "email": "abulyaqs@gmail.com",
+    "amount": "130000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T19:24:44.177Z",
+    "updated_at": "2026-01-27T19:24:44.177Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 32,
+  "fields": {
+    "reference": "EXOTIC-22a89b72753b",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T19:25:22.539Z",
+    "updated_at": "2026-01-27T19:25:22.539Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 33,
+  "fields": {
+    "reference": "EXOTIC-c1a4fbd5ecd6",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T19:37:20.650Z",
+    "updated_at": "2026-01-27T19:37:20.650Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 34,
+  "fields": {
+    "reference": "EXOTIC-839f7da4dbd9",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T19:37:51.434Z",
+    "updated_at": "2026-01-27T19:37:51.434Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 35,
+  "fields": {
+    "reference": "EXOTIC-0e35989ccae4",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T19:38:14.138Z",
+    "updated_at": "2026-01-27T19:38:14.138Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 36,
+  "fields": {
+    "reference": "EXOTIC-de5d6701c7d3",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T19:38:35.879Z",
+    "updated_at": "2026-01-27T19:38:35.879Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 37,
+  "fields": {
+    "reference": "EXOTIC-e20e158169d2",
+    "email": "abulyaqs@gmail.com",
+    "amount": "220000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T19:39:20.085Z",
+    "updated_at": "2026-01-27T19:39:20.086Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 38,
+  "fields": {
+    "reference": "EXOTIC-7a8338b5bc79",
+    "email": "abulyaqs@gmail.com",
+    "amount": "90000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T19:41:22.991Z",
+    "updated_at": "2026-01-27T19:41:22.991Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 39,
+  "fields": {
+    "reference": "EXOTIC-8a5b0ba9630d",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T19:43:26.416Z",
+    "updated_at": "2026-01-27T19:43:26.416Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 40,
+  "fields": {
+    "reference": "EXOTIC-7e75dfb53c69",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T19:47:09.766Z",
+    "updated_at": "2026-01-27T19:47:09.766Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 41,
+  "fields": {
+    "reference": "EXOTIC-e2d65f783c9e",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T20:58:58.069Z",
+    "updated_at": "2026-01-27T20:58:58.069Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 42,
+  "fields": {
+    "reference": "EXOTIC-fabf75ad744a",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T20:59:09.480Z",
+    "updated_at": "2026-01-27T20:59:09.480Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 43,
+  "fields": {
+    "reference": "EXOTIC-ccf94f68a328",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T21:06:03.150Z",
+    "updated_at": "2026-01-27T21:06:03.150Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 44,
+  "fields": {
+    "reference": "EXOTIC-11c89161eb3f",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-27T21:21:45.605Z",
+    "updated_at": "2026-01-27T21:21:45.605Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 45,
+  "fields": {
+    "reference": "EXOTIC-2ad53cac1783",
+    "email": "abulyaqs@gmail.com",
+    "amount": "184000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-28T09:53:01.494Z",
+    "updated_at": "2026-01-28T09:53:01.494Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 46,
+  "fields": {
+    "reference": "EXOTIC-c372bb7a4bea",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-28T11:53:41.811Z",
+    "updated_at": "2026-01-28T11:54:12.503Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 47,
+  "fields": {
+    "reference": "EXOTIC-ec37467247ca",
+    "email": "abulyaqs@gmail.com",
+    "amount": "264000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-28T11:55:04.968Z",
+    "updated_at": "2026-01-28T11:55:20.018Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 48,
+  "fields": {
+    "reference": "EXOTIC-2ae752087614",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-28T11:55:57.056Z",
+    "updated_at": "2026-01-28T11:56:09.345Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 49,
+  "fields": {
+    "reference": "EXOTIC-6fe0f33fbda9",
+    "email": "abulyaqs@gmail.com",
+    "amount": "396000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-28T11:59:56.394Z",
+    "updated_at": "2026-01-28T12:00:12.501Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 50,
+  "fields": {
+    "reference": "EXOTIC-efce17431c6b",
+    "email": "abulyaqs@gmail.com",
+    "amount": "396000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-28T13:29:49.352Z",
+    "updated_at": "2026-01-28T13:29:57.418Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 51,
+  "fields": {
+    "reference": "EXOTIC-f6c616e9416a",
+    "email": "abulyaqs@gmail.com",
+    "amount": "396000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-28T13:43:27.969Z",
+    "updated_at": "2026-01-28T13:43:36.101Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 52,
+  "fields": {
+    "reference": "EXOTIC-dbebd6225b3b",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-28T13:44:32.430Z",
+    "updated_at": "2026-01-28T13:44:41.378Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 53,
+  "fields": {
+    "reference": "EXOTIC-460aa0421248",
+    "email": "abulyaqs@gmail.com",
+    "amount": "264000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-28T14:34:48.607Z",
+    "updated_at": "2026-01-28T14:34:57.482Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 54,
+  "fields": {
+    "reference": "EXOTIC-109966afb62a",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-28T15:33:06.222Z",
+    "updated_at": "2026-01-28T15:33:14.690Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 55,
+  "fields": {
+    "reference": "EXOTIC-1c369d40c7aa",
+    "email": "abulyaqs@gmail.com",
+    "amount": "936000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-29T14:56:13.599Z",
+    "updated_at": "2026-01-29T14:56:13.599Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 56,
+  "fields": {
+    "reference": "EXOTIC-72eb909adf4c",
+    "email": "abulyaqs@gmail.com",
+    "amount": "540000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-29T15:15:42.428Z",
+    "updated_at": "2026-01-29T15:15:42.428Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 57,
+  "fields": {
+    "reference": "EXOTIC-6fd2da2c96d2",
+    "email": "abulyaqs@gmail.com",
+    "amount": "316000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-29T15:16:19.635Z",
+    "updated_at": "2026-01-29T15:16:29.295Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 58,
+  "fields": {
+    "reference": "EXOTIC-a2a14827f9c1",
+    "email": "abulyaqs@gmail.com",
+    "amount": "276000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-29T20:17:12.589Z",
+    "updated_at": "2026-01-29T20:17:37.399Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 59,
+  "fields": {
+    "reference": "EXOTIC-2d2bc6195c9c",
+    "email": "abulyaqs@gmail.com",
+    "amount": "98000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-01-29T20:21:43.063Z",
+    "updated_at": "2026-01-29T20:21:43.063Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 60,
+  "fields": {
+    "reference": "EXOTIC-f726cbe35396",
+    "email": "abulyaqs@gmail.com",
+    "amount": "98000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-29T20:22:28.933Z",
+    "updated_at": "2026-01-29T20:22:56.277Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 61,
+  "fields": {
+    "reference": "EXOTIC-e12a887e4b2e",
+    "email": "abulyaqs@gmail.com",
+    "amount": "98000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-30T09:13:50.552Z",
+    "updated_at": "2026-01-30T09:13:58.472Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 62,
+  "fields": {
+    "reference": "EXOTIC-754f27e1c085",
+    "email": "abulyaqs@gmail.com",
+    "amount": "146000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-30T14:35:20.431Z",
+    "updated_at": "2026-01-30T14:35:30.187Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 63,
+  "fields": {
+    "reference": "EXOTIC-33a5c162cf1d",
+    "email": "abulyaqs@gmail.com",
+    "amount": "146000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-31T14:24:10.923Z",
+    "updated_at": "2026-01-31T14:24:19.188Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 64,
+  "fields": {
+    "reference": "EXOTIC-e843cc4d0457",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-31T14:25:08.674Z",
+    "updated_at": "2026-01-31T14:25:17.613Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 65,
+  "fields": {
+    "reference": "EXOTIC-6b6f4638817a",
+    "email": "abulyaqs@gmail.com",
+    "amount": "98000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-31T14:27:15.926Z",
+    "updated_at": "2026-01-31T14:27:23.228Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 66,
+  "fields": {
+    "reference": "EXOTIC-ecc7dcbfa14d",
+    "email": "abulyaqs@gmail.com",
+    "amount": "98000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-31T18:26:29.714Z",
+    "updated_at": "2026-01-31T18:26:39.745Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 67,
+  "fields": {
+    "reference": "EXOTIC-99af3c94ee6b",
+    "email": "abulyaqs@gmail.com",
+    "amount": "196000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-01-31T23:08:28.609Z",
+    "updated_at": "2026-01-31T23:09:01.537Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 68,
+  "fields": {
+    "reference": "EXOTIC-fb48ea380bf6",
+    "email": "abulyaqs@gmail.com",
+    "amount": "98000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-02T11:28:17.891Z",
+    "updated_at": "2026-02-02T11:28:26.215Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 69,
+  "fields": {
+    "reference": "EXOTIC-9c8d184214ea",
+    "email": "abulyaqs@gmail.com",
+    "amount": "106000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-02-02T11:34:05.475Z",
+    "updated_at": "2026-02-02T11:34:05.475Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 70,
+  "fields": {
+    "reference": "EXOTIC-064fed459ab5",
+    "email": "abulyaqs@gmail.com",
+    "amount": "106000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-02T11:35:33.517Z",
+    "updated_at": "2026-02-02T11:35:40.295Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 71,
+  "fields": {
+    "reference": "EXOTIC-e113f85a1e27",
+    "email": "abulyaqs@gmail.com",
+    "amount": "110000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-02T14:22:29.227Z",
+    "updated_at": "2026-02-02T14:22:38.310Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 72,
+  "fields": {
+    "reference": "EXOTIC-a577556dd0cb",
+    "email": "abulyaqs@gmail.com",
+    "amount": "110000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-02T17:07:37.435Z",
+    "updated_at": "2026-02-02T17:07:53.949Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 73,
+  "fields": {
+    "reference": "EXOTIC-03fd3023e3cc",
+    "email": "abulyaqs@gmail.com",
+    "amount": "110000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-02-03T10:50:36.377Z",
+    "updated_at": "2026-02-03T10:50:36.377Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 74,
+  "fields": {
+    "reference": "EXOTIC-3322c9fb6373",
+    "email": "abulyaqs@gmail.com",
+    "amount": "110000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-03T10:52:19.542Z",
+    "updated_at": "2026-02-03T10:52:31.161Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 75,
+  "fields": {
+    "reference": "EXOTIC-21af517e4121",
+    "email": "abulyaqs@gmail.com",
+    "amount": "110000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-03T10:53:07.782Z",
+    "updated_at": "2026-02-03T10:53:15.548Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 76,
+  "fields": {
+    "reference": "EXOTIC-1c92e1cda4ca",
+    "email": "abulyaqs@gmail.com",
+    "amount": "110000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-03T23:53:54.420Z",
+    "updated_at": "2026-02-03T14:54:18.336Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 77,
+  "fields": {
+    "reference": "EXOTIC-01223e8fb561",
+    "email": "abulyaqs@gmail.com",
+    "amount": "110000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-05T00:37:31.602Z",
+    "updated_at": "2026-02-05T00:38:06.871Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 78,
+  "fields": {
+    "reference": "EXOTIC-de0e9dddfe2f",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-04T19:23:16.134Z",
+    "updated_at": "2026-02-04T19:23:31.411Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 79,
+  "fields": {
+    "reference": "EXOTIC-1ae99e4abf7d",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-04T20:35:38.486Z",
+    "updated_at": "2026-02-04T20:35:46.357Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 80,
+  "fields": {
+    "reference": "EXOTIC-2d8f707453c0",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-04T20:38:48.785Z",
+    "updated_at": "2026-02-04T20:38:55.699Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 81,
+  "fields": {
+    "reference": "EXOTIC-eb5ae2afdddc",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-04T20:52:33.685Z",
+    "updated_at": "2026-02-04T20:54:06.253Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 82,
+  "fields": {
+    "reference": "EXOTIC-d0b08b54c1d6",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-04T20:57:04.232Z",
+    "updated_at": "2026-02-04T20:57:10.969Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 83,
+  "fields": {
+    "reference": "EXOTIC-73a7c20bd361",
+    "email": "abulyaqs@gmail.com",
+    "amount": "98000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-05T07:08:28.713Z",
+    "updated_at": "2026-02-04T22:09:54.114Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 84,
+  "fields": {
+    "reference": "EXOTIC-56ef6d135e2e",
+    "email": "abulyaqs@gmail.com",
+    "amount": "98000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-04T22:13:11.503Z",
+    "updated_at": "2026-02-04T22:13:21.803Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 85,
+  "fields": {
+    "reference": "EXOTIC-a4280766fd0a",
+    "email": "abulyaqs@gmail.com",
+    "amount": "98000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-04T22:22:09.229Z",
+    "updated_at": "2026-02-04T22:22:18.527Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 86,
+  "fields": {
+    "reference": "EXOTIC-f94ec94db9d7",
+    "email": "abulyaqs@gmail.com",
+    "amount": "98000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-02-04T22:49:26.877Z",
+    "updated_at": "2026-02-04T22:49:26.877Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 87,
+  "fields": {
+    "reference": "EXOTIC-3f87a8864e36",
+    "email": "abulyaqs@gmail.com",
+    "amount": "98000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-02-04T22:50:13.436Z",
+    "updated_at": "2026-02-04T22:50:21.608Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 88,
+  "fields": {
+    "reference": "EXOTIC-c941caa80919",
+    "email": "abulyaqs@gmail.com",
+    "amount": "98000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-03-26T09:32:12.111Z",
+    "updated_at": "2026-03-26T09:32:29.526Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 89,
+  "fields": {
+    "reference": "EXOTIC-89d0b9c2fd5e",
+    "email": "abulyaqs@gmail.com",
+    "amount": "334000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-03-26T12:31:14.749Z",
+    "updated_at": "2026-03-26T12:31:23.281Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 90,
+  "fields": {
+    "reference": "EXOTIC-b24fe8abd650",
+    "email": "abulyaqs@gmail.com",
+    "amount": "236000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-03-26T12:42:24.316Z",
+    "updated_at": "2026-03-26T12:42:39.375Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 91,
+  "fields": {
+    "reference": "EXOTIC-a3da098ab8f1",
+    "email": "abulyaqs@gmail.com",
+    "amount": "146000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-03-26T12:45:55.446Z",
+    "updated_at": "2026-03-26T12:46:03.089Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 92,
+  "fields": {
+    "reference": "EXOTIC-0ca83da8f46f",
+    "email": "abulyaqs@gmail.com",
+    "amount": "276000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-03-26T13:29:23.136Z",
+    "updated_at": "2026-03-26T13:30:13.097Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 93,
+  "fields": {
+    "reference": "EXOTIC-359734896d9d",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-10T14:36:34.505Z",
+    "updated_at": "2026-06-10T14:36:45.440Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 94,
+  "fields": {
+    "reference": "EXOTIC-44fa7af9f7a1",
+    "email": "abulyaqss@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-10T14:57:29.214Z",
+    "updated_at": "2026-06-10T14:57:36.980Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 95,
+  "fields": {
+    "reference": "EXOTIC-081460d1bf2a",
+    "email": "abuldyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-10T15:02:30.425Z",
+    "updated_at": "2026-06-10T15:02:38.151Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 96,
+  "fields": {
+    "reference": "EXOTIC-3deb8fca8bad",
+    "email": "yaksabdul@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-10T17:59:39.091Z",
+    "updated_at": "2026-06-10T17:59:47.853Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 97,
+  "fields": {
+    "reference": "EXOTIC-ba626ad813f9",
+    "email": "abualmashkur@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-10T19:41:34.923Z",
+    "updated_at": "2026-06-10T19:41:43.501Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 98,
+  "fields": {
+    "reference": "EXOTIC-4d381b9b6db7",
+    "email": "abualmashkur@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-10T20:29:18.166Z",
+    "updated_at": "2026-06-10T20:29:34.523Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 99,
+  "fields": {
+    "reference": "EXOTIC-5e21f11bdbae",
+    "email": "yaqsabdul@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-10T20:35:55.128Z",
+    "updated_at": "2026-06-10T20:36:03.963Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 100,
+  "fields": {
+    "reference": "EXOTIC-b4e61f99a330",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T09:28:43.875Z",
+    "updated_at": "2026-06-11T09:28:54.950Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 101,
+  "fields": {
+    "reference": "EXOTIC-a188b672dd03",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T09:36:15.387Z",
+    "updated_at": "2026-06-11T09:36:22.976Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 102,
+  "fields": {
+    "reference": "EXOTIC-ba60fb50a414",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T10:39:43.939Z",
+    "updated_at": "2026-06-11T10:39:52.414Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 103,
+  "fields": {
+    "reference": "EXOTIC-09ba73c1608e",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T14:51:15.631Z",
+    "updated_at": "2026-06-11T14:51:24.346Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 104,
+  "fields": {
+    "reference": "EXOTIC-235569da13d5",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T14:52:50.721Z",
+    "updated_at": "2026-06-11T14:52:59.313Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 105,
+  "fields": {
+    "reference": "EXOTIC-41e797ee245d",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T14:58:16.516Z",
+    "updated_at": "2026-06-11T14:58:23.267Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 106,
+  "fields": {
+    "reference": "EXOTIC-e41c66efd194",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T15:07:23.230Z",
+    "updated_at": "2026-06-11T15:07:29.988Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 107,
+  "fields": {
+    "reference": "EXOTIC-1ed9ae4880a4",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T15:12:37.350Z",
+    "updated_at": "2026-06-11T15:12:45.669Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 108,
+  "fields": {
+    "reference": "EXOTIC-26ebd7497b3d",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T15:53:25.865Z",
+    "updated_at": "2026-06-11T15:53:37.717Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 109,
+  "fields": {
+    "reference": "EXOTIC-1ccd2075c354",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T15:55:58.445Z",
+    "updated_at": "2026-06-11T15:56:08.394Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 110,
+  "fields": {
+    "reference": "EXOTIC-dc73861476f9",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T16:05:52.696Z",
+    "updated_at": "2026-06-11T16:06:00.659Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 111,
+  "fields": {
+    "reference": "EXOTIC-862a4faf3a4a",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T16:22:15.186Z",
+    "updated_at": "2026-06-11T16:22:22.433Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 112,
+  "fields": {
+    "reference": "EXOTIC-a6b9041989af",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T16:38:14.363Z",
+    "updated_at": "2026-06-11T16:38:21.362Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 113,
+  "fields": {
+    "reference": "EXOTIC-26b83b45c3b8",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T16:44:28.648Z",
+    "updated_at": "2026-06-11T16:44:38.597Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 114,
+  "fields": {
+    "reference": "EXOTIC-fcd01a63f9c3",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T16:49:22.777Z",
+    "updated_at": "2026-06-11T16:49:29.560Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 115,
+  "fields": {
+    "reference": "EXOTIC-2d43b4cdd10a",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T16:52:53.925Z",
+    "updated_at": "2026-06-11T16:53:01.181Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 116,
+  "fields": {
+    "reference": "EXOTIC-5dec0a2babab",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T17:02:22.895Z",
+    "updated_at": "2026-06-11T17:02:32.378Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 117,
+  "fields": {
+    "reference": "EXOTIC-a16391ede470",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T17:05:22.314Z",
+    "updated_at": "2026-06-11T17:05:29.208Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 118,
+  "fields": {
+    "reference": "EXOTIC-8ad817ec6847",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-11T17:12:41.378Z",
+    "updated_at": "2026-06-11T17:12:51.590Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 119,
+  "fields": {
+    "reference": "EXOTIC-bcde43b621ac",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-15T16:34:33.110Z",
+    "updated_at": "2026-06-15T16:34:49.399Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 120,
+  "fields": {
+    "reference": "EXOTIC-12184b5cef6a",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-16T10:52:24.788Z",
+    "updated_at": "2026-06-16T10:52:41.172Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 121,
+  "fields": {
+    "reference": "EXOTIC-ba232b14ef5a",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-16T12:12:03.554Z",
+    "updated_at": "2026-06-16T12:12:11.397Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 122,
+  "fields": {
+    "reference": "EXOTIC-1df6936f2fad",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-16T13:01:32.495Z",
+    "updated_at": "2026-06-16T13:01:40.752Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 123,
+  "fields": {
+    "reference": "EXOTIC-16be8d50ae81",
+    "email": "abulyaqs@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-06-16T13:23:20.575Z",
+    "updated_at": "2026-06-16T13:23:20.575Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 124,
+  "fields": {
+    "reference": "EXOTIC-ee6f0fb6bfe8",
+    "email": "abulyaqs@gmail.com",
+    "amount": "224000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-16T13:23:51.861Z",
+    "updated_at": "2026-06-16T13:23:58.378Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 125,
+  "fields": {
+    "reference": "EXOTIC-52d6564f91c6",
+    "email": "abulyaqs@gmail.com",
+    "amount": "580000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-06-16T13:37:38.574Z",
+    "updated_at": "2026-06-16T13:37:38.574Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 126,
+  "fields": {
+    "reference": "EXOTIC-f3ff5a83e9ff",
+    "email": "abulyaqs@gmail.com",
+    "amount": "448000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-16T13:38:03.467Z",
+    "updated_at": "2026-06-16T13:38:09.996Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 127,
+  "fields": {
+    "reference": "EXOTIC-24016c7beab1",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-16T14:13:04.638Z",
+    "updated_at": "2026-06-16T14:13:17.894Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 128,
+  "fields": {
+    "reference": "EXOTIC-562943ed8b16",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-17T12:12:54.945Z",
+    "updated_at": "2026-06-17T12:13:09.675Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 129,
+  "fields": {
+    "reference": "EXOTIC-19f100987105",
+    "email": "abualmashkur@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-17T12:27:28.530Z",
+    "updated_at": "2026-06-17T12:27:38.921Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 130,
+  "fields": {
+    "reference": "EXOTIC-4f4200d70cb1",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-17T13:15:13.832Z",
+    "updated_at": "2026-06-17T13:15:22.084Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 131,
+  "fields": {
+    "reference": "EXOTIC-169efdb4bc85",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-17T13:20:08.934Z",
+    "updated_at": "2026-06-17T13:20:16.719Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 132,
+  "fields": {
+    "reference": "EXOTIC-420a17276b34",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-17T13:33:54.362Z",
+    "updated_at": "2026-06-17T13:34:02.356Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 133,
+  "fields": {
+    "reference": "EXOTIC-b63565969a46",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-17T13:51:05.227Z",
+    "updated_at": "2026-06-17T13:51:13.063Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 134,
+  "fields": {
+    "reference": "EXOTIC-c276617612a2",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-18T14:46:53.373Z",
+    "updated_at": "2026-06-18T14:47:02.521Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 135,
+  "fields": {
+    "reference": "EXOTIC-cf8ce957c279",
+    "email": "yaksabdul@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-18T14:53:23.870Z",
+    "updated_at": "2026-06-18T14:53:41.049Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 136,
+  "fields": {
+    "reference": "EXOTIC-79ec2c417f09",
+    "email": "yaksabdul@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "pending",
+    "created_at": "2026-06-18T14:53:25.471Z",
+    "updated_at": "2026-06-18T14:53:25.471Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 137,
+  "fields": {
+    "reference": "EXOTIC-943a3d60f624",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "132000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-18T17:15:57.102Z",
+    "updated_at": "2026-06-18T17:16:16.676Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 138,
+  "fields": {
+    "reference": "EXOTIC-fed0a9e04736",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-20T10:32:55.925Z",
+    "updated_at": "2026-06-20T10:33:04.008Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 139,
+  "fields": {
+    "reference": "EXOTIC-a588cf405640",
+    "email": "abulyaqs@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-20T10:44:41.002Z",
+    "updated_at": "2026-06-20T10:44:48.430Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.transaction",
+  "pk": 140,
+  "fields": {
+    "reference": "EXOTIC-957f4aa306ba",
+    "email": "yaksabdul30@gmail.com",
+    "amount": "92000.00",
+    "currency": "NGN",
+    "status": "success",
+    "created_at": "2026-06-20T11:08:49.935Z",
+    "updated_at": "2026-06-20T11:08:59.527Z",
+    "order_id": null
+  }
+},
+{
+  "model": "payments.exchangerate",
+  "pk": 1,
+  "fields": {
+    "base": "NGN",
+    "target": "USD",
+    "rate": 0.0011,
+    "updated_at": "2026-02-02T14:16:07.966Z"
+  }
+},
+{
+  "model": "payments.exchangerate",
+  "pk": 2,
+  "fields": {
+    "base": "NGN",
+    "target": "GHS",
+    "rate": 0.012,
+    "updated_at": "2026-02-02T14:16:07.977Z"
+  }
+},
+{
+  "model": "payments.exchangerate",
+  "pk": 3,
+  "fields": {
+    "base": "NGN",
+    "target": "XOF",
+    "rate": 0.012,
+    "updated_at": "2026-02-02T14:16:08.024Z"
+  }
+},
+{
+  "model": "payments.exchangerate",
+  "pk": 4,
+  "fields": {
+    "base": "NGN",
+    "target": "EUR",
+    "rate": 0.000607,
+    "updated_at": "2026-02-03T12:09:12.169Z"
+  }
+},
+{
+  "model": "shipping.shippingmethod",
+  "pk": 2,
+  "fields": {
+    "name": "Seller Shipping",
+    "provider": "seller",
+    "active": true
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 4,
+  "fields": {
+    "method": 2,
+    "country": "NG",
+    "state": "Lagos",
+    "price_per_item": "2000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 5,
+  "fields": {
+    "method": 2,
+    "country": "NG",
+    "state": "*",
+    "price_per_item": "5000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 6,
+  "fields": {
+    "method": 2,
+    "country": "GH",
+    "state": "*",
+    "price_per_item": "8000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 7,
+  "fields": {
+    "method": 2,
+    "country": "BJ",
+    "state": "*",
+    "price_per_item": "16000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 8,
+  "fields": {
+    "method": 2,
+    "country": "TG",
+    "state": "*",
+    "price_per_item": "16000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 9,
+  "fields": {
+    "method": 2,
+    "country": "NE",
+    "state": "*",
+    "price_per_item": "16000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 10,
+  "fields": {
+    "method": 2,
+    "country": "BF",
+    "state": "*",
+    "price_per_item": "16000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 11,
+  "fields": {
+    "method": 2,
+    "country": "ML",
+    "state": "*",
+    "price_per_item": "16000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 12,
+  "fields": {
+    "method": 2,
+    "country": "SN",
+    "state": "*",
+    "price_per_item": "16000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 13,
+  "fields": {
+    "method": 2,
+    "country": "CI",
+    "state": "*",
+    "price_per_item": "16000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 14,
+  "fields": {
+    "method": 2,
+    "country": "GW",
+    "state": "*",
+    "price_per_item": "16000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 15,
+  "fields": {
+    "method": 2,
+    "country": "US",
+    "state": "*",
+    "price_per_item": "20000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 16,
+  "fields": {
+    "method": 2,
+    "country": "CA",
+    "state": "*",
+    "price_per_item": "20000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 17,
+  "fields": {
+    "method": 2,
+    "country": "GB",
+    "state": "*",
+    "price_per_item": "20000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 18,
+  "fields": {
+    "method": 2,
+    "country": "DE",
+    "state": "*",
+    "price_per_item": "20000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 19,
+  "fields": {
+    "method": 2,
+    "country": "FR",
+    "state": "*",
+    "price_per_item": "20000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 20,
+  "fields": {
+    "method": 2,
+    "country": "NL",
+    "state": "*",
+    "price_per_item": "20000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 21,
+  "fields": {
+    "method": 2,
+    "country": "IT",
+    "state": "*",
+    "price_per_item": "20000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 22,
+  "fields": {
+    "method": 2,
+    "country": "ES",
+    "state": "*",
+    "price_per_item": "20000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 23,
+  "fields": {
+    "method": 2,
+    "country": "AE",
+    "state": "*",
+    "price_per_item": "20000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 24,
+  "fields": {
+    "method": 2,
+    "country": "SA",
+    "state": "*",
+    "price_per_item": "20000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 25,
+  "fields": {
+    "method": 2,
+    "country": "QA",
+    "state": "*",
+    "price_per_item": "20000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 26,
+  "fields": {
+    "method": 2,
+    "country": "ZA",
+    "state": "*",
+    "price_per_item": "20000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 27,
+  "fields": {
+    "method": 2,
+    "country": "AU",
+    "state": "*",
+    "price_per_item": "20000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 28,
+  "fields": {
+    "method": 2,
+    "country": "CM",
+    "state": "*",
+    "price_per_item": "16000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 29,
+  "fields": {
+    "method": 2,
+    "country": "CF",
+    "state": "*",
+    "price_per_item": "16000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 30,
+  "fields": {
+    "method": 2,
+    "country": "TD",
+    "state": "*",
+    "price_per_item": "16000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 31,
+  "fields": {
+    "method": 2,
+    "country": "CG",
+    "state": "*",
+    "price_per_item": "16000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 32,
+  "fields": {
+    "method": 2,
+    "country": "GQ",
+    "state": "*",
+    "price_per_item": "16000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 33,
+  "fields": {
+    "method": 2,
+    "country": "GA",
+    "state": "*",
+    "price_per_item": "16000.00"
+  }
+},
+{
+  "model": "shipping.shippingrate",
+  "pk": 34,
+  "fields": {
+    "method": 2,
+    "country": "AT",
+    "state": "*",
+    "price_per_item": "20000.00"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 1,
+  "fields": {
+    "order": 16,
+    "method": null,
+    "cost": "0.00",
+    "tracking_number": "WAYBILL-16",
+    "status": "pending",
+    "provider_response": {},
+    "created_at": "2026-01-25T13:41:00.362Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 2,
+  "fields": {
+    "order": 17,
+    "method": null,
+    "cost": "0.00",
+    "tracking_number": "WAYBILL-17",
+    "status": "pending",
+    "provider_response": {},
+    "created_at": "2026-01-25T14:21:07.678Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 3,
+  "fields": {
+    "order": 18,
+    "method": null,
+    "cost": "6000.00",
+    "tracking_number": "SELLER-18",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-18",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-25T21:03:59.799Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 4,
+  "fields": {
+    "order": 19,
+    "method": null,
+    "cost": "4000.00",
+    "tracking_number": "SELLER-19",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-19",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-27T17:54:06.137Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 5,
+  "fields": {
+    "order": 20,
+    "method": null,
+    "cost": "6000.00",
+    "tracking_number": "SELLER-20",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-20",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-27T18:03:17.187Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 6,
+  "fields": {
+    "order": 21,
+    "method": null,
+    "cost": "6000.00",
+    "tracking_number": "SELLER-21",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-21",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-27T18:04:18.397Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 7,
+  "fields": {
+    "order": 22,
+    "method": null,
+    "cost": "2000.00",
+    "tracking_number": "SELLER-22",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-22",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-27T19:24:07.187Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 8,
+  "fields": {
+    "order": 23,
+    "method": null,
+    "cost": "2000.00",
+    "tracking_number": "SELLER-23",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-23",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-28T11:54:12.596Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 9,
+  "fields": {
+    "order": 24,
+    "method": null,
+    "cost": "4000.00",
+    "tracking_number": "SELLER-24",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-24",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-28T11:55:20.181Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 10,
+  "fields": {
+    "order": 25,
+    "method": null,
+    "cost": "2000.00",
+    "tracking_number": "SELLER-25",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-25",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-28T11:56:09.398Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 11,
+  "fields": {
+    "order": 26,
+    "method": null,
+    "cost": "6000.00",
+    "tracking_number": "SELLER-26",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-26",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-28T12:00:12.563Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 12,
+  "fields": {
+    "order": 27,
+    "method": null,
+    "cost": "6000.00",
+    "tracking_number": "SELLER-27",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-27",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-28T13:29:57.501Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 13,
+  "fields": {
+    "order": 28,
+    "method": null,
+    "cost": "6000.00",
+    "tracking_number": "SELLER-28",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-28",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-28T13:43:36.154Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 14,
+  "fields": {
+    "order": 29,
+    "method": null,
+    "cost": "2000.00",
+    "tracking_number": "SELLER-29",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-29",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-28T13:44:41.434Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 15,
+  "fields": {
+    "order": 30,
+    "method": null,
+    "cost": "4000.00",
+    "tracking_number": "SELLER-30",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-30",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-28T14:34:57.574Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 16,
+  "fields": {
+    "order": 31,
+    "method": null,
+    "cost": "2000.00",
+    "tracking_number": "SELLER-31",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-31",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-28T15:33:14.752Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 17,
+  "fields": {
+    "order": 32,
+    "method": null,
+    "cost": "6000.00",
+    "tracking_number": "SELLER-32",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-32",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-29T15:16:29.388Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 18,
+  "fields": {
+    "order": 33,
+    "method": null,
+    "cost": "0.00",
+    "tracking_number": "SELLER-33",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-33",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-29T20:17:37.766Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 19,
+  "fields": {
+    "order": 34,
+    "method": null,
+    "cost": "0.00",
+    "tracking_number": "SELLER-34",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-34",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-29T20:22:56.376Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 20,
+  "fields": {
+    "order": 35,
+    "method": null,
+    "cost": "0.00",
+    "tracking_number": "SELLER-35",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-35",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-30T09:13:58.531Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 21,
+  "fields": {
+    "order": 36,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-36",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-36",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-30T14:35:30.232Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 22,
+  "fields": {
+    "order": 37,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-37",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-37",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-31T14:24:19.393Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 23,
+  "fields": {
+    "order": 38,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-38",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-38",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-31T14:25:17.738Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 24,
+  "fields": {
+    "order": 39,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-39",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-39",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-01-31T14:27:23.360Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 25,
+  "fields": {
+    "order": 42,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-42",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-42",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-02T11:28:26.362Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 26,
+  "fields": {
+    "order": 43,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-43",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-43",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-02T11:35:40.538Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 27,
+  "fields": {
+    "order": 44,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-44",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-44",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-02T14:22:38.388Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 28,
+  "fields": {
+    "order": 45,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-45",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-45",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-02T17:07:54.046Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 29,
+  "fields": {
+    "order": 46,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-46",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-46",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-03T10:52:31.232Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 30,
+  "fields": {
+    "order": 47,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-47",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-47",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-03T10:53:15.624Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 31,
+  "fields": {
+    "order": 48,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-48",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-48",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-03T14:54:18.386Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 32,
+  "fields": {
+    "order": 49,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-49",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-49",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-05T00:38:06.942Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 33,
+  "fields": {
+    "order": 50,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-50",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-50",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-04T19:23:31.852Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 34,
+  "fields": {
+    "order": 51,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-51",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-51",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-04T20:35:46.425Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 35,
+  "fields": {
+    "order": 52,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-52",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-52",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-04T20:38:55.775Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 36,
+  "fields": {
+    "order": 53,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-53",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-53",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-04T20:54:06.325Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 37,
+  "fields": {
+    "order": 54,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-54",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-54",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-04T20:57:11.066Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 38,
+  "fields": {
+    "order": 55,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-55",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-55",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-04T22:09:54.177Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 39,
+  "fields": {
+    "order": 56,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-56",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-56",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-04T22:13:21.893Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 40,
+  "fields": {
+    "order": 57,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-57",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-57",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-04T22:22:18.613Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 41,
+  "fields": {
+    "order": 58,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-58",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-58",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-02-04T22:50:21.669Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 42,
+  "fields": {
+    "order": 59,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-59",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-59",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-03-26T09:32:29.588Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 43,
+  "fields": {
+    "order": 60,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-60",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-60",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-03-26T12:31:23.408Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 44,
+  "fields": {
+    "order": 61,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-61",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-61",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-03-26T12:42:39.474Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 45,
+  "fields": {
+    "order": 62,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-62",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-62",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-03-26T12:46:03.177Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 46,
+  "fields": {
+    "order": 63,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-63",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-63",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-03-26T13:30:13.154Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 47,
+  "fields": {
+    "order": 64,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-64",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-64",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-10T14:36:45.519Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 48,
+  "fields": {
+    "order": 65,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-65",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-65",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-10T14:57:37.104Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 49,
+  "fields": {
+    "order": 66,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-66",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-66",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-10T15:02:38.233Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 50,
+  "fields": {
+    "order": 67,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-67",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-67",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-10T17:59:47.930Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 51,
+  "fields": {
+    "order": 68,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-68",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-68",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-10T19:41:43.649Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 52,
+  "fields": {
+    "order": 69,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-69",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-69",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-10T20:29:34.582Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 53,
+  "fields": {
+    "order": 70,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-70",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-70",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-10T20:36:04.083Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 54,
+  "fields": {
+    "order": 72,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-72",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-72",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T09:38:46.365Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 55,
+  "fields": {
+    "order": 73,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-73",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-73",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T10:42:13.454Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 56,
+  "fields": {
+    "order": 74,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-74",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-74",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T14:51:24.444Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 57,
+  "fields": {
+    "order": 75,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-75",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-75",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T14:53:08.123Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 58,
+  "fields": {
+    "order": 76,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-76",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-76",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T14:58:28.997Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 59,
+  "fields": {
+    "order": 77,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-77",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-77",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T15:07:34.182Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 60,
+  "fields": {
+    "order": 78,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-78",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-78",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T15:12:53.837Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 61,
+  "fields": {
+    "order": 79,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-79",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-79",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T15:53:37.815Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 62,
+  "fields": {
+    "order": 80,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-80",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-80",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T15:56:14.415Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 63,
+  "fields": {
+    "order": 81,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-81",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-81",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T16:06:00.767Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 64,
+  "fields": {
+    "order": 82,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-82",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-82",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T16:22:22.539Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 65,
+  "fields": {
+    "order": 83,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-83",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-83",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T16:38:21.469Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 66,
+  "fields": {
+    "order": 85,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-85",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-85",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T16:49:29.639Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 67,
+  "fields": {
+    "order": 86,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-86",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-86",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T16:53:09.204Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 68,
+  "fields": {
+    "order": 87,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-87",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-87",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T17:02:43.012Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 69,
+  "fields": {
+    "order": 88,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-88",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-88",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T17:05:38.739Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 70,
+  "fields": {
+    "order": 89,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-89",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-89",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-11T17:13:02.359Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 71,
+  "fields": {
+    "order": 90,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-90",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-90",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-15T16:39:15.743Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 72,
+  "fields": {
+    "order": 91,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-91",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-91",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-16T10:57:23.095Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 73,
+  "fields": {
+    "order": 92,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-92",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-92",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-16T12:16:55.429Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 74,
+  "fields": {
+    "order": 93,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-93",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-93",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-16T13:06:12.594Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 75,
+  "fields": {
+    "order": 94,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-94",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-94",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-16T13:24:02.921Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 76,
+  "fields": {
+    "order": 95,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-95",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-95",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-16T13:38:21.201Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 77,
+  "fields": {
+    "order": 96,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-96",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-96",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-16T14:13:29.181Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 78,
+  "fields": {
+    "order": 97,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-97",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-97",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-17T12:13:37.663Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 79,
+  "fields": {
+    "order": 98,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-98",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-98",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-17T12:27:44.705Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 80,
+  "fields": {
+    "order": 99,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-99",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-99",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-17T13:34:08.309Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 81,
+  "fields": {
+    "order": 100,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-100",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-100",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-17T13:51:21.419Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 82,
+  "fields": {
+    "order": 101,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-101",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-101",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-18T14:47:17.225Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 83,
+  "fields": {
+    "order": 102,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-102",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-102",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-18T14:53:49.709Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 84,
+  "fields": {
+    "order": 103,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-103",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-103",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-18T17:16:27.892Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 85,
+  "fields": {
+    "order": 104,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-104",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-104",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-20T10:33:12.658Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 86,
+  "fields": {
+    "order": 105,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-105",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-105",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-20T10:44:57.312Z"
+  }
+},
+{
+  "model": "shipping.shipment",
+  "pk": 87,
+  "fields": {
+    "order": 106,
+    "method": 2,
+    "cost": "0.00",
+    "tracking_number": "SELLER-106",
+    "status": "CREATED",
+    "provider_response": {
+      "tracking_number": "SELLER-106",
+      "provider": "seller",
+      "raw": {}
+    },
+    "created_at": "2026-06-20T11:09:06.743Z"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2024-06-10T13:20:46.259Z",
+    "user": 1,
+    "content_type": 2,
+    "object_id": "1",
+    "object_repr": "Swiss",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2024-06-10T13:22:34.600Z",
+    "user": 1,
+    "content_type": 5,
+    "object_id": "1",
+    "object_repr": "swiss-001",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2026-01-23T19:26:53.980Z",
+    "user": 2,
+    "content_type": 2,
+    "object_id": "2",
+    "object_repr": "swarovksi",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2026-01-23T19:29:27.692Z",
+    "user": 2,
+    "content_type": 5,
+    "object_id": "2",
+    "object_repr": "swarovksi",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"product variant\", \"object\": \"swarovksi - blue\"}}, {\"added\": {\"name\": \"product variant\", \"object\": \"swarovksi - yellow\"}}, {\"added\": {\"name\": \"product variant\", \"object\": \"swarovksi - green\"}}, {\"added\": {\"name\": \"product variant\", \"object\": \"swarovksi - brown\"}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2026-01-23T19:31:50.973Z",
+    "user": 2,
+    "content_type": 5,
+    "object_id": "3",
+    "object_repr": "swiss lace",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"product variant\", \"object\": \"swiss lace - blue\"}}, {\"added\": {\"name\": \"product variant\", \"object\": \"swiss lace - yellow\"}}, {\"added\": {\"name\": \"product variant\", \"object\": \"swiss lace - green\"}}, {\"added\": {\"name\": \"product variant\", \"object\": \"swiss lace - goldwirhblue\"}}, {\"added\": {\"name\": \"product variant\", \"object\": \"swiss lace - whitewithgold\"}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 6,
+  "fields": {
+    "action_time": "2026-01-28T13:42:21.269Z",
+    "user": 2,
+    "content_type": 5,
+    "object_id": "2",
+    "object_repr": "swarovksi",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"name\": \"product variant\", \"object\": \"swarovksi - blue\", \"fields\": [\"Stock\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 7,
+  "fields": {
+    "action_time": "2026-01-28T14:34:13.189Z",
+    "user": 2,
+    "content_type": 5,
+    "object_id": "2",
+    "object_repr": "swarovksi",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"name\": \"product variant\", \"object\": \"swarovksi - blue\", \"fields\": [\"Stock\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 8,
+  "fields": {
+    "action_time": "2026-06-08T12:04:41.138Z",
+    "user": 2,
+    "content_type": 9,
+    "object_id": "1",
+    "object_repr": "Customer",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 9,
+  "fields": {
+    "action_time": "2026-06-09T11:09:05.341Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "7",
+    "object_repr": "alameenu",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 10,
+  "fields": {
+    "action_time": "2026-06-09T11:11:53.379Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "6",
+    "object_repr": "yaqco",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 11,
+  "fields": {
+    "action_time": "2026-06-09T11:16:14.751Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "8",
+    "object_repr": "alameenu",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 12,
+  "fields": {
+    "action_time": "2026-06-09T11:19:04.905Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "9",
+    "object_repr": "abu",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 13,
+  "fields": {
+    "action_time": "2026-06-09T11:19:04.905Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "10",
+    "object_repr": "abuabu",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 14,
+  "fields": {
+    "action_time": "2026-06-09T11:41:53.317Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "11",
+    "object_repr": "abu1",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 15,
+  "fields": {
+    "action_time": "2026-06-09T11:48:54.591Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "12",
+    "object_repr": "bon",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 16,
+  "fields": {
+    "action_time": "2026-06-09T11:55:28.910Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "13",
+    "object_repr": "test",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 17,
+  "fields": {
+    "action_time": "2026-06-09T12:24:20.441Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "14",
+    "object_repr": "test2",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 18,
+  "fields": {
+    "action_time": "2026-06-11T10:36:58.177Z",
+    "user": 2,
+    "content_type": 5,
+    "object_id": "2",
+    "object_repr": "swarovksi",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"name\": \"product variant\", \"object\": \"swarovksi - blue\", \"fields\": [\"Stock\"]}}, {\"changed\": {\"name\": \"product variant\", \"object\": \"swarovksi - yellow\", \"fields\": [\"Stock\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 19,
+  "fields": {
+    "action_time": "2026-06-11T11:01:16.514Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "16",
+    "object_repr": "yaksabdul",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 20,
+  "fields": {
+    "action_time": "2026-06-11T11:03:44.733Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "17",
+    "object_repr": "yaksabdul",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 21,
+  "fields": {
+    "action_time": "2026-06-11T11:06:41.878Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "18",
+    "object_repr": "test4",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 22,
+  "fields": {
+    "action_time": "2026-06-11T14:30:11.089Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "19",
+    "object_repr": "yaksabdul",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 23,
+  "fields": {
+    "action_time": "2026-06-11T14:43:57.937Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "20",
+    "object_repr": "yaksabdul",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 24,
+  "fields": {
+    "action_time": "2026-06-11T14:57:47.262Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "21",
+    "object_repr": "yaksabdul",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 25,
+  "fields": {
+    "action_time": "2026-06-11T17:15:49.655Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "15",
+    "object_repr": "test3",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 26,
+  "fields": {
+    "action_time": "2026-06-11T17:59:46.912Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "23",
+    "object_repr": "yeaster4",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 27,
+  "fields": {
+    "action_time": "2026-06-11T18:10:54.074Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "24",
+    "object_repr": "test8",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 28,
+  "fields": {
+    "action_time": "2026-06-11T18:51:06.110Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "25",
+    "object_repr": "test8",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 29,
+  "fields": {
+    "action_time": "2026-06-11T19:35:32.487Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "26",
+    "object_repr": "test6",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 30,
+  "fields": {
+    "action_time": "2026-06-11T19:47:12.058Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "27",
+    "object_repr": "testerw",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 31,
+  "fields": {
+    "action_time": "2026-06-11T20:04:59.325Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "28",
+    "object_repr": "testerw",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 32,
+  "fields": {
+    "action_time": "2026-06-12T15:54:10.255Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "29",
+    "object_repr": "testerw",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 33,
+  "fields": {
+    "action_time": "2026-06-12T16:16:52.978Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "30",
+    "object_repr": "testery",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 34,
+  "fields": {
+    "action_time": "2026-06-12T16:23:38.120Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "31",
+    "object_repr": "testery",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 35,
+  "fields": {
+    "action_time": "2026-06-12T16:49:26.892Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "32",
+    "object_repr": "testery",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 36,
+  "fields": {
+    "action_time": "2026-06-12T17:09:09.669Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "33",
+    "object_repr": "testery",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 37,
+  "fields": {
+    "action_time": "2026-06-12T17:29:44.217Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "34",
+    "object_repr": "testery",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 38,
+  "fields": {
+    "action_time": "2026-06-12T17:31:46.045Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "35",
+    "object_repr": "testery",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 39,
+  "fields": {
+    "action_time": "2026-06-12T17:41:05.793Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "36",
+    "object_repr": "testery",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 40,
+  "fields": {
+    "action_time": "2026-06-15T16:47:34.599Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "37",
+    "object_repr": "testery2",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 41,
+  "fields": {
+    "action_time": "2026-06-15T16:59:41.817Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "38",
+    "object_repr": "testerynew",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 42,
+  "fields": {
+    "action_time": "2026-06-15T18:11:21.402Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "39",
+    "object_repr": "testerynew",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 43,
+  "fields": {
+    "action_time": "2026-06-17T10:41:36.578Z",
+    "user": 2,
+    "content_type": 15,
+    "object_id": "2",
+    "object_repr": "localhost:8000",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 44,
+  "fields": {
+    "action_time": "2026-06-17T10:42:01.723Z",
+    "user": 2,
+    "content_type": 15,
+    "object_id": "1",
+    "object_repr": "example.com",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 45,
+  "fields": {
+    "action_time": "2026-06-17T12:22:24.652Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "40",
+    "object_repr": "manu",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 46,
+  "fields": {
+    "action_time": "2026-06-17T13:11:15.384Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "22",
+    "object_repr": "tester1",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 47,
+  "fields": {
+    "action_time": "2026-06-17T13:30:31.025Z",
+    "user": 2,
+    "content_type": 10,
+    "object_id": "42",
+    "object_repr": "manmusa",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 48,
+  "fields": {
+    "action_time": "2026-06-17T14:07:57.993Z",
+    "user": 2,
+    "content_type": 5,
+    "object_id": "2",
+    "object_repr": "swarovksi",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"name\": \"product variant\", \"object\": \"swarovksi - blue\", \"fields\": [\"Stock\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 49,
+  "fields": {
+    "action_time": "2026-06-17T14:08:20.447Z",
+    "user": 2,
+    "content_type": 5,
+    "object_id": "2",
+    "object_repr": "swarovksi",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"name\": \"product variant\", \"object\": \"swarovksi - yellow\", \"fields\": [\"Stock\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 50,
+  "fields": {
+    "action_time": "2026-06-17T14:08:35.771Z",
+    "user": 2,
+    "content_type": 5,
+    "object_id": "2",
+    "object_repr": "swarovksi",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"name\": \"product variant\", \"object\": \"swarovksi - green\", \"fields\": [\"Stock\"]}}, {\"changed\": {\"name\": \"product variant\", \"object\": \"swarovksi - brown\", \"fields\": [\"Stock\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 51,
+  "fields": {
+    "action_time": "2026-06-17T14:09:46.173Z",
+    "user": 2,
+    "content_type": 5,
+    "object_id": "3",
+    "object_repr": "swiss lace",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"name\": \"product variant\", \"object\": \"swiss lace - blue\", \"fields\": [\"Stock\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 52,
+  "fields": {
+    "action_time": "2026-06-17T14:10:08.044Z",
+    "user": 2,
+    "content_type": 5,
+    "object_id": "3",
+    "object_repr": "swiss lace",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"name\": \"product variant\", \"object\": \"swiss lace - yellow\", \"fields\": [\"Stock\"]}}, {\"changed\": {\"name\": \"product variant\", \"object\": \"swiss lace - green\", \"fields\": [\"Stock\"]}}, {\"changed\": {\"name\": \"product variant\", \"object\": \"swiss lace - goldwirhblue\", \"fields\": [\"Stock\"]}}, {\"changed\": {\"name\": \"product variant\", \"object\": \"swiss lace - whitewithgold\", \"fields\": [\"Stock\"]}}]"
+  }
+},
+{
+  "model": "auth.group",
+  "pk": 1,
+  "fields": {
+    "name": "Customer",
+    "permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$oYuoOLnY6xR4PaU9oBDgD4$aenEjf0aonOKIlMzpj8Y/E2vqj/qN/DR9hcbwr2+RlI=",
+    "last_login": "2024-06-10T13:16:43.165Z",
+    "is_superuser": true,
+    "username": "yaqs",
+    "first_name": "",
+    "last_name": "",
+    "email": "abulyaqs@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2024-06-10T13:16:14.369Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$0lha5D5gWVM1ebiTMaXXKE$CO0+3T75vH5yELxdL4Eswbvbk6hhd81FJ7LC23ECjXc=",
+    "last_login": "2026-06-20T11:38:27.828Z",
+    "is_superuser": true,
+    "username": "abdulyaqs",
+    "first_name": "",
+    "last_name": "",
+    "email": "abulyaqs@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-01-23T19:24:59.263Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$OCVVNkm6gD7s36rIOeJezZ$jfEBUmG+x6LfNFs48GcaxnJUxmCFLYOG9NwVa/Z6Uj8=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "idu",
+    "first_name": "idris",
+    "last_name": "umar",
+    "email": "idu@gmail.com",
+    "is_staff": false,
+    "is_active": false,
+    "date_joined": "2026-06-08T13:49:49.779Z",
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$BOSzbEQ2HwWjtUS5D96xuo$zl7pJCHNw9rVueyspqpolUE07q8K51IvbNOFayofD8w=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "manmaskur",
+    "first_name": "idris",
+    "last_name": "Almashkur",
+    "email": "mashuridris@gmail.com",
+    "is_staff": false,
+    "is_active": false,
+    "date_joined": "2026-06-08T14:31:36.866Z",
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$rQYKv4FZQYjCL56xZRg56H$a/PxoG9kvm8U/bixmaY34VVVudD9Z7MN/WcGhuzvAag=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "hubmas",
+    "first_name": "idris",
+    "last_name": "Almashkur",
+    "email": "hubmas@gmail.com",
+    "is_staff": false,
+    "is_active": false,
+    "date_joined": "2026-06-08T14:51:42.243Z",
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 41,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$IipTzxl0SPJxsF5vedG23Z$h2OKla4ptMqNDMY5YEeqeqNds0XFN1CFo/AtF4lzm9w=",
+    "last_login": "2026-06-17T12:27:01.660Z",
+    "is_superuser": false,
+    "username": "idyaqs",
+    "first_name": "idris",
+    "last_name": "yaqub",
+    "email": "abualmashkur@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-17T12:23:22.737Z",
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 43,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$J0KC43Yezae7aluLC1Ism7$2EakmwI/FcEPcfEtgUJJXGL+BuM6H2b+MwjG0QgtBQQ=",
+    "last_login": "2026-06-20T10:32:25.016Z",
+    "is_superuser": false,
+    "username": "manmusa",
+    "first_name": "Man",
+    "last_name": "Musa",
+    "email": "yaksabdul30@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-17T13:31:44.016Z",
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "sites.site",
+  "pk": 2,
+  "fields": {
+    "domain": "localhost:8000",
+    "name": "Exotic Laces Store"
+  }
+},
+{
+  "model": "account.emailaddress",
+  "pk": 1,
+  "fields": {
+    "user": 3,
+    "email": "idu@gmail.com",
+    "verified": false,
+    "primary": false
+  }
+},
+{
+  "model": "account.emailaddress",
+  "pk": 2,
+  "fields": {
+    "user": 4,
+    "email": "mashuridris@gmail.com",
+    "verified": false,
+    "primary": false
+  }
+},
+{
+  "model": "account.emailaddress",
+  "pk": 3,
+  "fields": {
+    "user": 5,
+    "email": "hubmas@gmail.com",
+    "verified": false,
+    "primary": false
+  }
+},
+{
+  "model": "account.emailaddress",
+  "pk": 39,
+  "fields": {
+    "user": 41,
+    "email": "abualmashkur@gmail.com",
+    "verified": true,
+    "primary": true
+  }
+},
+{
+  "model": "account.emailaddress",
+  "pk": 41,
+  "fields": {
+    "user": 43,
+    "email": "yaksabdul30@gmail.com",
+    "verified": true,
+    "primary": true
+  }
+}
+]

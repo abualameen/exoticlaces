@@ -60,12 +60,12 @@
 
 
                 </td>
-				<td>${{ item.sub_total }}</td>
+				<td>{{ item.sub_total|money:ACTIVE_CURRENCY }}</td>
 			</tr>
 			{% endfor %}
 			<tr>
 				<td colspan="3" style="text-align: right;"><b>Total</b></td>
-				<td>${{ transaction.total|money:ACTIVE_CURRENCY  }}</td>
+				<td>{{ transaction.total|money:ACTIVE_CURRENCY  }}</td>
 			</tr>
 			<tr>
 				<td colspan="3" style="text-align: right;"><b>Total paid</b></td>
@@ -90,8 +90,8 @@
 		<center>
 			<br>
 			<p>If you are a registered customer and want to check your order history,
-        please <a href="{% url 'signin' %}">sign in</a>.
-        <br>Otherwise <a href="{% url 'signup' %}">sign up</a>
+        please <a href="http://127.0.0.1:8000/account/signin/">sign in</a>.
+        <br>Otherwise <a href="http://127.0.0.1:8000/account/create/">sign up</a>
         to create a new account with us.</p>
 		</center>
 	</body>
