@@ -11,20 +11,27 @@ echo "=========================================="
 echo "Starting MariaDB..."
 service mariadb start
 
-# Wait for MariaDB
+# Wait for MariaDB to be ready
 echo "Waiting for MariaDB to be ready..."
-sleep 5
+for i in {1..30}; do
+    if mysqladmin ping -h localhost --silent 2>/dev/null; then
+        echo "MariaDB is ready!"
+        break
+    fi
+    echo "Waiting for MariaDB... ($i/30)"
+    sleep 2
+done
 
-# Check if MariaDB is running
-if ! mysqladmin ping -h localhost --silent; then
-    echo "ERROR: MariaDB failed to start!"
-    exit 1
-fi
-
-echo "MariaDB is ready!"
-
-# Set up database
+# Set up database - Use mysql with proper authentication
 echo "Setting up database..."
+
+# First, set root password if not set
+mysql -u root <<EOF
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+FLUSH PRIVILEGES;
+EOF
+
+# Now create database and user
 mysql -u root <<EOF
 CREATE DATABASE IF NOT EXISTS exoticlaces_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER IF NOT EXISTS 'exoticlaces_user'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';
