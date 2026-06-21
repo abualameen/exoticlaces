@@ -11,6 +11,9 @@ logger = logging.getLogger(__name__)
 API_URL = f"https://v6.exchangerate-api.com/v6/{settings.EXCHANGE_RATE_API_KEY}/latest/NGN"
 
 
+
+
+
 def update_exchange_rates():
     """
     Fetch rates from ExchangeRate-API and store in DB.
