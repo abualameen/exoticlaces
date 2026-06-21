@@ -21,6 +21,8 @@ RUN apt-get update && apt-get install -y \
 # Set up MariaDB data directory
 RUN mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
 
+
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

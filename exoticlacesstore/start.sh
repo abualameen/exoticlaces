@@ -22,17 +22,13 @@ for i in {1..30}; do
     sleep 2
 done
 
-# Set up database - Use mysql with proper authentication
+# Set root password and create database
 echo "Setting up database..."
 
-# First, set root password if not set
-mysql -u root <<EOF
+# Use mysql with --skip-password to avoid auth issues
+mysql -u root --skip-password <<EOF
 ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 FLUSH PRIVILEGES;
-EOF
-
-# Now create database and user
-mysql -u root <<EOF
 CREATE DATABASE IF NOT EXISTS exoticlaces_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER IF NOT EXISTS 'exoticlaces_user'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';
 GRANT ALL PRIVILEGES ON exoticlaces_db.* TO 'exoticlaces_user'@'localhost';
