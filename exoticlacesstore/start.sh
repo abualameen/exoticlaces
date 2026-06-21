@@ -7,11 +7,13 @@ echo "=========================================="
 echo "Starting Exotic Laces Store..."
 echo "=========================================="
 
-# Start MariaDB
-echo "Starting MariaDB..."
+# Set root password
+export MYSQL_ROOT_PASSWORD="root123"
+
+# Start MariaDB with root password set
 service mariadb start
 
-# Wait for MariaDB to be ready
+# Wait for MariaDB
 echo "Waiting for MariaDB to be ready..."
 for i in {1..30}; do
     if mysqladmin ping -h localhost --silent 2>/dev/null; then
@@ -22,13 +24,11 @@ for i in {1..30}; do
     sleep 2
 done
 
-# Set root password and create database
-echo "Setting up database..."
+# Set root password if not already set
+mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}'; FLUSH PRIVILEGES;" 2>/dev/null || true
 
-# Use mysql with --skip-password to avoid auth issues
-mysql -u root --skip-password <<EOF
-ALTER USER 'root'@'localhost' IDENTIFIED BY '';
-FLUSH PRIVILEGES;
+# Create database and user using root password
+mysql -u root -p"${MYSQL_ROOT_PASSWORD}" <<EOF
 CREATE DATABASE IF NOT EXISTS exoticlaces_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER IF NOT EXISTS 'exoticlaces_user'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';
 GRANT ALL PRIVILEGES ON exoticlaces_db.* TO 'exoticlaces_user'@'localhost';
