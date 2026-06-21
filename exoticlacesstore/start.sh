@@ -7,54 +7,33 @@ echo "=========================================="
 echo "Starting Exotic Laces Store..."
 echo "=========================================="
 
-# Initialize MariaDB data directory if empty
-if [ ! -d "/var/lib/mysql/mysql" ]; then
-    echo "Initializing MariaDB data directory..."
-    mysql_install_db --user=mysql --datadir=/var/lib/mysql
-fi
+# Start MySQL
+echo "Starting MySQL..."
+service mysql start
 
-# Start MariaDB
-echo "Starting MariaDB..."
-service mariadb start
-
-# Wait for MariaDB to be ready
-echo "Waiting for MariaDB to be ready..."
+# Wait for MySQL
+echo "Waiting for MySQL to be ready..."
 for i in {1..30}; do
     if mysqladmin ping -h localhost --silent 2>/dev/null; then
-        echo "MariaDB is ready!"
+        echo "MySQL is ready!"
         break
     fi
-    echo "Waiting for MariaDB... ($i/30)"
+    echo "Waiting for MySQL... ($i/30)"
     sleep 2
 done
 
-# Check if root password is already set
 echo "Setting up database..."
 
-# Try to set root password and create database
-mysql -u root <<EOF 2>/dev/null
-ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';
-FLUSH PRIVILEGES;
+# Create database and user using root with no password (MySQL default in container)
+mysql -u root <<EOF
 CREATE DATABASE IF NOT EXISTS exoticlaces_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER IF NOT EXISTS 'exoticlaces_user'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';
 GRANT ALL PRIVILEGES ON exoticlaces_db.* TO 'exoticlaces_user'@'localhost';
 FLUSH PRIVILEGES;
 EOF
-
-# If the above failed, try with password
-if [ $? -ne 0 ]; then
-    echo "Trying with root password..."
-    mysql -u root -p"${DB_PASSWORD}" <<EOF 2>/dev/null
-CREATE DATABASE IF NOT EXISTS exoticlaces_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER IF NOT EXISTS 'exoticlaces_user'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';
-GRANT ALL PRIVILEGES ON exoticlaces_db.* TO 'exoticlaces_user'@'localhost';
-FLUSH PRIVILEGES;
-EOF
-fi
 
 # Verify database setup
-echo "Verifying database setup..."
-if mysql -u root -p"${DB_PASSWORD}" -e "USE exoticlaces_db;" 2>/dev/null; then
+if mysql -u root -e "USE exoticlaces_db;" 2>/dev/null; then
     echo "✓ Database setup successful!"
 else
     echo "⚠️ Database setup failed, but continuing..."

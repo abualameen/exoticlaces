@@ -7,18 +7,18 @@ ENV DJANGO_SETTINGS_MODULE=exoticlacesstore.settings
 
 WORKDIR /app
 
-# Install system dependencies including MariaDB
+# Install system dependencies including MySQL (not MariaDB)
 RUN apt-get update && apt-get install -y \
     default-libmysqlclient-dev \
     build-essential \
     pkg-config \
-    mariadb-server \
-    mariadb-client \
+    mysql-server \
+    mysql-client \
     netcat-openbsd \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Create MariaDB data directory with proper permissions
+# Set up MySQL data directory
 RUN mkdir -p /var/run/mysqld /var/lib/mysql && \
     chown -R mysql:mysql /var/run/mysqld /var/lib/mysql
 
