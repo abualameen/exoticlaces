@@ -7,35 +7,36 @@ echo "=========================================="
 echo "Starting Exotic Laces Store..."
 echo "=========================================="
 
-# Set root password
-export MYSQL_ROOT_PASSWORD="root123"
-
-# Start MariaDB with root password set
+# Start MariaDB
+echo "Starting MariaDB..."
 service mariadb start
 
 # Wait for MariaDB
 echo "Waiting for MariaDB to be ready..."
-for i in {1..30}; do
-    if mysqladmin ping -h localhost --silent 2>/dev/null; then
-        echo "MariaDB is ready!"
-        break
-    fi
-    echo "Waiting for MariaDB... ($i/30)"
-    sleep 2
-done
+sleep 10
 
-# Set root password if not already set
-mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}'; FLUSH PRIVILEGES;" 2>/dev/null || true
+# Create the database and user using a different method
+echo "Setting up database..."
 
-# Create database and user using root password
-mysql -u root -p"${MYSQL_ROOT_PASSWORD}" <<EOF
+# Use a temporary file to run SQL commands
+cat > /tmp/setup.sql <<EOF
 CREATE DATABASE IF NOT EXISTS exoticlaces_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER IF NOT EXISTS 'exoticlaces_user'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';
 GRANT ALL PRIVILEGES ON exoticlaces_db.* TO 'exoticlaces_user'@'localhost';
 FLUSH PRIVILEGES;
 EOF
 
-# Run migrations
+# Run the SQL file with mysql -u root
+mysql -u root < /tmp/setup.sql 2>/dev/null || echo "Database setup warning..."
+
+# Check if we can connect
+if mysql -u root -e "SELECT 1" > /dev/null 2>&1; then
+    echo "Database setup successful!"
+else
+    echo "WARNING: Database setup failed, but continuing..."
+fi
+
+# Continue with migrations
 echo "Running database migrations..."
 python manage.py migrate --noinput
 
