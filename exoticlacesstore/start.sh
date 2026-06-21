@@ -7,24 +7,24 @@ echo "=========================================="
 echo "Starting Exotic Laces Store..."
 echo "=========================================="
 
-# Start MySQL
-echo "Starting MySQL..."
-service mysql start
+# Start MariaDB
+echo "Starting MariaDB..."
+service mariadb start
 
-# Wait for MySQL
-echo "Waiting for MySQL to be ready..."
-for i in {1..30}; do
-    if mysqladmin ping -h localhost --silent 2>/dev/null; then
-        echo "MySQL is ready!"
-        break
-    fi
-    echo "Waiting for MySQL... ($i/30)"
-    sleep 2
-done
+# Wait for MariaDB
+echo "Waiting for MariaDB to be ready..."
+sleep 5
 
+# Check if MariaDB is running
+if ! mysqladmin ping -h localhost --silent; then
+    echo "ERROR: MariaDB failed to start!"
+    exit 1
+fi
+
+echo "MariaDB is ready!"
+
+# Set up database
 echo "Setting up database..."
-
-# Create database and user using root with no password (MySQL default in container)
 mysql -u root <<EOF
 CREATE DATABASE IF NOT EXISTS exoticlaces_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER IF NOT EXISTS 'exoticlaces_user'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';
@@ -32,24 +32,9 @@ GRANT ALL PRIVILEGES ON exoticlaces_db.* TO 'exoticlaces_user'@'localhost';
 FLUSH PRIVILEGES;
 EOF
 
-# Verify database setup
-if mysql -u root -e "USE exoticlaces_db;" 2>/dev/null; then
-    echo "✓ Database setup successful!"
-else
-    echo "⚠️ Database setup failed, but continuing..."
-fi
-
 # Run migrations
 echo "Running database migrations..."
 python manage.py migrate --noinput
-
-# Load data if datadump.json exists
-if [ -f "/app/datadump.json" ]; then
-    echo "Loading data from datadump.json..."
-    python manage.py loaddata datadump.json
-else
-    echo "No datadump.json found. Skipping data load."
-fi
 
 # Collect static files
 echo "Collecting static files..."
