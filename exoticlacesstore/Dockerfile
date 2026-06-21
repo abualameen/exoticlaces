@@ -18,10 +18,9 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Set up MariaDB data directory
-RUN mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
-
-
+# Create MariaDB data directory with proper permissions
+RUN mkdir -p /var/run/mysqld /var/lib/mysql && \
+    chown -R mysql:mysql /var/run/mysqld /var/lib/mysql
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
