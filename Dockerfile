@@ -7,24 +7,15 @@ ENV DJANGO_SETTINGS_MODULE=exoticlacesstore.settings
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    default-libmysqlclient-dev \
-    build-essential \
-    pkg-config \
-    netcat-openbsd \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY requirements.txt .
+# Copy requirements from the correct location
+COPY exoticlacesstore/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy certificate
-COPY ca-certificate.crt /app/ca-certificate.crt  # Add this line
+# Copy the rest of the code
+COPY exoticlacesstore/ .
 
-COPY . .
-
-COPY start.sh .
+# Copy start.sh
+COPY exoticlacesstore/start.sh .
 RUN chmod +x start.sh
 
 RUN mkdir -p /app/staticfiles /app/media
