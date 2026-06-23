@@ -327,14 +327,15 @@ Cart
     </div>
 
     <div class="mb-3">
-        <select id="shipping_method" class="form-control"
-                onchange="applyShipping()"
-                aria-label="Shipping Method">
-            <option value="">Shipping Method</option>
-            <option value="seller">Seller Shipping</option>
-            <option value="dhl">DHL Express</option>
-        </select>
-    </div>
+    <select id="shipping_method" class="form-control"
+            onchange="handleShippingSelection(this)"
+            onclick="hidePlaceholder()"
+            aria-label="Shipping Method">
+        <option id="shipping_placeholder" value="">Select Shipping Method</option>
+        <option value="seller">Seller Shipping (Car/Bus Waybill)</option>
+        <option value="dhl">DHL Express</option>
+    </select>
+</div>
 
 </div>
 
@@ -355,6 +356,26 @@ Cart
                 
                
                 <script>
+                    function hidePlaceholder() {
+                        const placeholder = document.getElementById('shipping_placeholder');
+                        if (placeholder) {
+                            placeholder.style.display = 'none';
+                        }
+                    }
+
+                    function handleShippingSelection(select) {
+                        if (select.value === 'dhl') {
+                            alert('DHL Express shipping is coming soon! Please select "Seller Shipping" for now.');
+                            select.value = '';
+                            return;
+                        }
+                        
+                        // If seller is selected, proceed with applyShipping
+                        if (select.value === 'seller') {
+                            applyShipping();
+                        }
+                    }
+
                     function applyShipping(){
 
                         if (!requiredShippingFieldsFilled()) {
@@ -454,24 +475,25 @@ Cart
                             <!-- Add this right before the Pay button -->
 
                 <!-- Terms and Conditions Checkbox -->
-                <div class="form-group mb-3">
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="termsCheckbox" required>
-                        <label class="custom-control-label" for="termsCheckbox">
-                            I have read and agree to the 
-                            <a href="{% url 'terms' %}" target="_blank" class="text-primary">
-                                Terms and Conditions
-                            </a>
-                            and 
-                            <a href="{% url 'privacy' %}" target="_blank" class="text-primary">
-                                Privacy Policy
-                            </a>
-                        </label>
-                        <div class="invalid-feedback">
-                            You must agree to the Terms and Conditions to proceed.
-                        </div>
-                    </div>
-                </div>
+                <div class="form-group mb-3 p-3 bg-light rounded border">
+    <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input custom-control-input-lg" id="termsCheckbox" required>
+        <label class="custom-control-label font-weight-bold" for="termsCheckbox" style="font-size: 1.05rem;">
+            <i class="fas fa-check-circle text-primary"></i>
+            I have read and agree to the 
+            <a href="{% url 'terms' %}" target="_blank" class="text-primary font-weight-bold">
+                Terms and Conditions
+            </a>
+            and 
+            <a href="{% url 'privacy' %}" target="_blank" class="text-primary font-weight-bold">
+                Privacy Policy
+            </a>
+        </label>
+        <div class="invalid-feedback d-block mt-1">
+            <i class="fas fa-exclamation-circle"></i> You must agree to the Terms and Conditions to proceed.
+        </div>
+    </div>
+</div>
 
                 <button id="payBtn" class="btn btn-lg btn-block btn-secondary" disabled>
                     Pay Securely with Paystack
