@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
@@ -14,7 +13,7 @@
             <img id="mainImage" src="{% if default_variant %}{{ default_variant.image.url }}{% else %}{{ product.image.url }}{% endif %}" class="img-fluid" style="max-height:500px;">
         </div>
 
-        <!-- Product Info -->
+        <!-- Product Info + Video -->
         <div class="col-md-6">
             <h2>{{ product.name }}</h2>
             <h5 class="text-info">
@@ -28,15 +27,6 @@
             <div class="mt-4">
                 <strong>Available Colors:</strong>
                 <div class="d-flex flex-wrap mt-2">
-                    <!-- <form id="variantForm">
-                        {% for variant in variants %}
-                        <label class="variant-thumb mr-2 mb-2" style="cursor:pointer;">
-                            <input type="radio" name="variant_id" value="{{ variant.id }}" style="display:none;" {% if variant.is_default %}checked{% endif %} onchange="changeImage('{{ variant.image.url }}')">
-                            <img src="{{ variant.image.url }}" style="width:60px;height:60px;object-fit:cover;border:2px solid #ddd;border-radius:6px;">
-                            <div style="font-size:11px;text-align:center;">{{ variant.color_name }}</div>
-                        </label>
-                        {% endfor %}
-                    </form> -->
                     <form id="variantForm">
                         {% for variant in variants %}
                         <label class="variant-thumb mr-2 mb-2" style="cursor:pointer;">
@@ -54,18 +44,17 @@
                         </label>
                         {% endfor %}
                     </form>
-
                 </div>
             </div>
             {% endif %}
 
+            
+
             <!-- Stock + Add to Cart -->
             <div class="mt-4">
                 {% if variants %}
-                    {% comment %} Use the default variant for stock check {% endcomment %}
                     <button id="addToCartBtn" class="btn btn-secondary">Add to Cart</button>
                     <p id="stockStatus" style="margin-top:10px;font-weight:bold;"></p>
-
                 {% else %}
                     {% if product.stock <= 0 %}
                         <p><b>Out of Stock</b></p>
@@ -76,8 +65,31 @@
                     {% endif %}
                 {% endif %}
             </div>
-            
 
+            <!-- YouTube Video - Now in the right column, before Add to Cart -->
+            {% if product.youtube_video_id %}
+            <div class="mt-4">
+                <h5><i class="fab fa-youtube text-danger"></i> Watch Product Video</h5>
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe 
+                        class="embed-responsive-item"
+                        src="https://www.youtube.com/embed/{{ product.youtube_video_id }}" 
+                        title="{{ product.name }} - Exotic Laces"
+                        frameborder="0"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <small class="text-muted mt-2 d-block">
+                    <a href="https://www.youtube.com/watch?v={{ product.youtube_video_id }}" 
+                       target="_blank" 
+                       class="text-primary">
+                        Watch on YouTube <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </small>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -97,7 +109,6 @@ document.addEventListener("DOMContentLoaded", function() {
             if(selectedVariant){
                 const variantId = selectedVariant.value;
                 const productId = "{{ product.id }}";
-                // Redirect to add_cart_variant URL
                 window.location.href = `/cart/add/${productId}/${variantId}/`;
             } else {
                 alert("Please select a color variant.");
@@ -105,9 +116,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
-</script>
 
-<script>
 function checkVariantStock(radio) {
     const stock = parseInt(radio.dataset.stock);
     const btn = document.getElementById("addToCartBtn");
@@ -135,5 +144,37 @@ window.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<style>
+    .variant-thumb:hover img {
+        border-color: #8B4513 !important;
+    }
+    .variant-thumb input:checked + img {
+        border-color: #8B4513 !important;
+        box-shadow: 0 0 0 2px #8B4513;
+    }
+    .embed-responsive {
+        position: relative;
+        display: block;
+        width: 100%;
+        padding: 0;
+        overflow: hidden;
+    }
+    .embed-responsive::before {
+        display: block;
+        content: "";
+    }
+    .embed-responsive-16by9::before {
+        padding-top: 56.25%;
+    }
+    .embed-responsive .embed-responsive-item {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+</style>
 
 {% endblock %}

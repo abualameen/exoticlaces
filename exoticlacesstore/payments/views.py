@@ -132,11 +132,23 @@ def init_payment(request):
         json=data
     ).json()
 
+    # if not response.get("status"):
+    #     return JsonResponse({
+    #         "status": False,
+    #         "message": "Paystack init failed",
+    #         "paystack": response
+    #     }, status=400)
+    # 🔥 DEBUG: Print the FULL response
+    print("=" * 50)
+    print("PAYSTACK RESPONSE:")
+    print(response)
+    print("=" * 50)
+    
     if not response.get("status"):
         return JsonResponse({
             "status": False,
-            "message": "Paystack init failed",
-            "paystack": response
+            "message": response.get("message", "Paystack init failed"),
+            "paystack": response  # Include full response for debugging
         }, status=400)
 
     # 🔹 Save transaction locally
@@ -183,8 +195,20 @@ def verify_payment(request):
         return JsonResponse({"status": False, "message": "Transaction failed or not verified"})
 
     # Retrieve cart
-    cart = get_cart(request)
-    cart_items = CartItem.objects.filter(cart=cart, active=True)
+    # cart = get_cart(request)
+    # cart_items = CartItem.objects.filter(cart=cart, active=True)
+    try:
+        cart = get_cart(request)
+        cart_items = CartItem.objects.filter(cart=cart, active=True)
+    except Cart.DoesNotExist:
+        # If cart doesn't exist, check if this is a duplicate callback
+        reference = request.GET.get('reference')
+        if Transaction.objects.filter(reference=reference, status='success').exists():
+            # Already processed, redirect to home
+            return redirect('home')
+        # Otherwise, create an empty cart
+        cart = Cart.objects.create(cart_id=_cart_id(request))
+        cart_items = []
 
     # Calculate total
     total = Decimal('0.00')

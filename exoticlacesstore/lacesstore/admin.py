@@ -24,15 +24,53 @@ class ProductVariantInline(admin.TabularInline):
     fields = ['color_name', 'color_code', 'image', 'stock', 'is_default']
     readonly_fields = []  # make any read-only if needed
 
+# class ProductAdmin(admin.ModelAdmin):
+#     list_display = ['name', 'price','stock', 'available', 'created','updated'] 
+#     list_editable = ['price', 'stock', 'available']
+#     prepopulated_fields = {'slug': ('name',)}
+#     list_per_page = 20 
+#     inlines = [ProductVariantInline]  # <--- Add this line
+
+
+# admin.site.register(Product, ProductAdmin)
+
+# lacesstore/admin.py
+from django.contrib import admin
+
+# lacesstore/admin.py
+from django.contrib import admin
+
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'price','stock', 'available', 'created','updated'] 
+    list_display = ['name', 'price', 'stock', 'available', 'created', 'updated', 'youtube_video_id']
     list_editable = ['price', 'stock', 'available']
     prepopulated_fields = {'slug': ('name',)}
-    list_per_page = 20 
-    inlines = [ProductVariantInline]  # <--- Add this line
+    list_per_page = 20
+    inlines = [ProductVariantInline]
+    
+    # Add YouTube fields without is_featured
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'category', 'description', 'price', 'stock', 'available', 'image')
+        }),
+        ('YouTube Video', {
+            'fields': ('youtube_video_url', 'youtube_video_id'),
+            'classes': ('collapse',),
+            'description': 'Paste the YouTube video URL (e.g., https://www.youtube.com/watch?v=XXXXXXXXXXX)'
+        }),
+        ('SEO', {
+            'fields': ('slug',),
+            'classes': ('collapse',),
+        }),
+    )
+    
+    readonly_fields = ['youtube_video_id']
 
 
 admin.site.register(Product, ProductAdmin)
+
+
+
+
 
 
 

@@ -18,10 +18,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from lacesstore.views import dashboard  # Import your dashboard view
 
 
 
 urlpatterns = [
+
+    path('admin/dashboard/', dashboard, name='admin_dashboard'),
     path('admin/', admin.site.urls),
      # Password Reset URLs (Django built-in)
     path('password-reset/', 
@@ -56,6 +59,7 @@ urlpatterns = [
     path('payments/', include('payments.urls')),
     path('shipping/', include('shipping.urls')),
     path("currency/", include("currency.urls")),
+    
 
 
 

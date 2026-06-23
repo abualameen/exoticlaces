@@ -1,11 +1,311 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Page</title>
-</head>
-<body>
-    This  is the About Page
-</body>
-</html>
+<!-- lacesstore/templates/about.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us - Exotic Laces Store{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <!-- Hero Section -->
+            <div class="text-center mb-5">
+                <h1 class="display-4 font-weight-bold">About Exotic Laces Store</h1>
+                <div class="divider mx-auto" style="width: 80px; height: 3px; background: #8B4513; margin: 20px auto;"></div>
+                <p class="lead text-muted">Premium Lace Fabrics for Every Occasion</p>
+            </div>
+
+            <!-- Our Story -->
+            <section class="mb-5">
+                <h2 class="text-primary">Our Story</h2>
+                <p>Welcome to Exotic Laces Store, your trusted destination for premium lace fabrics, luxury embroidery materials, and elegant fashion textiles.</p>
+                <p>We are passionate about providing high-quality lace fabrics that help designers, fashion entrepreneurs, brides, event planners, and individuals create stunning outfits for every special occasion. From traditional ceremonies and weddings to corporate events and luxury fashion collections, our fabrics are carefully selected to meet the highest standards of beauty, durability, and elegance.</p>
+                <p>What started as a passion for premium fabrics has grown into a business dedicated to serving customers across Nigeria, West Africa, and the international market.</p>
+            </section>
+
+            <!-- Who We Are -->
+            <section class="mb-5">
+                <h2 class="text-primary">Who We Are</h2>
+                <p><strong>Exotic Laces Store</strong> specializes in the retail and wholesale supply of premium lace fabrics, including:</p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check-circle text-success"></i> Swiss Lace</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Voile Lace</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Guipure Lace</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Organza Lace</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check-circle text-success"></i> Stone &amp; Swarovski Embellished Lace</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Cord Lace</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Embroidered Fabrics</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Luxury Fashion Fabrics</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check-circle text-success"></i> Bridal and Occasion Fabrics</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="mt-3">Our goal is simple: <strong>To make premium lace fabrics accessible to customers anywhere in the world while maintaining excellent quality, affordability, and customer satisfaction.</strong></p>
+            </section>
+
+            <!-- Quality Commitment -->
+            <section class="mb-5">
+                <h2 class="text-primary">Our Commitment to Quality</h2>
+                <p>Every fabric we offer is carefully sourced from reputable manufacturers and suppliers known for producing premium-quality materials.</p>
+                <p>We understand that lace fabrics are often purchased for important occasions such as:</p>
+                <div class="row">
+                    <div class="col-md-3 col-6">
+                        <span class="badge badge-secondary m-1 p-2">Weddings</span>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <span class="badge badge-secondary m-1 p-2">Engagement Ceremonies</span>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <span class="badge badge-secondary m-1 p-2">Naming Ceremonies</span>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <span class="badge badge-secondary m-1 p-2">Birthday Celebrations</span>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <span class="badge badge-secondary m-1 p-2">Religious Events</span>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <span class="badge badge-secondary m-1 p-2">Cultural Festivals</span>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <span class="badge badge-secondary m-1 p-2">Fashion Collections</span>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <span class="badge badge-secondary m-1 p-2">Corporate Events</span>
+                    </div>
+                </div>
+                <p class="mt-3">Before products are listed on our website, they undergo careful inspection to ensure they meet our standards for:</p>
+                <ul>
+                    <li><strong>Design Quality</strong></li>
+                    <li><strong>Embroidery Finish</strong></li>
+                    <li><strong>Fabric Strength</strong></li>
+                    <li><strong>Color Consistency</strong></li>
+                    <li><strong>Overall Appearance</strong></li>
+                </ul>
+            </section>
+
+            <!-- Retail & Wholesale -->
+            <section class="mb-5">
+                <h2 class="text-primary">Retail and Wholesale Services</h2>
+                <p>Whether you are purchasing a single fabric for personal use or sourcing large quantities for your boutique or fashion business, Exotic Laces Store is ready to serve you.</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-shopping-bag"></i> Retail Customers</h5>
+                            </div>
+                            <div class="card-body">
+                                <p>We provide convenient online shopping for customers seeking:</p>
+                                <ul>
+                                    <li>Individual lace fabrics</li>
+                                    <li>Bridal fabrics</li>
+                                    <li>Fashion fabrics</li>
+                                    <li>Event fabrics</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-wholesale"></i> Wholesale Customers</h5>
+                            </div>
+                            <div class="card-body">
+                                <p>We also support:</p>
+                                <ul>
+                                    <li>Fabric Retailers</li>
+                                    <li>Fashion Houses</li>
+                                    <li>Boutique Owners</li>
+                                    <li>Fashion Designers</li>
+                                    <li>Resellers</li>
+                                    <li>Event Vendors</li>
+                                </ul>
+                                <p class="text-muted small">Wholesale customers enjoy competitive pricing and access to a wider range of fabric selections.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Shipping -->
+            <section class="mb-5">
+                <h2 class="text-primary">Our Shipping and Delivery Network</h2>
+                <p>We proudly serve customers across Nigeria, West Africa, and the rest of the world.</p>
+
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <i class="fas fa-map-marker-alt fa-3x text-primary mb-3"></i>
+                                <h5>Nigeria Delivery</h5>
+                                <p>Orders within Nigeria are delivered through reliable logistics partners and transport networks to ensure safe and timely delivery.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <i class="fas fa-globe-africa fa-3x text-primary mb-3"></i>
+                                <h5>West African Delivery</h5>
+                                <p>We ship to all major West African countries through:</p>
+                                <ul class="text-left">
+                                    <li>Vehicle Waybill Services</li>
+                                    <li>Regional Transport Networks</li>
+                                    <li>DHL Express (where available)</li>
+                                </ul>
+                                <p><strong>Countries served:</strong> Ghana, Benin Republic, Togo, Côte d'Ivoire, Niger, Burkina Faso, Senegal, Mali, Guinea, Sierra Leone, Liberia, Gambia, and other West African destinations.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <i class="fas fa-globe fa-3x text-primary mb-3"></i>
+                                <h5>International Shipping</h5>
+                                <p>For customers outside Africa, we provide international delivery through DHL Express and other trusted international courier services.</p>
+                                <p><strong>Destinations include:</strong></p>
+                                <ul class="text-left">
+                                    <li>United States</li>
+                                    <li>United Kingdom</li>
+                                    <li>Canada</li>
+                                    <li>Europe</li>
+                                    <li>Middle East</li>
+                                    <li>Asia</li>
+                                    <li>Australia</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why Choose Us -->
+            <section class="mb-5">
+                <h2 class="text-primary">Why Choose Exotic Laces Store?</h2>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center p-3">
+                            <i class="fas fa-star fa-3x text-warning mb-2"></i>
+                            <h5>Premium Quality Fabrics</h5>
+                            <p>We focus on offering elegant and carefully selected fabrics that meet the expectations of modern fashion enthusiasts.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3">
+                            <i class="fas fa-lock fa-3x text-success mb-2"></i>
+                            <h5>Secure Online Shopping</h5>
+                            <p>Our website provides a safe and secure shopping experience with trusted payment processing systems.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3">
+                            <i class="fas fa-shipping-fast fa-3x text-primary mb-2"></i>
+                            <h5>Worldwide Shipping</h5>
+                            <p>We deliver fabrics to customers locally and internationally.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3">
+                            <i class="fas fa-headset fa-3x text-info mb-2"></i>
+                            <h5>Excellent Customer Service</h5>
+                            <p>Our team is committed to providing prompt assistance before, during, and after your purchase.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3">
+                            <i class="fas fa-handshake fa-3x text-primary mb-2"></i>
+                            <h5>Wholesale Support</h5>
+                            <p>We work closely with resellers, fashion designers, and boutiques to help grow their businesses.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3">
+                            <i class="fas fa-truck fa-3x text-success mb-2"></i>
+                            <h5>Reliable Delivery</h5>
+                            <p>We partner with trusted logistics providers to ensure your orders arrive safely and efficiently.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Vision & Mission -->
+            <section class="mb-5">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card h-100 border-primary">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0"><i class="fas fa-eye"></i> Our Vision</h4>
+                            </div>
+                            <div class="card-body">
+                                <p class="lead">To become one of Africa's leading online destinations for premium lace fabrics by connecting customers worldwide with beautiful, high-quality fashion materials.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100 border-success">
+                            <div class="card-header bg-success text-white">
+                                <h4 class="mb-0"><i class="fas fa-bullseye"></i> Our Mission</h4>
+                            </div>
+                            <div class="card-body">
+                                <p class="lead">To provide exceptional lace fabrics, outstanding customer service, and reliable delivery solutions that enable our customers to create elegant and memorable fashion pieces.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Customer Satisfaction -->
+            <section class="mb-5">
+                <h2 class="text-primary">Customer Satisfaction</h2>
+                <p>Customer satisfaction is one of our highest priorities.</p>
+                <p>We continuously strive to:</p>
+                <ul>
+                    <li><i class="fas fa-check-circle text-success"></i> Offer quality products</li>
+                    <li><i class="fas fa-check-circle text-success"></i> Maintain transparent pricing</li>
+                    <li><i class="fas fa-check-circle text-success"></i> Provide reliable delivery</li>
+                    <li><i class="fas fa-check-circle text-success"></i> Respond quickly to customer inquiries</li>
+                    <li><i class="fas fa-check-circle text-success"></i> Build long-term relationships with our customers</li>
+                </ul>
+                <p class="font-italic">"Every order is important to us, and we work hard to ensure that your shopping experience is smooth and enjoyable."</p>
+            </section>
+
+            <!-- Contact Section -->
+            <section class="mb-5">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <h2 class="text-primary">Contact Us</h2>
+                        <p>We would love to hear from you.</p>
+                        <p>Whether you have questions about our products, wholesale inquiries, delivery options, or custom requests, our team is always ready to assist.</p>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <i class="fas fa-envelope fa-2x text-primary"></i>
+                                <p><strong>Email:</strong> <a href="mailto:info@exoticlaces.com">info@exoticlaces.com</a></p>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fab fa-whatsapp fa-2x text-success"></i>
+                                <p><strong>Phone/WhatsApp:</strong> <a href="tel:+2347012162731">+2347012162731</a></p>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-globe fa-2x text-primary"></i>
+                                <p><strong>Website:</strong> <a href="{% url 'home' %}">exoticlaces.com</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

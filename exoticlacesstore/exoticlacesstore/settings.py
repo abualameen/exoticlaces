@@ -24,6 +24,10 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
 
+
+
+
+
 # ============================================================================
 # APPLICATION DEFINITION
 # ============================================================================
@@ -103,6 +107,8 @@ WSGI_APPLICATION = 'exoticlacesstore.wsgi.application'
 # settings.py
 
 
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -173,14 +179,16 @@ PASSWORD_RESET_TIMEOUT = 14400
 # EMAIL (Resend SMTP)
 # ============================================================================
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'lacesstore.email_backend.RetryEmailBackend'
 EMAIL_HOST = 'smtp.resend.com'
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-EMAIL_USE_TLS = False
+EMAIL_PORT = 587
+EMAIL_USE_SSL = False
+EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'resend'
 EMAIL_HOST_PASSWORD = config('RESEND_API_KEY')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@mail.exoticlaces.com')
+EMAIL_TIMEOUT = 30
 
 # ============================================================================
 # STATIC & MEDIA FILES
@@ -237,3 +245,13 @@ FACEBOOK_PIXEL_ID = config('FACEBOOK_PIXEL_ID', default='')
 # ============================================================================
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# settings.py
+
+# Security Headers
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+X_FRAME_OPTIONS = "SAMEORIGIN"  # Change from ALLOWALL for production
+# SECURE_SSL_REDIRECT = True  # If you have SSL (you will on DigitalOcean)
+# SECURE_HSTS_SECONDS = 31536000  # 1 year (enable after SSL is working)
+# CSRF_COOKIE_SECURE = True  # Send CSRF cookie only over HTTPS
+# SESSION_COOKIE_SECURE = True  # Send session cookie only over HTTPS

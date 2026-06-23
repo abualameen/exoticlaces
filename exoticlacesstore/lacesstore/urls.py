@@ -31,6 +31,7 @@ urlpatterns = [
     path('shipping-policy/', views.shipping_policy, name='shipping_policy'),
     path('faq/', views.faq, name='faq'),
     path('wholesale-policy/', views.wholesale_policy, name='wholesale_policy'),
+    path('testvid/', views.test_video, name='test_vid'),
 
 
     path('admin/dashboard/', views.dashboard, name='admin_dashboard'),

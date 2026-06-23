@@ -35,6 +35,68 @@ class Product(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    youtube_video_url = models.URLField(
+        max_length=500,
+        blank=True,
+        null=True,
+        verbose_name="YouTube Video URL",
+        help_text="Paste the full YouTube URL (e.g., https://www.youtube.com/watch?v=XXXXXXXXXXX or https://youtu.be/XXXXXXXXXXX)"
+    )
+    youtube_video_id = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        editable=False,
+        verbose_name="YouTube Video ID"
+    )
+    
+    def save(self, *args, **kwargs):
+        # Extract YouTube video ID from URL
+        if self.youtube_video_url:
+            import re
+            
+            # More comprehensive patterns for all YouTube URL formats
+            patterns = [
+                # Standard watch URL
+                r'(?:youtube\.com\/watch\?v=)([\w-]+)',
+                # Shortened youtu.be URL
+                r'(?:youtu\.be\/)([\w-]+)',
+                # Embed URL
+                r'(?:youtube\.com\/embed\/)([\w-]+)',
+                # YouTube Shorts
+                r'(?:youtube\.com\/shorts\/)([\w-]+)',
+                # Mobile URL
+                r'(?:youtube\.com\/v\/)([\w-]+)',
+                # Live URL
+                r'(?:youtube\.com\/live\/)([\w-]+)',
+                # Any other youtube.com URL with v parameter
+                r'(?:youtube\.com\/.*[?&]v=)([\w-]+)',
+            ]
+            
+            for pattern in patterns:
+                match = re.search(pattern, self.youtube_video_url)
+                if match:
+                    self.youtube_video_id = match.group(1)
+                    break
+            else:
+                # If no pattern matches, try to extract from URL
+                if 'youtube.com' in self.youtube_video_url or 'youtu.be' in self.youtube_video_url:
+                    # Try to get the last part of the URL
+                    parts = self.youtube_video_url.rstrip('/').split('/')
+                    if parts:
+                        last_part = parts[-1]
+                        # Clean up any query parameters
+                        if '?' in last_part:
+                            last_part = last_part.split('?')[0]
+                        if last_part and len(last_part) >= 11:
+                            self.youtube_video_id = last_part
+                else:
+                    self.youtube_video_id = None
+        else:
+            self.youtube_video_id = None
+            
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ('name',)
         verbose_name = 'product'

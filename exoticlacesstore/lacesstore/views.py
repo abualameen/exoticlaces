@@ -266,10 +266,7 @@ def cart_remove_product(request, product_id, variant_id=None):
     clear_shipping_session(request)
     return redirect('cart_detail')
 
-# def thanks_page(request, order_id):
-#     if order_id:
-#         customer_order = get_object_or_404(Order, id=order_id)
-#     return render(request, 'thankyou.html', {'customer_order': customer_order})
+
 
 def thanks_page(request, order_id):
     order = Order.objects.get(id=order_id)
@@ -368,17 +365,6 @@ def signoutView(request):
     logout(request)
     return redirect('signin')
 
-
-# @login_required(redirect_field_name='next', login_url='signin')
-# def orderHistory(request):
-#     if request.user.is_authenticated:
-#         email = str(request.user.email)
-#         print(f"User email: {email}")
-#         order_details = Order.objects.filter(emailAddress=email)
-#         print(f"Orders found: {order_details.count()}")
-#         for order in order_details:
-#             print(f"Order ID: {order.id}, Email: {order.emailAddress}")
-#     return render(request, 'orders_list.html', {'order_details': order_details})
 
 
 @login_required(redirect_field_name='next', login_url='signin')
@@ -555,3 +541,10 @@ def dashboard(request):
     }
     
     return render(request, 'admin/dashboard.html', context)
+
+
+
+
+    # views.py
+def test_video(request):
+    return render(request, 'videotest.html', {'video_id': 'CfVYbB6I8Ew'})
