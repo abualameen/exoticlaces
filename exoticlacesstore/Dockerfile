@@ -7,24 +7,20 @@ ENV DJANGO_SETTINGS_MODULE=exoticlacesstore.settings
 
 WORKDIR /app
 
-# Install system dependencies including MariaDB
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     default-libmysqlclient-dev \
     build-essential \
     pkg-config \
-    mariadb-server \
-    mariadb-client \
     netcat-openbsd \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Set up MariaDB data directory
-RUN mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
-
-
-
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy certificate
+COPY ca-certificate.crt /app/ca-certificate.crt  # Add this line
 
 COPY . .
 
