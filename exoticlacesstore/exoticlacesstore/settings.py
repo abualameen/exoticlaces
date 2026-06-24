@@ -261,8 +261,16 @@ X_FRAME_OPTIONS = "SAMEORIGIN"  # Change from ALLOWALL for production
 # settings.py
 
 # DigitalOcean Spaces Configuration
-if not DEBUG:  # Only use Spaces in production
-    INSTALLED_APPS += ['storages']
+# settings.py
+
+# DigitalOcean Spaces Configuration
+# Use Spaces if AWS credentials are available, regardless of DEBUG
+# settings.py
+
+# DigitalOcean Spaces Configuration
+if config('AWS_ACCESS_KEY_ID', default='') and config('AWS_SECRET_ACCESS_KEY', default=''):
+    # Install storages if not already installed
+    # INSTALLED_APPS += ['storages']  # Already done
     
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     
@@ -273,9 +281,22 @@ if not DEBUG:  # Only use Spaces in production
     AWS_S3_ENDPOINT_URL = 'https://fra1.digitaloceanspaces.com'
     AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.fra1.digitaloceanspaces.com'
     
-    # Make files public
     AWS_DEFAULT_ACL = 'public-read'
     AWS_QUERYSTRING_AUTH = False
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',
     }
+    
+    # ✅ Override MEDIA_URL to use Spaces
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+    
+    # ⚠️ MEDIA_ROOT is not used with Spaces, but keep it as fallback
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media')
+    
+    # ✅ Optional: Add a log to confirm Spaces is being used
+    print("✅ Using DigitalOcean Spaces for media files")
+else:
+    # Fallback to local storage
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media')
+    print("⚠️ Using local media storage")
