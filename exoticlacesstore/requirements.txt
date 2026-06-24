@@ -1,36 +1,31 @@
-# Django Core
-Django==3.2.25
-django-crispy-forms==1.14.0
-crispy-bootstrap4==2022.1
-
-# Database
-mysqlclient==2.2.4
-
-# Authentication
-django-allauth==0.54.0
-
-# Server & Deployment
-gunicorn==21.2.0
-whitenoise==6.6.0
-
-# Environment & Configuration
-python-decouple==3.8
-
-# HTTP Requests & APIs
-requests==2.32.3
-urllib3==2.2.3  # Secure version
-
-# Image Processing
-Pillow==10.4.0  # Secure version
-
-# Utilities
-asgiref==3.7.2
-sqlparse==0.5.3  # Secure version
-pytz==2024.1
-simplejson==3.19.2
+asgiref==3.11.1
 certifi==2024.2.2
+cffi==2.0.0
 charset-normalizer==3.3.2
+crispy-bootstrap4==2024.1
+cryptography==49.0.0
+defusedxml==0.7.1
+Django==4.2.16
+django-allauth==65.18.0
+django-crispy-forms==2.1
+git-filter-repo==2.47.0
+gunicorn==22.0.0
 idna==3.7
-
-# Paystack
+mysqlclient==2.2.4
+oauthlib==3.3.1
+packaging==26.2
 paystack==1.5.0
+pillow==10.4.0
+pycparser==3.0
+PyJWT==2.13.0
+python-decouple==3.8
+python-dotenv==1.2.2
+python3-openid==3.2.0
+pytz==2024.1
+requests==2.32.3
+requests-oauthlib==2.0.0
+simplejson==3.19.2
+sqlparse==0.5.3
+typing_extensions==4.15.0
+urllib3==2.2.3
+whitenoise==6.7.0
