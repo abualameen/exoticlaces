@@ -28,16 +28,11 @@ else:
 EOF
 
 # Start Gunicorn
-# Start Gunicorn with more robust settings
 echo "Starting Gunicorn..."
 exec gunicorn --bind 0.0.0.0:8000 \
     --workers 2 \
-    --threads 4 \  # Increase threads
+    --threads 2 \
     --worker-tmp-dir /dev/shm \
-    --timeout 120 \  # Increase timeout
-    --graceful-timeout 30 \
-    --keep-alive 5 \
-    --max-requests 1000 \
-    --max-requests-jitter 100 \
+    --timeout 120 \
     --log-level info \
     exoticlacesstore.wsgi:application
