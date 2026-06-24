@@ -84,6 +84,7 @@ TEMPLATES = [
                 'lacesstore.context_processors.social_links',
                 'lacesstore.context_processors.facebook_pixel',
             ],
+            'debug': True,  # Add this to see template errors
         },
     },
 ]
@@ -300,3 +301,27 @@ else:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media')
     print("⚠️ Using local media storage")
+
+
+
+# settings.py
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+    },
+}
