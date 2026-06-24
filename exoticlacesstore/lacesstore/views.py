@@ -9,7 +9,8 @@ import simplejson as json
 from django.http import JsonResponse
 import json
 from django.contrib.auth.models import Group, User
-from allauth.account.utils import send_email_confirmation
+# from allauth.account.utils import send_email_confirmation
+from allauth.account import utils as allauth_utils
 from django.contrib import messages
 from .forms import SignUpForm, ContactForm
 from django.template import RequestContext
@@ -311,7 +312,7 @@ def signupView(request):
             customer_group = Group.objects.get(name='Customer')
             customer_group.user_set.add(signup_user)
 
-            send_email_confirmation(request, user)  # Send confirmation email
+            allauth_utils.send_email_confirmation(request, user) # Send confirmation email
             # Immediately remove the message that was just added
             storage = messages.get_messages(request)
             print('storage:', storage)
