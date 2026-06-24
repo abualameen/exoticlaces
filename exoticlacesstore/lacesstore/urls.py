@@ -1,8 +1,6 @@
 # lacesstore/urls.py
 from django.urls import path
 from . import views
-from django.conf import settings
-from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -31,6 +29,7 @@ urlpatterns = [
     path('faq/', views.faq, name='faq'),
     path('wholesale-policy/', views.wholesale_policy, name='wholesale_policy'),
     path('testvid/', views.test_video, name='test_vid'),
-    path('health/', views.health_check, name='health_check'),
+    # Remove health_check temporarily
+    # path('health/', views.health_check, name='health_check'),
     path('admin/dashboard/', views.dashboard, name='admin_dashboard'),
-]
+]  # Make sure there's no trailing comma after the last item
