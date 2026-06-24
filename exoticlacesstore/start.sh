@@ -29,7 +29,7 @@ EOF
 
 # Start Gunicorn
 echo "Starting Gunicorn..."
-exec gunicorn --bind 0.0.0.0:8080 \
+exec gunicorn --bind 0.0.0.0:8000 \
     --workers 2 \
     --threads 2 \
     --worker-tmp-dir /dev/shm \
