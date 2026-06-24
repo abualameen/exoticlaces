@@ -37,27 +37,6 @@ import datetime
 
 
 
-# lacesstore/views.py
-from django.http import JsonResponse
-from django.db import connection
-
-def health_check(request):
-    """Health check endpoint for DigitalOcean"""
-    try:
-        # Check database connection
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT 1")
-            db_status = "healthy"
-    except Exception as e:
-        db_status = f"unhealthy: {str(e)}"
-    
-    return JsonResponse({
-        "status": "healthy",
-        "database": db_status,
-        "service": "Exotic Laces Store"
-    })
-
-
 
 
 # Create your views here.
@@ -570,6 +549,3 @@ def dashboard(request):
     # views.py
 def test_video(request):
     return render(request, 'videotest.html', {'video_id': 'CfVYbB6I8Ew'})
-
-
-
