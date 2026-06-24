@@ -53,6 +53,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -60,8 +63,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
-    'lacesstore.middleware.VisitorTrackingMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # 'lacesstore.middleware.VisitorTrackingMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'exoticlacesstore.urls'
@@ -84,7 +87,6 @@ TEMPLATES = [
                 'lacesstore.context_processors.social_links',
                 'lacesstore.context_processors.facebook_pixel',
             ],
-            'debug': True,  # Add this to see template errors
         },
     },
 ]
