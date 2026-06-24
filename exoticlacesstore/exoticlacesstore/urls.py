@@ -59,7 +59,7 @@ urlpatterns = [
     path('payments/', include('payments.urls')),
     path('shipping/', include('shipping.urls')),
     path("currency/", include("currency.urls")),
-    path('shipping/', include('shipping.urls')),
+    
     
 
 
