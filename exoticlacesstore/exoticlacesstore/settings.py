@@ -261,6 +261,16 @@ X_FRAME_OPTIONS = "SAMEORIGIN"  # Change from ALLOWALL for production
 # SESSION_COOKIE_SECURE = True  # Send session cookie only over HTTPS
 
 
+CSRF_COOKIE_SECURE = True  # ✅ Safe - only send over HTTPS
+SESSION_COOKIE_SECURE = True  # ✅ Safe - only send over HTTPS
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+# Additional Security
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+
+
 # settings.py
 
 # DigitalOcean Spaces Configuration
