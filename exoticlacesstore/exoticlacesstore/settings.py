@@ -255,10 +255,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Security Headers
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 X_FRAME_OPTIONS = "SAMEORIGIN"  # Change from ALLOWALL for production
-# SECURE_SSL_REDIRECT = True  # If you have SSL (you will on DigitalOcean)
-# SECURE_HSTS_SECONDS = 31536000  # 1 year (enable after SSL is working)
-# CSRF_COOKIE_SECURE = True  # Send CSRF cookie only over HTTPS
-# SESSION_COOKIE_SECURE = True  # Send session cookie only over HTTPS
+SECURE_SSL_REDIRECT = True  # If you have SSL (you will on DigitalOcean)
+SECURE_HSTS_SECONDS = 31536000  # 1 year (enable after SSL is working)
+CSRF_COOKIE_SECURE = True  # Send CSRF cookie only over HTTPS
+SESSION_COOKIE_SECURE = True  # Send session cookie only over HTTPS
 
 
 # settings.py
