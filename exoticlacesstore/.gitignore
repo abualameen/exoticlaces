@@ -38,3 +38,29 @@ db.sqlite3
 # Secrets
 *_secret_key.txt
 *.pem
+
+# Docker
+Dockerfile
+start.sh
+requirements.txt
+.dockerignore
+
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.sqlite3
+db.sqlite3
+.env
+venv
+minenv310
+.git
+.gitignore
+README.md
+*.log
+datadump.json
+.DS_Store
+*.pid
+*.lock
+.DS_Store
