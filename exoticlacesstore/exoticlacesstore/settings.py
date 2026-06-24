@@ -90,22 +90,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'exoticlacesstore.wsgi.application'
 
-# ============================================================================
-# DATABASE
-# ============================================================================
-
-# # For development - SQLite
-# # For production, consider switching to PostgreSQL
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-
 # settings.py
 
+# Add this line - CSRF Trusted Origins for production
+CSRF_TRUSTED_ORIGINS = [
+    'https://plankton-app-caule.ondigitalocean.app',
+    'https://www.plankton-app-caule.ondigitalocean.app',
+    'https://exoticlaces.com',
+    'https://www.exoticlaces.com',
+    
+]
 
 
 
