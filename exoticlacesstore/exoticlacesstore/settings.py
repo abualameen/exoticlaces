@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'django_facebook_capi',
 ]
 
 MIDDLEWARE = [
@@ -243,6 +244,7 @@ GOOGLE_ANALYTICS_DEBUG = False  # Set to True in development
 # ============================================================================
 
 FACEBOOK_PIXEL_ID = config('FACEBOOK_PIXEL_ID', default='')
+FACEBOOK_CAPI_ACCESS_TOKEN = config('FACEBOOK_CAPI_ACCESS_TOKEN', default='')
 
 # ============================================================================
 # DEFAULT PRIMARY KEY
