@@ -307,6 +307,20 @@ def verify_payment(request):
 
         item.delete()
 
+
+    if request.user.is_authenticated:
+        send_facebook_event(
+            request,
+            'Purchase',
+            {
+                'content_ids': [str(item.id) for item in cart_items],
+                'content_type': 'product',
+                'value': str(order.grand_total),
+                'currency': 'NGN',
+                'transaction_id': str(order.id)
+            }
+        )
+
    ###########################################################################
     
     #After successful order creation

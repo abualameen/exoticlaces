@@ -26,7 +26,7 @@ from django.shortcuts import render
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from payments.models import ExchangeRate
-
+from .facebook_capi import send_facebook_event
 
 
 
@@ -119,6 +119,22 @@ def add_cart(request, product_id, variant_id=None):
         cart_item.save()
     clear_shipping_session(request)
 
+
+    # ✅ Facebook CAPI - Add to Cart Event
+    
+    if request.user.is_authenticated:
+        send_facebook_event(
+            request,
+            'AddToCart',
+            {
+                'content_ids': [str(product.id)],
+                'content_name': product.name,
+                'content_type': 'product',
+                'value': str(product.price),
+                'currency': 'NGN'
+            }
+        )
+
     # Add GA4 tracking
     if not request.session.get('ga_tracked_add_to_cart', False):
         request.session['ga_tracked_add_to_cart'] = True
@@ -161,6 +177,22 @@ def add_cart_variant(request, product_id, variant_id):
         )
         cart_item.save()
     clear_shipping_session(request)
+
+    # ✅ Facebook CAPI - Add to Cart Event (with variant)
+    
+    if request.user.is_authenticated:
+        send_facebook_event(
+            request,
+            'AddToCart',
+            {
+                'content_ids': [str(product.id)],
+                'content_name': f"{product.name} - {variant.color_name}",
+                'content_type': 'product',
+                'value': str(product.price),
+                'currency': 'NGN',
+                'variant': variant.color_name  # Optional: track which color
+            }
+        )
 
     return redirect('cart_detail')
 
