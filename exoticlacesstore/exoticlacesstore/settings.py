@@ -236,7 +236,7 @@ EXCHANGE_RATE_API_KEY = config('EXCHANGE_RATE_API_KEY', default='')
 # ============================================================================
 
 GOOGLE_ANALYTICS_ID = config('GOOGLE_ANALYTICS_ID', default='')
-GOOGLE_ANALYTICS_DEBUG = DEBUG  # Set to True in development
+GOOGLE_ANALYTICS_DEBUG = False  # Set to True in development
 
 # ============================================================================
 # FACEBOOK PIXEL
