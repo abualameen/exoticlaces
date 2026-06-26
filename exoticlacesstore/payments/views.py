@@ -15,6 +15,7 @@ from django.core.mail import send_mail
 from lacesstore.views import sendEmail
 from shipping.engine import create_provider_shipment
 from shipping.models import Shipment, ShippingMethod
+from lacesstore.facebook_capi import send_facebook_event
 
 
 # from shipping.models import CartShipping
