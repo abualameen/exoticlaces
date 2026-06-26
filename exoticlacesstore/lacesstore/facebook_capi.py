@@ -48,7 +48,8 @@ def send_facebook_event(request, event_name, custom_data=None):
             "event_time": int(time.time()),
             "user_data": user_data,
             "custom_data": custom_data or {},
-            "action_source": "website"
+            "action_source": "website",
+            "test_event_code": "TEST1940" 
         }]
     }
     
