@@ -20,12 +20,13 @@
     </div>
 </div>
 
+<!-- ✅ Changed container-fluid to container -->
 <div class="container">
     <div class="row product-grid">
         {% load currency_filters %}
         {% for product in products %}
         
-        <!-- ✅ Updated grid classes -->
+        <!-- ✅ col-lg-3 = 4 products per row on large screens -->
         <div class="col-6 col-sm-6 col-md-4 col-lg-3">
             <div class="product-card">
                 <!-- Image -->
