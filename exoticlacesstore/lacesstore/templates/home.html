@@ -1,53 +1,60 @@
+
+
 {% extends 'base.html' %}
 {% load static %}
+{% block title %} 
+Home
 
-{% block title %}Home{% endblock %}
+{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
     <div class="row">
-        <img style="width: 100%" src="{% static 'img/exoticlaceshero.jpg' %}" alt="Exotic Laces">
+        <img style="width: 100%" src="{% static 'img/exoticlaceshero.jpg' %}" alt="">
     </div>
 </div>
-
 <div class="py-4">
     <div class="container">
         <div class="row">
             <div class="col-10 mx-auto my-2 text-center">
-                <h1 class="text-uppercase font-weight-bold">All Products</h1>
+                <h1 class="text-captitaize font-weight-bold">
+                    All Products
+                </h1>
             </div>
         </div>
-    </div>
+    </div>   
 </div>
 
-<!-- ✅ Changed container-fluid to container -->
-<div class="container">
-    <div class="row product-grid">
+<div class="cotainer">
+    <div class="row">
         {% load currency_filters %}
         {% for product in products %}
         
-        <!-- ✅ col-lg-3 = 4 products per row on large screens -->
-        <div class="col-6 col-sm-6 col-md-4 col-lg-3">
-            <div class="product-card">
-                <!-- Image -->
-                <div class="card-img-wrapper">
+        <div class="col-9 mx-auto col-md-6 col-lg-3">
+            <div class="card mb-4" style="border-color: transparent;">
+                <div class="p-4">
                     {% if product.image %}
-                    <a href="{{ product.get_url }}">
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+                    <a href="{{product.get_url}}">
+                        <img src="{{ product.image.url}}" width="100" class="card-img-top" alt="{{product.name}}">
                     </a>
                     {% endif %}
                 </div>
                 
-                <!-- Product Info -->
-                <div class="card-body">
-                    <div class="product-name">{{ product.name }}</div>
-                    <div class="product-sku">SKU: {{ product.id }}</div>
-                    <div class="product-price">{{ product.price|money:currency }}</div>
+                <div class="card-footer d-flex justify-content-between" style="background: transparent; border-color: transparent;">
+                    <p class="font-weight-bold mb-0">
+                        {{product.name}}
+                    </p>
+                    <h5 class="text-info font-italic mb-0">
+                        <span class="mr-1"></span> {{product.price |money:currency }}
+                    </h5>
                 </div>
             </div>
         </div>
 
         {% endfor %}
+
     </div>
 </div>
+ 
+
 {% endblock %}
