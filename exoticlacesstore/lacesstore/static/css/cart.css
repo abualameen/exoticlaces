@@ -1,138 +1,109 @@
-.cart_table {
-    min-width: 400px;
-    font-size: 14px;
+body {
+    background: #f3f3f3;
 }
-
-.cart_thead {
-    font-weight: normal;
+.product_tilte{
+    font-size: 30px;
     text-transform: uppercase;
-    letter-spacing: 0.2cm;
-    background-color: #f8f9fa !important;
+    letter-spacing: .2cm;
+    padding-top: 15px;
+    padding-bottom: 10px;
 }
-.cart_icon {
-    text-decoration: none;
-    color: #868e96 !important;
-}
-
-.form-submit {
-    width: 100% !important;
-    display: block !important;
-    background-color: rgb(6, 127, 240) !important;
-    margin-bottom: 5px;
+.product_text{
+    padding-right: 20px;
 }
 
-.form-submit span {
-
-    font-family:  'Roboto', sans-serif !important;
-    background-color: rgb(6, 127, 240) !important;
-    font-size: 16px !important;
-}
-                    
-.form-submit button {
-    font-family: 'Roboto', sans-serif !important;
-    background-color: rgb(6, 127, 240) !important;
-    font-size: 16px !important;
-    border: none !important;  /* Hide the border line */
-    outline: none !important; /* Remove the focus outline */
-    color: white !important;  /* Set the text color to white */
+.product_description{
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: .2cm;
 }
 
-#state {
-    left: 100%;
+.errorlist li {
+    color: red;
+    font-weight: bold;
+}
+
+.custom_div {
+    margin-bottom: 20px !important;
 }
 
 
 
-/* .btn btn-secondary span {
-    width: 100% !important;
-    height: 35px;
-} */
-/* .form-submit {
-    width: 100% !important;
-    display: block !important;
-    background-color: #0427f1 !important;
-    margin-bottom: 5px;
-} */
+/* ========================================
+   PRODUCT CARDS - EQUAL HEIGHT FIX
+   ======================================== */
 
-
-
-
-/* Trust Seals - Paystack Version */
-.trust-seals {
-    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-    border-radius: 12px;
-    padding: 20px;
-    border: 1px solid #e9ecef;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+/* Make all cards in the row equal height */
+.row .col-9 {
+    display: flex;
 }
 
-.trust-seals .payment-logos img {
-    transition: transform 0.3s ease, filter 0.3s ease;
-    filter: grayscale(0);
-    opacity: 0.9;
+.row .card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
-.trust-seals .payment-logos img:hover {
-    transform: scale(1.15);
-    filter: grayscale(0);
-    opacity: 1;
+/* Make image container fixed height */
+.row .card .p-4 {
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
 }
 
-.trust-seals .payment-icons i {
-    transition: transform 0.3s ease;
-    opacity: 0.9;
+.row .card .p-4 img {
+    max-height: 220px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
 }
 
-.trust-seals .payment-icons i:hover {
-    transform: scale(1.2);
-    opacity: 1;
+/* Make card footer stretch to bottom */
+.row .card-footer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 80px;
+    padding: 10px 15px;
 }
 
-.trust-seals .badge {
-    padding: 8px 16px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    border-radius: 20px;
-    letter-spacing: 0.3px;
+/* Ensure text doesn't overlap */
+.row .card-footer p {
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+    line-height: 1.3;
 }
 
-.trust-seals .badge i {
-    margin-right: 6px;
+.row .card-footer h5 {
+    font-size: 1.1rem;
+    margin-bottom: 0;
 }
 
-.trust-seals .badge-success {
-    background-color: #28a745;
-    color: white;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .row .card .p-4 {
+        height: 200px;
+    }
+    .row .card .p-4 img {
+        max-height: 180px;
+    }
+    .row .card-footer p {
+        font-size: 0.85rem;
+    }
+    .row .card-footer h5 {
+        font-size: 1rem;
+    }
 }
 
-.trust-seals .badge-info {
-    background-color: #17a2b8;
-    color: white;
-}
-
-.trust-seals .badge-primary {
-    background-color: #007bff;
-    color: white;
-}
-
-.trust-seals .badge-warning {
-    background-color: #ffc107;
-    color: #212529;
-}
-
-/* Responsive */
 @media (max-width: 576px) {
-    .trust-seals .payment-logos img {
-        width: 35px !important;
+    .row .card .p-4 {
+        height: 180px;
     }
-    
-    .trust-seals .payment-icons i {
-        font-size: 2rem !important;
-    }
-    
-    .trust-seals .badge {
-        font-size: 0.65rem;
-        padding: 4px 10px;
-        margin-bottom: 4px;
+    .row .card .p-4 img {
+        max-height: 160px;
     }
 }
