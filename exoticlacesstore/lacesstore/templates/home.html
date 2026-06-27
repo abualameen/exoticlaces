@@ -25,12 +25,13 @@
         {% load currency_filters %}
         {% for product in products %}
         
-        <div class="col-6 col-sm-6 col-md-4 col-lg-3">
+        <!-- ✅ col-12 = 1 per row on mobile, col-sm-6 = 2 per row on tablet, col-md-4 = 3 per row on desktop -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
             <div class="product-card">
                 <div class="product-image-wrapper">
                     {% if product.image %}
                     <a href="{{ product.get_url }}">
-                        <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}">
+                        <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy">
                     </a>
                     {% endif %}
                 </div>
