@@ -117,8 +117,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': config('DB_NAME', default='defaultdb'),
         'USER': config('DB_USER', default='doadmin'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
+        'PASSWORD': config('DB_PASSWORD', default=''),
+        'HOST': config('DB_HOST', default='localhost'),
         'PORT': config('DB_PORT', default='25060'),
         'OPTIONS': {
             'charset': 'utf8mb4',
