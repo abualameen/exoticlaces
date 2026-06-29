@@ -192,7 +192,7 @@ EMAIL_PORT = 587
 EMAIL_USE_SSL = False
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'resend'
-EMAIL_HOST_PASSWORD = config('RESEND_API_KEY')
+EMAIL_HOST_PASSWORD = config('RESEND_API_KEY', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@mail.exoticlaces.com')
 EMAIL_TIMEOUT = 30
 
@@ -212,9 +212,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media')
 # ============================================================================
 # PAYSTACK
 # ============================================================================
-
-PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY')
-PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
+PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY', default='')
+PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY', default='')
 PAYSTACK_BASE_URL = "https://api.paystack.co"
 PAYSTACK_SUPPORTED_CURRENCIES = ["NGN", "GHS", "USD", "XOF"]
 
