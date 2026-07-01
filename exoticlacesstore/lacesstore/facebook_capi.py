@@ -40,6 +40,16 @@ def send_facebook_event(request, event_name, custom_data=None):
     # Add client IP and user agent
     user_data['client_ip_address'] = request.META.get('REMOTE_ADDR', '')
     user_data['client_user_agent'] = request.META.get('HTTP_USER_AGENT', '')
+
+    # 🟢 Get Click ID (fbc) from cookies
+    fbc = request.COOKIES.get('_fbc')
+    if fbc:
+        user_data['fbc'] = fbc
+    
+    # 🟢 Get Browser ID (fbp) from cookies
+    fbp = request.COOKIES.get('_fbp')
+    if fbp:
+        user_data['fbp'] = fbp
     
     # Build the event
     event_data = {
