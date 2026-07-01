@@ -231,7 +231,19 @@ def verify_payment(request):
     transaction.save()
 
     # Create Order
+    # Get shipping data with fallback
     shipping = request.session.get("shipping", {})
+    shipping_method = shipping.get("method")  # ✅ Use .get() instead of direct access
+    
+    # ✅ If shipping method is missing, handle it gracefully
+    if not shipping_method:
+        # Use a default shipping method or redirect
+        shipping_method = 'seller'
+        print("⚠️ Shipping method not found in session, using default: seller")
+
+
+
+    
     shipping_amount = shipping.get("amount_ngn", 0)
     print("SESSION SHIPPING:", request.session.get("shipping"))
 
@@ -269,7 +281,7 @@ def verify_payment(request):
     country=country,
     state=state,
     phonenumber=phonenumber,
-    shipping_method=shipping.get("method"),
+    shipping_method=shipping_method,
     shipping_cost=shipping_amount,
     grand_total=total + int(shipping_amount),
     currency=request.session.get("currency", "NGN"),
@@ -341,11 +353,11 @@ def verify_payment(request):
 
     # 🔹 call provider (seller or dhl)
     shipment_data = create_provider_shipment(
-        shipping["method"],
+        shipping_method,
         order
     )
 
-    method_obj = ShippingMethod.objects.get(provider=shipping["method"])
+    method_obj = ShippingMethod.objects.get(provider=shipping_method)
 
     Shipment.objects.create(
         order=order,
