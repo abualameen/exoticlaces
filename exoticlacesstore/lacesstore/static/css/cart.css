@@ -27,5 +27,40 @@ body {
     margin-bottom: 20px !important;
 }
 
+/* ========================================
+   CART ACTION BUTTONS - FIX
+   ======================================== */
 
+.cart_icon {
+    color: #6c757d !important;  /* Gray color */
+    font-size: 1.2rem;
+    transition: color 0.2s ease;
+    display: inline-block;
+}
 
+.cart_icon:hover {
+    color: #343a40 !important;  /* Darker gray on hover */
+}
+
+/* Action buttons container - keep in one line */
+.cart-actions {
+    white-space: nowrap;
+    min-width: 120px;
+}
+
+.cart-actions a {
+    text-decoration: none;
+}
+
+/* If the icons are still blue, force override */
+.fa-circle-plus.cart_icon,
+.fa-circle-minus.cart_icon,
+.fa-trash-alt.cart_icon {
+    color: #6c757d !important;
+}
+
+.fa-circle-plus.cart_icon:hover,
+.fa-circle-minus.cart_icon:hover,
+.fa-trash-alt.cart_icon:hover {
+    color: #343a40 !important;
+}

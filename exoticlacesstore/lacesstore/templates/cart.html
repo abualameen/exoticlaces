@@ -1,5 +1,3 @@
-
-
 {% extends 'base.html' %}
 {% load static %}
 {% block title %} 
@@ -77,42 +75,33 @@ Cart
 
 
                 <!-- Action Buttons: +, -, Delete -->
-                <td>
+                <td class="cart-actions">
                     {% if cart_item.variant %}
                         {% if cart_item.quantity < cart_item.variant.stock %}
-                            &nbsp;<a href="{% url 'add_cart_variant' cart_item.product.id cart_item.variant.id %}">
+                            <a href="{% url 'add_cart_variant' cart_item.product.id cart_item.variant.id %}" class="mr-1">
                                 <i class="fa-solid fa-circle-plus cart_icon"></i>
                             </a>
                         {% endif %}
                         {% if cart_item.quantity > 0 %}
-                            &nbsp;<a href="{% url 'cart_remove' cart_item.product.id %}">
+                            <a href="{% url 'cart_remove' cart_item.product.id %}" class="mr-1">
                                 <i class="fa-solid fa-circle-minus cart_icon"></i>
                             </a>
                         {% endif %}
-                     
-
-                        {% if cart_item.variant %}
-                            &nbsp;<a href="{% url 'cart_remove_product_variant' cart_item.product.id cart_item.variant.id %}">
-                                <i class="fa-solid fa-trash-alt cart_icon"></i>
-                            </a>
-                        {% else %}
-                            &nbsp;<a href="{% url 'cart_remove_product' cart_item.product.id %}">
-                                <i class="fa-solid fa-trash-alt cart_icon"></i>
-                            </a>
-                        {% endif %}
-
+                        <a href="{% url 'cart_remove_product_variant' cart_item.product.id cart_item.variant.id %}">
+                            <i class="fa-solid fa-trash-alt cart_icon"></i>
+                        </a>
                     {% else %}
                         {% if cart_item.quantity < cart_item.product.stock %}
-                            &nbsp;<a href="{% url 'add_cart' cart_item.product.id %}">
+                            <a href="{% url 'add_cart' cart_item.product.id %}" class="mr-1">
                                 <i class="fa-solid fa-circle-plus cart_icon"></i>
                             </a>
                         {% endif %}
                         {% if cart_item.quantity > 0 %}
-                            &nbsp;<a href="{% url 'cart_remove' cart_item.product.id %}">
+                            <a href="{% url 'cart_remove' cart_item.product.id %}" class="mr-1">
                                 <i class="fa-solid fa-circle-minus cart_icon"></i>
                             </a>
                         {% endif %}
-                        &nbsp;<a href="{% url 'cart_remove_product' cart_item.product.id %}">
+                        <a href="{% url 'cart_remove_product' cart_item.product.id %}">
                             <i class="fa-solid fa-trash-alt cart_icon"></i>
                         </a>
                     {% endif %}
@@ -587,4 +576,3 @@ Cart
  </div>
  {% endif %}
 {% endblock %}
-
