@@ -29,6 +29,9 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from payments.models import ExchangeRate
 from .facebook_capi import send_facebook_event
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
 
 
@@ -271,7 +274,14 @@ def cart_detail(request):
 
 
 def cart_remove(request, product_id, variant_id=None):
-    cart = Cart.objects.get(cart_id =_cart_id(request))
+    # cart = Cart.objects.get(cart_id =_cart_id(request))
+
+    try:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+    except Cart.DoesNotExist:
+        # If cart doesn't exist, redirect to cart page
+        return redirect('cart_detail')
+
     product = get_object_or_404(Product, id=product_id)
     if variant_id:
         cart_items = CartItem.objects.filter(product=product, cart=cart, variant_id=variant_id)
@@ -289,7 +299,13 @@ def cart_remove(request, product_id, variant_id=None):
 
 
 def cart_remove_product(request, product_id, variant_id=None):
-    cart = Cart.objects.get(cart_id=_cart_id(request))
+    #cart = Cart.objects.get(cart_id=_cart_id(request))
+    try:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+    except Cart.DoesNotExist:
+        return redirect('cart_detail')
+
+
     product = get_object_or_404(Product, id=product_id)
 
     if variant_id:
@@ -590,3 +606,22 @@ def dashboard(request):
     # views.py
 def test_video(request):
     return render(request, 'videotest.html', {'video_id': 'CfVYbB6I8Ew'})
+
+
+
+
+def csrf_failure(request, reason=""):
+    """Custom CSRF failure view - returns user-friendly error"""
+    # If it's an AJAX request, return JSON
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Session expired. Please refresh the page and try again.',
+            'csrf_error': True
+        }, status=403)
+    
+    # For regular requests, show a friendly page
+    return render(request, 'csrf_error.html', {
+        'reason': reason,
+        'message': 'Your session has expired or your browser cookies have been cleared. Please refresh the page and try again.'
+    }, status=403)
