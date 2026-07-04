@@ -3,7 +3,6 @@ import hashlib
 import time
 import requests
 from django.conf import settings
-from django.contrib.auth.models import User
 
 def get_facebook_user_data(user):
     """Format user data for Facebook CAPI"""
@@ -18,7 +17,6 @@ def get_facebook_user_data(user):
         phone = str(user.customer.phonenumber)
         user_data['ph'] = [hashlib.sha256(phone.encode('utf-8')).hexdigest()]
     
-    # Add IP address and user agent (will be passed from request)
     return user_data
 
 def send_facebook_event(request, event_name, custom_data=None):
@@ -29,27 +27,41 @@ def send_facebook_event(request, event_name, custom_data=None):
     access_token = settings.FACEBOOK_CAPI_ACCESS_TOKEN
     
     if not access_token:
-        print("Facebook CAPI token not configured")
+        print("❌ Facebook CAPI token not configured")
         return False
     
-    # Get user data from request
+    # ✅ Get user data from request
     user_data = {}
-    if request.user.is_authenticated:
-        user_data = get_facebook_user_data(request.user)
     
-    # Add client IP and user agent
+    # ✅ Add email from authenticated user
+    if request.user.is_authenticated and request.user.email:
+        user_data['em'] = [hashlib.sha256(request.user.email.encode('utf-8')).hexdigest()]
+    
+    # ✅ Add phone number if available
+    if hasattr(request.user, 'customer') and request.user.customer.phonenumber:
+        phone = str(request.user.customer.phonenumber)
+        user_data['ph'] = [hashlib.sha256(phone.encode('utf-8')).hexdigest()]
+    
+    # ✅ Add client IP and user agent
     user_data['client_ip_address'] = request.META.get('REMOTE_ADDR', '')
     user_data['client_user_agent'] = request.META.get('HTTP_USER_AGENT', '')
 
-    # 🟢 Get Click ID (fbc) from cookies
+    # ✅ Get Click ID (fbc) from cookies
     fbc = request.COOKIES.get('_fbc')
     if fbc:
         user_data['fbc'] = fbc
     
-    # 🟢 Get Browser ID (fbp) from cookies
+    # ✅ Get Browser ID (fbp) from cookies
     fbp = request.COOKIES.get('_fbp')
     if fbp:
         user_data['fbp'] = fbp
+    
+    # ✅ Add first name and last name if available
+    if request.user.is_authenticated:
+        if request.user.first_name:
+            user_data['fn'] = [hashlib.sha256(request.user.first_name.encode('utf-8')).hexdigest()]
+        if request.user.last_name:
+            user_data['ln'] = [hashlib.sha256(request.user.last_name.encode('utf-8')).hexdigest()]
     
     # Build the event
     event_data = {
@@ -59,7 +71,7 @@ def send_facebook_event(request, event_name, custom_data=None):
             "user_data": user_data,
             "custom_data": custom_data or {},
             "action_source": "website",
-            "test_event_code": "TEST1940" 
+            "test_event_code": "TEST1940"
         }]
     }
     
@@ -72,6 +84,7 @@ def send_facebook_event(request, event_name, custom_data=None):
         result = response.json()
         if response.status_code == 200:
             print(f"✅ Facebook CAPI event sent: {event_name}")
+            print(f"📊 User data sent: {list(user_data.keys())}")
             return True
         else:
             print(f"❌ Facebook CAPI error: {result}")
