@@ -8,14 +8,31 @@ class VisitorTrackingMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
+    # def __call__(self, request):
+    #     # Skip tracking for admin, static files, and API calls
+    #     if not request.path.startswith('/admin') and not request.path.startswith('/static'):
+    #         self.track_visitor(request)
+        
+    #     response = self.get_response(request)
+    #     return response
+    
     def __call__(self, request):
-        # Skip tracking for admin, static files, and API calls
+        # Send PageView to Facebook CAPI
         if not request.path.startswith('/admin') and not request.path.startswith('/static'):
-            self.track_visitor(request)
+            try:
+                from .facebook_capi import send_facebook_event
+                send_facebook_event(request, 'PageView', {
+                    'url': request.path,
+                    'title': 'Page View'
+                })
+            except Exception as e:
+                print(f"Facebook CAPI PageView error: {e}")
         
         response = self.get_response(request)
         return response
-    
+
+
+
     def track_visitor(self, request):
         # Get or create session
         if not request.session.session_key:
