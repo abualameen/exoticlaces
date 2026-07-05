@@ -95,6 +95,113 @@ def _cart_id(request):
 
 
 
+# def add_cart(request, product_id, variant_id=None):
+#     product = Product.objects.get(id=product_id)
+#     variant = None
+#     if variant_id:
+#         variant = ProductVariant.objects.get(id=variant_id)
+
+#     try:
+#         cart = Cart.objects.get(cart_id=_cart_id(request))
+#     except Cart.DoesNotExist:
+#         cart = Cart.objects.create(cart_id=_cart_id(request))
+#         cart.save()
+
+#     try:
+#         cart_item = CartItem.objects.get(product=product, cart=cart, variant=variant)
+#         # Check stock for variant or product
+#         available_stock = variant.stock if variant else product.stock
+#         if cart_item.quantity < available_stock:
+#             cart_item.quantity += 1
+#         cart_item.save()
+#     except CartItem.DoesNotExist:
+#         cart_item = CartItem.objects.create(
+#             product=product,
+#             variant=variant,
+#             quantity=1,
+#             cart=cart
+#         )
+#         cart_item.save()
+#     clear_shipping_session(request)
+
+
+#     # ✅ Facebook CAPI - Add to Cart Event
+    
+#     if request.user.is_authenticated:
+#         send_facebook_event(
+#             request,
+#             'AddToCart',
+#             {
+#                 'content_ids': [str(product.id)],
+#                 'content_name': product.name,
+#                 'content_type': 'product',
+#                 'value': str(product.price),
+#                 'currency': 'NGN'
+#             }
+#         )
+
+#     # Add GA4 tracking
+#     if not request.session.get('ga_tracked_add_to_cart', False):
+#         request.session['ga_tracked_add_to_cart'] = True
+#         # The GA4 tag automatically tracks this via enhanced measurement
+
+
+#     return redirect('cart_detail')
+
+
+# def add_cart_variant(request, product_id, variant_id):
+#     product = get_object_or_404(Product, id=product_id)
+#     variant = get_object_or_404(ProductVariant, id=variant_id)
+
+
+#     if variant.stock <= 0:
+#         messages.error(request, "This variant is out of stock.")
+#         return redirect(product.get_url())
+
+#     try:
+#         cart = Cart.objects.get(cart_id=_cart_id(request))
+#     except Cart.DoesNotExist:
+#         cart = Cart.objects.create(cart_id=_cart_id(request))
+#         cart.save()
+
+    
+
+#     # Check if cart item for this variant exists
+#     cart_items = CartItem.objects.filter(product=product, variant=variant, cart=cart)
+#     if cart_items.exists():
+#         cart_item = cart_items.first()
+#         if cart_item.quantity < product.stock:
+#             cart_item.quantity += 1
+#             cart_item.save()
+#     else:
+#         cart_item = CartItem.objects.create(
+#             product=product,
+#             variant=variant,
+#             quantity=1,
+#             cart=cart
+#         )
+#         cart_item.save()
+#     clear_shipping_session(request)
+
+#     # ✅ Facebook CAPI - Add to Cart Event (with variant)
+    
+#     if request.user.is_authenticated:
+#         send_facebook_event(
+#             request,
+#             'AddToCart',
+#             {
+#                 'content_ids': [str(product.id)],
+#                 'content_name': f"{product.name} - {variant.color_name}",
+#                 'content_type': 'product',
+#                 'value': str(product.price),
+#                 'currency': 'NGN',
+#                 'variant': variant.color_name  # Optional: track which color
+#             }
+#         )
+
+#     return redirect('cart_detail')
+
+
 def add_cart(request, product_id, variant_id=None):
     product = Product.objects.get(id=product_id)
     variant = None
@@ -109,7 +216,6 @@ def add_cart(request, product_id, variant_id=None):
 
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart, variant=variant)
-        # Check stock for variant or product
         available_stock = variant.stock if variant else product.stock
         if cart_item.quantity < available_stock:
             cart_item.quantity += 1
@@ -124,27 +230,19 @@ def add_cart(request, product_id, variant_id=None):
         cart_item.save()
     clear_shipping_session(request)
 
-
-    # ✅ Facebook CAPI - Add to Cart Event
-    
-    if request.user.is_authenticated:
-        send_facebook_event(
-            request,
-            'AddToCart',
-            {
-                'content_ids': [str(product.id)],
-                'content_name': product.name,
-                'content_type': 'product',
-                'value': str(product.price),
-                'currency': 'NGN'
-            }
-        )
-
-    # Add GA4 tracking
-    if not request.session.get('ga_tracked_add_to_cart', False):
-        request.session['ga_tracked_add_to_cart'] = True
-        # The GA4 tag automatically tracks this via enhanced measurement
-
+    # ✅ Facebook CAPI - Add to Cart Event (Works for ALL users)
+    # ✅ Always send, even for guests
+    send_facebook_event(
+        request,
+        'AddToCart',
+        {
+            'content_ids': [str(product.id)],
+            'content_name': product.name,
+            'content_type': 'product',
+            'value': str(product.price),
+            'currency': 'NGN'
+        }
+    )
 
     return redirect('cart_detail')
 
@@ -152,7 +250,6 @@ def add_cart(request, product_id, variant_id=None):
 def add_cart_variant(request, product_id, variant_id):
     product = get_object_or_404(Product, id=product_id)
     variant = get_object_or_404(ProductVariant, id=variant_id)
-
 
     if variant.stock <= 0:
         messages.error(request, "This variant is out of stock.")
@@ -164,9 +261,6 @@ def add_cart_variant(request, product_id, variant_id):
         cart = Cart.objects.create(cart_id=_cart_id(request))
         cart.save()
 
-    
-
-    # Check if cart item for this variant exists
     cart_items = CartItem.objects.filter(product=product, variant=variant, cart=cart)
     if cart_items.exists():
         cart_item = cart_items.first()
@@ -183,21 +277,19 @@ def add_cart_variant(request, product_id, variant_id):
         cart_item.save()
     clear_shipping_session(request)
 
-    # ✅ Facebook CAPI - Add to Cart Event (with variant)
-    
-    if request.user.is_authenticated:
-        send_facebook_event(
-            request,
-            'AddToCart',
-            {
-                'content_ids': [str(product.id)],
-                'content_name': f"{product.name} - {variant.color_name}",
-                'content_type': 'product',
-                'value': str(product.price),
-                'currency': 'NGN',
-                'variant': variant.color_name  # Optional: track which color
-            }
-        )
+    # ✅ Facebook CAPI - Add to Cart Event (Works for ALL users)
+    send_facebook_event(
+        request,
+        'AddToCart',
+        {
+            'content_ids': [str(product.id)],
+            'content_name': f"{product.name} - {variant.color_name}",
+            'content_type': 'product',
+            'value': str(product.price),
+            'currency': 'NGN',
+            'variant': variant.color_name
+        }
+    )
 
     return redirect('cart_detail')
 
