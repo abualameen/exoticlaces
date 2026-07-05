@@ -321,18 +321,21 @@ def verify_payment(request):
         item.delete()
 
 
-    if request.user.is_authenticated:
-        send_facebook_event(
-            request,
-            'Purchase',
-            {
-                'content_ids': [str(item.id) for item in cart_items],
-                'content_type': 'product',
-                'value': str(order.grand_total),
-                'currency': 'NGN',
-                'transaction_id': str(order.id)
-            }
-        )
+    import uuid
+    purchase_event_id = str(uuid.uuid4())
+    
+    send_facebook_event(
+        request,
+        'Purchase',
+        {
+            'content_ids': [str(item.id) for item in order_items],
+            'content_type': 'product',
+            'value': str(order.grand_total),
+            'currency': 'NGN',
+            'transaction_id': str(order.id)
+        },
+        event_id=purchase_event_id  # ✅ Pass event_id
+    )
 
    ###########################################################################
     

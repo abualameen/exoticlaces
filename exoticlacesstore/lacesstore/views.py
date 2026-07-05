@@ -232,6 +232,9 @@ def add_cart(request, product_id, variant_id=None):
 
     # ✅ Facebook CAPI - Add to Cart Event (Works for ALL users)
     # ✅ Always send, even for guests
+    import uuid
+    event_id = str(uuid.uuid4())
+    
     send_facebook_event(
         request,
         'AddToCart',
@@ -241,7 +244,8 @@ def add_cart(request, product_id, variant_id=None):
             'content_type': 'product',
             'value': str(product.price),
             'currency': 'NGN'
-        }
+        },
+        event_id=event_id  # ✅ Pass event_id
     )
 
     return redirect('cart_detail')
@@ -278,17 +282,20 @@ def add_cart_variant(request, product_id, variant_id):
     clear_shipping_session(request)
 
     # ✅ Facebook CAPI - Add to Cart Event (Works for ALL users)
+    import uuid
+    event_id = str(uuid.uuid4())
+    
     send_facebook_event(
         request,
         'AddToCart',
         {
             'content_ids': [str(product.id)],
-            'content_name': f"{product.name} - {variant.color_name}",
+            'content_name': product.name,
             'content_type': 'product',
             'value': str(product.price),
-            'currency': 'NGN',
-            'variant': variant.color_name
-        }
+            'currency': 'NGN'
+        },
+        event_id=event_id  # ✅ Pass event_id
     )
 
     return redirect('cart_detail')
