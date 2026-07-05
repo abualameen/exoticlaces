@@ -8,17 +8,13 @@ class VisitorTrackingMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
-    # def __call__(self, request):
-    #     # Skip tracking for admin, static files, and API calls
-    #     if not request.path.startswith('/admin') and not request.path.startswith('/static'):
-    #         self.track_visitor(request)
-        
-    #     response = self.get_response(request)
-    #     return response
-    
     def __call__(self, request):
-        # Send PageView to Facebook CAPI
+        # Skip tracking for admin, static files, and API calls
         if not request.path.startswith('/admin') and not request.path.startswith('/static'):
+            # ✅ Track visitor for dashboard
+            self.track_visitor(request)
+            
+            # ✅ Send PageView to Facebook CAPI
             try:
                 from .facebook_capi import send_facebook_event
                 send_facebook_event(request, 'PageView', {
@@ -30,8 +26,6 @@ class VisitorTrackingMiddleware:
         
         response = self.get_response(request)
         return response
-
-
 
     def track_visitor(self, request):
         # Get or create session
