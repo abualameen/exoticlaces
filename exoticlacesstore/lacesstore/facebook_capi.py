@@ -97,7 +97,7 @@ def get_facebook_user_data(user):
 
 
 # lacesstore/facebook_capi.py
-def send_facebook_event(request, event_name, custom_data=None):
+def send_facebook_event(request, event_name, custom_data=None, event_id=None):
     """
     Send a Facebook CAPI event from the server side
     """
@@ -108,10 +108,14 @@ def send_facebook_event(request, event_name, custom_data=None):
         print("❌ Facebook CAPI token not configured")
         return False
     
+    # ✅ Generate event_id if not provided
+    if not event_id:
+        event_id = str(uuid.uuid4())
+    
     # ✅ Get user data from request
     user_data = {}
     
-    # ✅ Add email from authenticated user OR from session/checkout data
+    # ✅ Add email from authenticated user or session
     email = None
     if request.user.is_authenticated and request.user.email:
         email = request.user.email
@@ -123,16 +127,16 @@ def send_facebook_event(request, event_name, custom_data=None):
     if email:
         user_data['em'] = [hashlib.sha256(email.encode('utf-8')).hexdigest()]
     
-    # ✅ Add client IP and user agent (works for everyone)
+    # ✅ Add client IP and user agent
     user_data['client_ip_address'] = request.META.get('REMOTE_ADDR', '')
     user_data['client_user_agent'] = request.META.get('HTTP_USER_AGENT', '')
     
-    # ✅ Get Click ID (fbc) from cookies (works for everyone)
+    # ✅ Get Click ID (fbc) from cookies
     fbc = request.COOKIES.get('_fbc')
     if fbc:
         user_data['fbc'] = fbc
     
-    # ✅ Get Browser ID (fbp) from cookies (works for everyone)
+    # ✅ Get Browser ID (fbp) from cookies
     fbp = request.COOKIES.get('_fbp')
     if fbp:
         user_data['fbp'] = fbp
@@ -152,15 +156,11 @@ def send_facebook_event(request, event_name, custom_data=None):
             user_data['ln'] = [hashlib.sha256(checkout_data.get('lastName', '').encode('utf-8')).hexdigest()]
     
     # Build the event
-    if not event_id:
-        event_id = str(uuid.uuid4())  # Generate unique ID
-    
-    # Build the event
     event_data = {
         "data": [{
             "event_name": event_name,
             "event_time": int(time.time()),
-            "event_id": event_id,  # ✅ Add this line
+            "event_id": event_id,  # ✅ Add event_id
             "user_data": user_data,
             "custom_data": custom_data or {},
             "action_source": "website",
@@ -176,7 +176,7 @@ def send_facebook_event(request, event_name, custom_data=None):
         response = requests.post(url, params=params, json=event_data)
         result = response.json()
         if response.status_code == 200:
-            print(f"✅ Facebook CAPI event sent: {event_name}")
+            print(f"✅ Facebook CAPI event sent: {event_name} (ID: {event_id})")
             print(f"📊 User data sent: {list(user_data.keys())}")
             return True
         else:
