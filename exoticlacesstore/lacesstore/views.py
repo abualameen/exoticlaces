@@ -569,7 +569,7 @@ def search(request):
     if search_term:
         products = Product.objects.filter(name__contains=search_term)
     else:
-        Product.objects.all() if you want to show all
+        Product.objects.all() #if you want to show all
     
     currency = request.session.get('currency', 'NGN')
     
