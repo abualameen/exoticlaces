@@ -49,8 +49,10 @@
         t.src=v;s=b.getElementsByTagName(e)[0];
         s.parentNode.insertBefore(t,s)}(window, document,'script',
         'https://connect.facebook.net/en_US/fbevents.js');
+         // Generate a unique ID for this page view
+        const eventId = '{{ request.session.session_key }}_{% now "U" %}';
         fbq('init', '{{ FACEBOOK_PIXEL_ID }}');
-        fbq('track', 'PageView');
+        fbq('track', 'PageView', {}, {eventID: eventId});
     </script>
     <noscript>
         <img height="1" width="1" style="display:none" 

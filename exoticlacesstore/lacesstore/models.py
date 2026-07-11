@@ -285,7 +285,7 @@ class Visitor(models.Model):
     last_visit = models.DateTimeField(auto_now=True)
     visit_count = models.IntegerField(default=1)
     user_agent = models.TextField(blank=True, null=True)
-    referer = models.URLField(blank=True, null=True)
+    referer = models.URLField(max_length=2000, blank=True, null=True)
     
     class Meta:
         ordering = ['-last_visit']
