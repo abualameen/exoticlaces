@@ -561,22 +561,18 @@ def viewOrder(request, order_id):
 
 
 
-# lacesstore/views.py
 def search(request):
-    # ✅ Use .get() with a default value
-    search_term = request.GET.get('title', '')
+    search_term = request.GET.get('title', '').strip()
     
     if search_term:
-        products = Product.objects.filter(name__contains=search_term)
+        products = Product.objects.filter(name__icontains=search_term)
     else:
-        Product.objects.all() #if you want to show all
-    
-    currency = request.session.get('currency', 'NGN')
+        products = Product.objects.all()  # Show all products
     
     context = {
         'products': products,
-        'currency': currency,
-        'search_term': search_term,  # Optional: pass to template for display
+        'currency': request.session.get('currency', 'NGN'),
+        'search_term': search_term,
     }
     
     return render(request, 'home.html', context)
