@@ -341,3 +341,6 @@ LOGGING = {
         },
     },
 }
+
+
+CSRF_FAILURE_VIEW = 'lacesstore.views.csrf_failure'

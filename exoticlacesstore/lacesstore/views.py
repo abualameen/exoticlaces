@@ -488,6 +488,8 @@ def signinView(request):
     if request.method == 'POST':
         print("=" * 50)
         print("POST data received:", request.POST)
+        print("CSRF token present:", 'csrfmiddlewaretoken' in request.POST)
+        
         form = AuthenticationForm(request, data=request.POST)
         
         if form.is_valid():
@@ -495,13 +497,11 @@ def signinView(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             print(f"Username: {username}")
-            print(f"Password provided: {'*' * len(password) if password else 'None'}")
             
             user = authenticate(username=username, password=password)
             if user is not None:
                 print(f"User authenticated: {user.username}")
                 login(request, user)
-                print("User logged in, redirecting to home")
                 messages.success(request, f"Welcome back, {username}!")
                 return redirect('home')
             else:
@@ -512,6 +512,7 @@ def signinView(request):
             print("Form errors:", form.errors)
             messages.error(request, "Invalid username or password.")
     else:
+        print("GET request to login page")
         form = AuthenticationForm()
     
     print("Rendering login page again")
@@ -725,4 +726,22 @@ def csrf_failure(request, reason=""):
     return render(request, 'csrf_error.html', {
         'reason': reason,
         'message': 'Your session has expired or your browser cookies have been cleared. Please refresh the page and try again.'
+    }, status=403)
+
+
+
+# lacesstore/views.py
+from django.http import JsonResponse
+from django.shortcuts import render
+
+def csrf_failure(request, reason=""):
+    """Custom CSRF failure view"""
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'error': 'Session expired. Please refresh the page and try again.',
+            'csrf_error': True
+        }, status=403)
+    
+    return render(request, 'csrf_error.html', {
+        'message': 'Your session has expired. Please refresh the page and try again.'
     }, status=403)
