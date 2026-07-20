@@ -309,9 +309,7 @@ def add_cart_variant(request, product_id, variant_id):
 
 
 
-
-
-
+# lacesstore/views.py
 def cart_detail(request):
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
@@ -356,8 +354,7 @@ def cart_detail(request):
         shipping_cost_ngn = Decimal(str(shipping_data.get("amount_ngn", 0)))
         shipping_label = shipping_data.get("label")
 
-        # 5️⃣ GRAND TOTAL (NGN ONLY) - WITH DISCOUNTS APPLIED ✅ FIXED
-        # ✅ Subtract BOTH voucher discount AND flash sale discount
+        # 5️⃣ ✅ GRAND TOTAL - SUBTRACT BOTH DISCOUNTS
         grand_total_ngn = total_ngn - voucher_discount - flash_sale_discount + shipping_cost_ngn
 
         # 6️⃣ FX (DISPLAY ONLY)
@@ -386,7 +383,7 @@ def cart_detail(request):
         counter = 0
         active_currency = "NGN"
 
-    # 7️⃣ PAYSTACK (ALWAYS NGN) - WITH DISCOUNTS APPLIED
+    # 7️⃣ PAYSTACK (ALWAYS NGN)
     paystack_amount = int(grand_total_ngn * 100)
 
     return render(request, "cart.html", {

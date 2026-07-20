@@ -97,7 +97,6 @@ def init_payment(request):
     for item in cart_items:
         cart_total += Decimal(item.product.price * item.quantity)
         
-        # ✅ Check for flash sale
         flash_sale = FlashSale.objects.filter(
             product=item.product,
             is_active=True,
@@ -120,10 +119,9 @@ def init_payment(request):
             request.session.pop('voucher_discount', None)
 
     shipping_cost = Decimal(shipping.get("amount_ngn", 0))
-    # ✅ FIXED: Subtract BOTH discounts
+    # ✅ GRAND TOTAL - SUBTRACT BOTH DISCOUNTS
     grand_total = cart_total - voucher_discount - flash_sale_discount + shipping_cost
     amount_kobo = int(grand_total * Decimal('100'))
-
     # 🔹 DEBUG
     print("\n========== PAYSTACK INIT DEBUG ==========")
     print("CART TOTAL (NGN):", cart_total)
