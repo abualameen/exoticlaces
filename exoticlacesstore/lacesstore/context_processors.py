@@ -1,6 +1,7 @@
 from .models import Category, Cart, CartItem, Order, Voucher, FlashSale
 from.views import _cart_id
 from django.utils import timezone
+from django.db import models  # ✅ Add this import
 
 
 
