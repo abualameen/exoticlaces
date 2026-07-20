@@ -37,7 +37,6 @@ Cart
             {% for cart_item in cart_items %}
 
             <tr>
-                <!-- Product / Variant Image and Name -->
                 <td>
                     <a href="{{ cart_item.product.get_url }}">
                         <img src="{{ cart_item.image_url }}" width="100" height="100" alt="">
@@ -58,12 +57,10 @@ Cart
                     Unit Price: {{ cart_item.product.price|money:ACTIVE_CURRENCY }}
                 </td>
 
-                <!-- Subtotal -->
                 <td>
                     {{ cart_item.sub_total|money:ACTIVE_CURRENCY }}
                 </td>
 
-                <!-- Action Buttons: +, -, Delete -->
                 <td class="cart-actions">
                     {% if cart_item.variant %}
                         {% if cart_item.quantity < cart_item.variant.stock %}
@@ -102,6 +99,15 @@ Cart
     </div>
 
     <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
+        <!-- ✅ Hidden data element for discounts -->
+        <div id="discount-data" 
+             data-voucher-discount="{{ voucher_discount|default:'0' }}" 
+             data-flash-discount="{{ flash_sale_discount|default:'0' }}"
+             data-total-ngn="{{ total_ngn|default:'0' }}"
+             data-voucher-code="{{ request.session.voucher_code|default:'' }}"
+             style="display:none;">
+        </div>
+
         <table class="table cart_table">
             <thead class="cart_thead">
                 <tr>
@@ -399,6 +405,29 @@ Cart
             });
         </script>
 
+        <!-- Get Discounts from Data Attributes -->
+        <script>
+            function getDiscounts() {
+                const discountData = document.getElementById('discount-data');
+                if (discountData) {
+                    return {
+                        voucherDiscount: parseFloat(discountData.dataset.voucherDiscount) || 0,
+                        flashDiscount: parseFloat(discountData.dataset.flashDiscount) || 0,
+                        totalNgn: parseFloat(discountData.dataset.totalNgn) || 0
+                    };
+                }
+                return { voucherDiscount: 0, flashDiscount: 0, totalNgn: 0 };
+            }
+
+            function updateDiscountData(voucherDiscount, flashDiscount) {
+                const discountData = document.getElementById('discount-data');
+                if (discountData) {
+                    discountData.dataset.voucherDiscount = voucherDiscount || 0;
+                    discountData.dataset.flashDiscount = flashDiscount || 0;
+                }
+            }
+        </script>
+
         <!-- Apply Voucher AJAX -->
         <script>
             document.getElementById('apply-voucher-btn')?.addEventListener('click', function() {
@@ -432,6 +461,8 @@ Cart
                     
                     if (data.success) {
                         feedback.innerHTML = '';
+                        // ✅ Update discount data
+                        updateDiscountData(data.discount, getDiscounts().flashDiscount);
                         updateVoucherUI(data.code, data.discount);
                     } else {
                         feedback.innerHTML = `<span class="text-danger">
@@ -465,7 +496,7 @@ Cart
                     discountAmount.innerText = `-${symbol}${discount.toLocaleString()}`;
                 }
                 
-                // ✅ Update grand total with shipping
+                // ✅ Update grand total
                 updateGrandTotal();
                 
                 // Replace content with applied voucher
@@ -500,6 +531,8 @@ Cart
                         // Hide discount row
                         const discountRow = document.getElementById('voucher-discount-row');
                         if (discountRow) discountRow.style.display = 'none';
+                        // ✅ Reset voucher discount in data
+                        updateDiscountData(0, getDiscounts().flashDiscount);
                         restoreVoucherUI();
                     }
                 });
@@ -549,6 +582,7 @@ Cart
                         
                         if (data.success) {
                             feedback.innerHTML = '';
+                            updateDiscountData(data.discount, getDiscounts().flashDiscount);
                             updateVoucherUI(data.code, data.discount);
                         } else {
                             feedback.innerHTML = `<span class="text-danger">
@@ -582,7 +616,7 @@ Cart
                     }
                 });
                 
-                // Reset totals
+                // ✅ Reset grand total
                 resetTotals();
             }
         </script>
@@ -598,10 +632,9 @@ Cart
                 const shippingText = shippingEl?.innerText || '0';
                 const shippingCost = parseFloat(shippingText.replace(/[₦,]/g, '')) || 0;
                 
-                const voucherDiscount = parseFloat("{{ voucher_discount|default:'0' }}") || 0;
-                const flashSaleDiscount = parseFloat("{{ flash_sale_discount|default:'0' }}") || 0;
+                const discounts = getDiscounts();
                 
-                const grandTotal = productTotal - voucherDiscount - flashSaleDiscount + shippingCost;
+                const grandTotal = productTotal - discounts.voucherDiscount - discounts.flashDiscount + shippingCost;
                 
                 const grandTotalEl = document.getElementById('grand_totalng_ui');
                 if (grandTotalEl) {
@@ -702,13 +735,12 @@ Cart
                     const cartTotalNGN = parseFloat("{{ total_ngn }}");
                     const cartTotalFX = parseFloat("{{ total_fx }}");
                     
-                    // ✅ Get discounts from the page context
-                    const voucherDiscount = parseFloat("{{ voucher_discount|default:'0' }}") || 0;
-                    const flashSaleDiscount = parseFloat("{{ flash_sale_discount|default:'0' }}") || 0;
+                    // ✅ Get discounts from data attributes
+                    const discounts = getDiscounts();
                     
                     // ✅ Calculate grand total WITH discounts
-                    const grandTotalNGN = cartTotalNGN - voucherDiscount - flashSaleDiscount + shippingNGN;
-                    const grandTotalFX = cartTotalFX - voucherDiscount - flashSaleDiscount + shippingFX;
+                    const grandTotalNGN = cartTotalNGN - discounts.voucherDiscount - discounts.flashDiscount + shippingNGN;
+                    const grandTotalFX = cartTotalFX - discounts.voucherDiscount - discounts.flashDiscount + shippingFX;
 
                     function format(amount) {
                         if(currency === "NGN") return "₦" + amount.toLocaleString();
