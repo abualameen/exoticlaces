@@ -10,21 +10,10 @@
     </div>
 </div>
 
-
-<!-- ✅ FLASH SALE BANNER - Add this here -->
+<!-- ✅ FLASH SALE BANNER -->
 {% include 'flash_sale_snippet.html' %}
 
 <!-- Products Section -->
-<div class="py-4">
-    <div class="container">
-        <div class="row">
-            <div class="col-10 mx-auto my-2 text-center">
-                <h1 class="text-uppercase font-weight-bold">All Products</h1>
-            </div>
-        </div>
-    </div>   
-</div>
-
 <div class="py-4">
     <div class="container">
         <div class="row">
@@ -40,10 +29,18 @@
         {% load currency_filters %}
         {% for product in products %}
         
-        <!-- ✅ col-12 = 1 per row on mobile, col-sm-6 = 2 on tablet, col-md-4 = 3 on desktop, col-lg-3 = 4 on large desktop -->
         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
             <div class="product-card">
                 <div class="product-image-wrapper">
+                    <!-- ✅ FLASH SALE BADGE -->
+                    {% with flash_sale=product.flash_sales.first %}
+                        {% if flash_sale and flash_sale.is_active_sale %}
+                            <span class="badge badge-danger flash-sale-badge">
+                                <i class="fas fa-bolt"></i> {{ flash_sale.discount_percentage|floatformat:0 }}% OFF
+                            </span>
+                        {% endif %}
+                    {% endwith %}
+                    
                     {% if product.image %}
                     <a href="{{ product.get_url }}">
                         <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy">
@@ -54,7 +51,20 @@
                 <div class="product-info">
                     <p class="product-name">{{ product.name }}</p>
                     <p class="product-sku">SKU: {{ product.id }}</p>
-                    <p class="product-price">{{ product.price|money:currency }}</p>
+                    <p class="product-price">
+                        {% with flash_sale=product.flash_sales.first %}
+                            {% if flash_sale and flash_sale.is_active_sale %}
+                                <span class="text-danger">
+                                    {{ flash_sale.get_discounted_price|money:currency }}
+                                </span>
+                                <span class="text-muted" style="text-decoration: line-through; font-size: 0.8rem;">
+                                    {{ product.price|money:currency }}
+                                </span>
+                            {% else %}
+                                {{ product.price|money:currency }}
+                            {% endif %}
+                        {% endwith %}
+                    </p>
                 </div>
             </div>
         </div>

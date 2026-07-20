@@ -136,7 +136,7 @@ Cart
                     </td>
                 </tr>
 
-                <!-- ✅ VOUCHER DISCOUNT ROW - New line under Shipping -->
+                <!-- ✅ VOUCHER DISCOUNT ROW -->
                 <tr id="voucher-discount-row" style="{% if not request.session.voucher_code %}display:none;{% endif %}">
                     <td class="text-left text-success" colspan="2">
                         <strong>Voucher Discount:</strong>
@@ -152,13 +152,19 @@ Cart
                     </td>
                 </tr>
 
-                <!-- ✅ FLASH SALE DISCOUNT ROW - New line under Voucher Discount -->
-                <tr id="flash-sale-discount-row" style="display:none;">
-                    <td class="text-left text-info" colspan="2">
-                        <strong>Flash Sale Discount:</strong>
+                <!-- ✅ FLASH SALE DISCOUNT ROW -->
+                <tr id="flash-sale-discount-row" style="{% if not flash_sale_discount %}display:none;{% endif %}">
+                    <td class="text-left text-danger" colspan="2">
+                        <strong><i class="fas fa-bolt"></i> Flash Sale Discount:</strong>
                     </td>
-                    <td class="text-right text-info">
-                        <span id="flash-sale-discount-amount">-₦0.00</span>
+                    <td class="text-right text-danger">
+                        <span id="flash-sale-discount-amount">
+                            {% if flash_sale_discount %}
+                                -{{ flash_sale_discount|money:currency }}
+                            {% else %}
+                                -₦0.00
+                            {% endif %}
+                        </span>
                     </td>
                 </tr>
 

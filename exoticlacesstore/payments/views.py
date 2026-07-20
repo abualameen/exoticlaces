@@ -43,6 +43,7 @@ from lacesstore.models import Cart
 from .models import Transaction
 
 
+# payments/views.py
 def init_payment(request):
     if request.method != "POST":
         return JsonResponse({"status": False, "message": "Invalid request"}, status=400)
@@ -82,38 +83,51 @@ def init_payment(request):
     request.session['checkout_data'] = checkout_data
 
     # 🔹 Calculate totals SERVER-SIDE
+    from lacesstore.models import Cart, CartItem, FlashSale, Voucher
+    from django.utils import timezone
+    from decimal import Decimal
+    
     cart = Cart.objects.get(cart_id=_cart_id(request))
     cart_items = CartItem.objects.filter(cart=cart, active=True)
 
     cart_total = Decimal('0.00')
+    flash_sale_discount = Decimal('0.00')
+    now = timezone.now()
+
     for item in cart_items:
         cart_total += Decimal(item.product.price * item.quantity)
+        
+        # ✅ Check for flash sale
+        flash_sale = FlashSale.objects.filter(
+            product=item.product,
+            is_active=True,
+            start_time__lte=now,
+            end_time__gte=now
+        ).first()
+        if flash_sale:
+            discount_amount = item.product.price * (flash_sale.discount_percentage / 100)
+            flash_sale_discount += discount_amount * item.quantity
 
-    shipping_cost = Decimal(shipping.get("amount_ngn", 0))  # NGN
-
-    # ✅ Apply voucher discount if present
+    # ✅ Apply voucher discount
     voucher_discount = Decimal('0.00')
     voucher_code = request.session.get('voucher_code')
     if voucher_code:
         try:
-            from lacesstore.models import Voucher
             voucher = Voucher.objects.get(code=voucher_code, active=True)
             voucher_discount = voucher.apply_discount(cart_total)
-            print(f"✅ Voucher discount applied: ₦{voucher_discount}")
         except Voucher.DoesNotExist:
-            print("⚠️ Voucher not found, skipping discount")
-            # Clear invalid voucher
             request.session.pop('voucher_code', None)
             request.session.pop('voucher_discount', None)
 
-    # ✅ Calculate grand total with discount
-    grand_total = cart_total - voucher_discount + shipping_cost
-    amount_kobo = int(grand_total * Decimal('100'))  # convert to kobo
+    shipping_cost = Decimal(shipping.get("amount_ngn", 0))
+    grand_total = cart_total - voucher_discount - flash_sale_discount + shipping_cost
+    amount_kobo = int(grand_total * Decimal('100'))
 
     # 🔹 DEBUG
     print("\n========== PAYSTACK INIT DEBUG ==========")
     print("CART TOTAL (NGN):", cart_total)
     print("VOUCHER DISCOUNT (NGN):", voucher_discount)
+    print("FLASH SALE DISCOUNT (NGN):", flash_sale_discount)
     print("SHIPPING COST (NGN):", shipping_cost)
     print("GRAND TOTAL (NGN):", grand_total)
     print("PAYSTACK AMOUNT (KOBO):", amount_kobo)
@@ -166,7 +180,6 @@ def init_payment(request):
 
     print("PAYSTACK REF:", ref)
 
-    # ✅ RETURN AUTHORIZATION URL
     return JsonResponse({
         "status": True,
         "paystack_url": response["data"]["authorization_url"]
