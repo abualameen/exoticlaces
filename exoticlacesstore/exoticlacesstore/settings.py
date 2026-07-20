@@ -88,6 +88,7 @@ TEMPLATES = [
                 'currency.context_processors.currency_context',
                 'lacesstore.context_processors.social_links',
                 'lacesstore.context_processors.facebook_pixel',
+                'lacesstore.context_processors.sale_context',  # Add this
             ],
         },
     },

@@ -3,6 +3,10 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.utils import timezone
 import datetime
+from decimal import Decimal
+import uuid
+
+# ... your existing models ...
 
 
 class Category(models.Model):
@@ -356,3 +360,149 @@ class DailyVisitorStats(models.Model):
             stats.save()
         
         return stats
+
+
+
+
+
+class Voucher(models.Model):
+    """Discount voucher/coupon code"""
+    
+    DISCOUNT_TYPES = [
+        ('percentage', 'Percentage (%)'),
+        ('fixed', 'Fixed Amount (₦)'),
+        ('free_shipping', 'Free Shipping'),
+    ]
+    
+    code = models.CharField(max_length=50, unique=True)
+    discount_type = models.CharField(max_length=20, choices=DISCOUNT_TYPES, default='percentage')
+    discount_value = models.DecimalField(max_digits=10, decimal_places=2, help_text="Amount or percentage")
+    
+    # Validity
+    valid_from = models.DateTimeField()
+    valid_to = models.DateTimeField()
+    active = models.BooleanField(default=True)
+    
+    # Usage limits
+    usage_limit = models.PositiveIntegerField(default=1, help_text="Max uses per customer")
+    total_usage_limit = models.PositiveIntegerField(default=100, help_text="Max total uses")
+    used_count = models.PositiveIntegerField(default=0)
+    
+    # Restrictions
+    min_order_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    max_discount_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    applicable_to = models.ManyToManyField('Product', blank=True, help_text="Leave blank for all products")
+    user_specific = models.ManyToManyField(User, blank=True, help_text="Leave blank for all users")
+    
+    # Flash sale specific
+    is_flash_sale = models.BooleanField(default=False)
+    flash_sale_title = models.CharField(max_length=200, blank=True, null=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return self.code
+    
+    def is_valid(self):
+        """Check if voucher is currently valid"""
+        now = timezone.now()
+        return (
+            self.active and
+            self.valid_from <= now <= self.valid_to and
+            self.used_count < self.total_usage_limit
+        )
+    
+    def is_valid_for_user(self, user):
+        """Check if voucher is valid for a specific user"""
+        if not self.user_specific.exists():
+            return True
+        return user in self.user_specific.all()
+    
+    def apply_discount(self, total, items=None):
+        """Calculate discount amount"""
+        if not self.is_valid():
+            return 0
+        
+        if self.min_order_amount > total:
+            return 0
+        
+        if self.discount_type == 'percentage':
+            discount = total * (self.discount_value / 100)
+            if self.max_discount_amount:
+                discount = min(discount, self.max_discount_amount)
+        elif self.discount_type == 'fixed':
+            discount = min(self.discount_value, total)
+        else:  # free_shipping
+            # This will be handled in the cart view
+            return 0
+        
+        return round(discount, 2)
+    
+    def increment_usage(self):
+        self.used_count += 1
+        self.save()
+
+
+class UserVoucherUsage(models.Model):
+    """Track voucher usage per user"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    voucher = models.ForeignKey(Voucher, on_delete=models.CASCADE)
+    order = models.ForeignKey('Order', on_delete=models.CASCADE)
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    used_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ['user', 'voucher', 'order']
+
+
+class FlashSale(models.Model):
+    """Flash sale model for time-limited discounts"""
+    
+    title = models.CharField(max_length=200)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='flash_sales')
+    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2, help_text="Discount percentage (e.g., 20.00)")
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    is_active = models.BooleanField(default=True)
+    max_quantity = models.PositiveIntegerField(default=0, help_text="0 for unlimited")
+    sold_count = models.PositiveIntegerField(default=0)
+    show_countdown = models.BooleanField(default=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.title} - {self.product.name}"
+    
+    def is_active_sale(self):
+        now = timezone.now()
+        return (
+            self.is_active and
+            self.start_time <= now <= self.end_time and
+            (self.max_quantity == 0 or self.sold_count < self.max_quantity)
+        )
+    
+    def get_discounted_price(self):
+        if self.product:
+            return self.product.price * (1 - self.discount_percentage / 100)
+        return 0
+    
+    def get_remaining_quantity(self):
+        if self.max_quantity == 0:
+            return None
+        return self.max_quantity - self.sold_count
+    
+    def get_time_remaining(self):
+        now = timezone.now()
+        if now < self.start_time:
+            return self.start_time - now
+        elif now < self.end_time:
+            return self.end_time - now
+        return None

@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from django.utils import timezone
 import datetime
+from .models import Voucher, UserVoucherUsage, FlashSale
 
 
 
@@ -226,3 +227,68 @@ class DailyVisitorStatsAdmin(admin.ModelAdmin):
     
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+
+
+
+
+@admin.register(Voucher)
+class VoucherAdmin(admin.ModelAdmin):
+    list_display = [
+        'code', 'discount_type', 'discount_value', 'valid_from', 'valid_to',
+        'active', 'used_count', 'total_usage_limit', 'is_flash_sale'
+    ]
+    list_filter = ['active', 'discount_type', 'is_flash_sale']
+    search_fields = ['code']
+    filter_horizontal = ['applicable_to', 'user_specific']
+    readonly_fields = ['used_count', 'created_at', 'updated_at']
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('code', 'discount_type', 'discount_value', 'is_flash_sale', 'flash_sale_title')
+        }),
+        ('Validity', {
+            'fields': ('valid_from', 'valid_to', 'active')
+        }),
+        ('Usage Limits', {
+            'fields': ('usage_limit', 'total_usage_limit', 'used_count')
+        }),
+        ('Restrictions', {
+            'fields': ('min_order_amount', 'max_discount_amount', 'applicable_to', 'user_specific')
+        }),
+    )
+
+
+@admin.register(FlashSale)
+class FlashSaleAdmin(admin.ModelAdmin):
+    list_display = [
+        'title', 'product', 'discount_percentage', 'start_time', 'end_time',
+        'is_active', 'sold_count', 'status_badge'
+    ]
+    list_filter = ['is_active', 'product__category']
+    search_fields = ['title', 'product__name']
+    readonly_fields = ['sold_count', 'created_at', 'updated_at']
+    
+    def status_badge(self, obj):
+        now = timezone.now()
+        if not obj.is_active:
+            return format_html('<span style="color: gray;">Inactive</span>')
+        elif obj.start_time > now:
+            return format_html('<span style="color: blue;">Upcoming</span>')
+        elif obj.start_time <= now <= obj.end_time:
+            if obj.max_quantity == 0 or obj.sold_count < obj.max_quantity:
+                return format_html('<span style="color: green;">Active</span>')
+            else:
+                return format_html('<span style="color: orange;">Sold Out</span>')
+        else:
+            return format_html('<span style="color: red;">Expired</span>')
+    
+    status_badge.short_description = 'Status'
+
+
+@admin.register(UserVoucherUsage)
+class UserVoucherUsageAdmin(admin.ModelAdmin):
+    list_display = ['user', 'voucher', 'order', 'discount_amount', 'used_at']
+    list_filter = ['used_at']
+    search_fields = ['user__username', 'voucher__code', 'order__id']

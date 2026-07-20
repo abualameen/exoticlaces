@@ -1,5 +1,10 @@
-from .models import Category, Cart, CartItem, Order
+from .models import Category, Cart, CartItem, Order, Voucher, FlashSale
 from.views import _cart_id
+from django.utils import timezone
+
+
+
+
 
 
 def counter(request):
@@ -44,4 +49,46 @@ def social_links(request):
 def facebook_pixel(request):
     return {
         'FACEBOOK_PIXEL_ID': '1333267468229990',  
+    }
+
+
+
+
+
+
+
+
+
+def sale_context(request):
+    """Make flash sales and active vouchers available to all templates"""
+    
+    now = timezone.now()
+    
+    # Get active flash sales
+    flash_sales = FlashSale.objects.filter(
+        is_active=True,
+        start_time__lte=now,
+        end_time__gte=now
+    ).select_related('product')
+    
+    # Get valid vouchers for the user
+    vouchers = Voucher.objects.filter(
+        active=True,
+        valid_from__lte=now,
+        valid_to__gte=now,
+        is_flash_sale=False
+    ).exclude(used_count__gte=models.F('total_usage_limit'))
+    
+    # User-specific vouchers
+    if request.user.is_authenticated:
+        user_vouchers = vouchers.filter(
+            models.Q(user_specific__isnull=True) | models.Q(user_specific=request.user)
+        )
+    else:
+        user_vouchers = vouchers.filter(user_specific__isnull=True)
+    
+    return {
+        'active_flash_sales': flash_sales,
+        'available_vouchers': user_vouchers[:10],  # Limit to 10
+        'has_active_sales': flash_sales.exists() or user_vouchers.exists(),
     }

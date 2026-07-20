@@ -24,21 +24,25 @@ from payments.services.exchange import get_exchange_rate
 from django.template.loader import get_template
 from django.core.mail import EmailMessage
 from decimal import Decimal
-from django.shortcuts import render
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from payments.models import ExchangeRate
 from .facebook_capi import send_facebook_event
-from django.http import JsonResponse
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 
 
 from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render
 from django.utils import timezone
 import datetime
+
+
+
+# lacesstore/views.py
+from django.shortcuts import render, redirect, get_object_or_404
+from decimal import Decimal
+from .models import Cart, CartItem, Voucher, UserVoucherUsage, FlashSale
+from .forms import VoucherApplyForm
 
 
 
@@ -730,9 +734,6 @@ def csrf_failure(request, reason=""):
 
 
 
-# lacesstore/views.py
-from django.http import JsonResponse
-from django.shortcuts import render
 
 def csrf_failure(request, reason=""):
     """Custom CSRF failure view"""
@@ -745,3 +746,132 @@ def csrf_failure(request, reason=""):
     return render(request, 'csrf_error.html', {
         'message': 'Your session has expired. Please refresh the page and try again.'
     }, status=403)
+
+
+
+
+
+
+
+
+def apply_voucher(request):
+    """Apply a voucher code to the current cart"""
+    if request.method == 'POST':
+        form = VoucherApplyForm(request.POST)
+        if form.is_valid():
+            code = form.cleaned_data['code'].upper().strip()
+            
+            try:
+                voucher = Voucher.objects.get(
+                    code=code,
+                    active=True,
+                    valid_from__lte=timezone.now(),
+                    valid_to__gte=timezone.now()
+                )
+            except Voucher.DoesNotExist:
+                messages.error(request, "Invalid or expired voucher code.")
+                return redirect('cart_detail')
+            
+            # Check usage limits
+            if voucher.used_count >= voucher.total_usage_limit:
+                messages.error(request, "This voucher has reached its usage limit.")
+                return redirect('cart_detail')
+            
+            # Check user-specific
+            if voucher.user_specific.exists() and request.user.is_authenticated:
+                if request.user not in voucher.user_specific.all():
+                    messages.error(request, "This voucher is not valid for your account.")
+                    return redirect('cart_detail')
+            
+            # Check if user already used this voucher
+            if request.user.is_authenticated:
+                existing_usage = UserVoucherUsage.objects.filter(
+                    user=request.user,
+                    voucher=voucher
+                ).count()
+                if existing_usage >= voucher.usage_limit:
+                    messages.error(request, "You have already used this voucher the maximum number of times.")
+                    return redirect('cart_detail')
+            
+            # Get cart and calculate total
+            cart = get_cart(request)
+            cart_items = CartItem.objects.filter(cart=cart, active=True)
+            total = sum(item.product.price * item.quantity for item in cart_items)
+            
+            # Check minimum order amount
+            if total < voucher.min_order_amount:
+                messages.error(request, f"Minimum order amount of ₦{voucher.min_order_amount} required.")
+                return redirect('cart_detail')
+            
+            # Store voucher in session
+            request.session['voucher_code'] = code
+            messages.success(request, f"Voucher '{code}' applied successfully!")
+            
+    return redirect('cart_detail')
+
+
+def remove_voucher(request):
+    """Remove the applied voucher from the cart"""
+    if 'voucher_code' in request.session:
+        del request.session['voucher_code']
+        messages.info(request, "Voucher removed.")
+    return redirect('cart_detail')
+
+
+def get_voucher_info(request):
+    """AJAX endpoint to get voucher info"""
+    code = request.GET.get('code', '').upper().strip()
+    
+    if not code:
+        return JsonResponse({'valid': False, 'message': 'No code provided'})
+    
+    try:
+        voucher = Voucher.objects.get(code=code, active=True)
+        now = timezone.now()
+        
+        if not (voucher.valid_from <= now <= voucher.valid_to):
+            return JsonResponse({'valid': False, 'message': 'Voucher has expired'})
+        
+        if voucher.used_count >= voucher.total_usage_limit:
+            return JsonResponse({'valid': False, 'message': 'Voucher usage limit reached'})
+        
+        # Check user-specific
+        if voucher.user_specific.exists() and request.user.is_authenticated:
+            if request.user not in voucher.user_specific.all():
+                return JsonResponse({'valid': False, 'message': 'Not valid for your account'})
+        
+        # Calculate discount
+        cart = get_cart(request)
+        cart_items = CartItem.objects.filter(cart=cart, active=True)
+        total = sum(item.product.price * item.quantity for item in cart_items)
+        
+        discount = voucher.apply_discount(total)
+        
+        return JsonResponse({
+            'valid': True,
+            'code': voucher.code,
+            'discount_type': voucher.discount_type,
+            'discount_value': float(voucher.discount_value),
+            'discount_amount': float(discount),
+            'min_order': float(voucher.min_order_amount)
+        })
+        
+    except Voucher.DoesNotExist:
+        return JsonResponse({'valid': False, 'message': 'Invalid voucher code'})
+
+
+def flash_sale_detail(request, sale_id):
+    """View for a specific flash sale"""
+    flash_sale = get_object_or_404(FlashSale, id=sale_id, is_active=True)
+    now = timezone.now()
+    
+    if not (flash_sale.start_time <= now <= flash_sale.end_time):
+        messages.warning(request, "This flash sale is not currently active.")
+        return redirect('home')
+    
+    context = {
+        'flash_sale': flash_sale,
+        'discounted_price': flash_sale.get_discounted_price(),
+        'remaining_time': flash_sale.get_time_remaining(),
+    }
+    return render(request, 'flash_sale_detail.html', context)

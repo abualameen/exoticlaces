@@ -34,6 +34,16 @@ urlpatterns = [
     path('testvid/', views.test_video, name='test_vid'),
 
 
+    # Voucher routes
+    path('apply-voucher/', views.apply_voucher, name='apply_voucher'),
+    path('remove-voucher/', views.remove_voucher, name='remove_voucher'),
+    path('get-voucher-info/', views.get_voucher_info, name='get_voucher_info'),
+    
+    # Flash sale routes
+    path('flash-sale/<int:sale_id>/', views.flash_sale_detail, name='flash_sale_detail'),
+
+
+
     path('admin/dashboard/', views.dashboard, name='admin_dashboard'),
    
 

@@ -11,24 +11,20 @@ Cart
     <br>
     <h1 class="text-center.product_title">
         Your shopping cart is empty
-        
-        
-        
     </h1>
     <br>
     <p class="text-center">
         please click <a href="{% url 'home' %}">here</a> to continue shopping
     </p>
-
 </div>
 {% else %}
- <div class="text-center">
+<div class="text-center">
     <br>
     <div class="text-center product_title">
         Your shopping cart
     </div>
- </div>
- <div class="row mx-auto">
+</div>
+<div class="row mx-auto">
     <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
         <table class="table cart_table">
             <thead class="cart_thead">
@@ -55,24 +51,17 @@ Cart
                     SKU: {{ cart_item.product.id }}
                 </td>
 
-              
                 <td class="text-left">
                     {% load currency_filters %}
                     Qty: {{ cart_item.quantity }} x {{ cart_item.product.price|money:ACTIVE_CURRENCY }}
                     <br>
                     Unit Price: {{ cart_item.product.price|money:ACTIVE_CURRENCY }}
-                </td> 
-
-
-                <!-- Subtotal -->
-                <!-- <td>
-                    ₦{{ cart_item.sub_total|floatformat:2 }}
-                </td> -->
-                <td>
-                    {{ cart_item.sub_total|money:ACTIVE_CURRENCY }}
-
                 </td>
 
+                <!-- Subtotal -->
+                <td>
+                    {{ cart_item.sub_total|money:ACTIVE_CURRENCY }}
+                </td>
 
                 <!-- Action Buttons: +, -, Delete -->
                 <td class="cart-actions">
@@ -109,16 +98,42 @@ Cart
             </tr>
             {% endfor %}
 
-
         </table>
     </div>
+
     <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
+        <!-- ✅ VOUCHER SECTION - ADDED HERE -->
+        <div class="voucher-section mb-4 p-3 bg-light rounded">
+            <h5><i class="fas fa-ticket-alt"></i> Have a voucher?</h5>
+            
+            {% if request.session.voucher_code %}
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    Voucher <strong>{{ request.session.voucher_code }}</strong> applied!
+                    <a href="{% url 'remove_voucher' %}" class="text-danger float-right">
+                        <i class="fas fa-times"></i> Remove
+                    </a>
+                </div>
+            {% else %}
+                <form method="post" action="{% url 'apply_voucher' %}" id="voucher-form">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" name="code" class="form-control" 
+                               placeholder="Enter voucher code" id="voucher-input">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-secondary">Apply</button>
+                        </div>
+                    </div>
+                    <div id="voucher-feedback" class="mt-1"></div>
+                </form>
+            {% endif %}
+        </div>
+
         <table class="table cart_table">
             <thead class="cart_thead">
                 <tr>
                     <th>
                         Check out
-                        
                     </th>
                 </tr>
             </thead>
@@ -130,26 +145,15 @@ Cart
                     </td>
                 </tr>
                 <tr>
-                    <!-- <td class="text-left">
-                        Your total is: <strong>{{total}}</strong>    
-                    </td> -->
-                   
                     <td class="text-left">
-                 
-                         {% if currency == "NGN" %}
-                           Your total is: <strong>{{ total_ngn|money:"NGN" }}</strong>   
+                        {% if currency == "NGN" %}
+                            Your total is: <strong>{{ total_ngn|money:"NGN" }}</strong>   
                         {% else %}
-                          
-
                             Your total is: <strong>{{ total_ngn|money:currency }}</strong> 
                         {% endif %}
-
-
                     </td>
-
-
                 </tr>
-             
+
                 <tr>
                     <td>Shipping</td>
                     <td id="shipping_label_ui"></td>
@@ -168,411 +172,354 @@ Cart
                     </td>
                 </tr>
 
-
             </tbody>
         </table>
 
-        <!-- Trust Seals - Font Awesome Version -->
-<div class="trust-seals mb-4 text-center">
-    <div class="row justify-content-center align-items-center">
-        <div class="col-12">
-            <p class="text-muted small mb-2">
-                <i class="fas fa-lock text-success"></i> 
-                Your payment is secure and encrypted via Paystack
-            </p>
-            <div class="payment-icons">
-                <i class="fab fa-cc-visa fa-3x mx-2 text-primary"></i>
-                <i class="fab fa-cc-mastercard fa-3x mx-2 text-danger"></i>
-                <!-- Verve - using custom color -->
-                <i class="fas fa-credit-card fa-3x mx-2 text-info" style="color: #1a1a8a;"></i>
-                <span class="font-weight-bold text-dark mx-1" style="font-size: 1.5rem;">VERVE</span>
-                <i class="fab fa-cc-amex fa-3x mx-2 text-primary"></i>
-                <!-- Paystack icon -->
-                <i class="fas fa-university fa-3x mx-2 text-success"></i>
-                <span class="font-weight-bold text-dark mx-1" style="font-size: 1.2rem;">Paystack</span>
-            </div>
-            <div class="mt-3">
-                <span class="badge badge-success mr-2">
-                    <i class="fas fa-check-circle"></i> SSL Secure
-                </span>
-                <span class="badge badge-info mr-2">
-                    <i class="fas fa-shield-alt"></i> 100% Protected
-                </span>
-                <span class="badge badge-primary mr-2">
-                    <i class="fas fa-university"></i> Bank Transfer
-                </span>
-                <span class="badge badge-warning">
-                    <i class="fas fa-clock"></i> Instant Checkout
-                </span>
+        <!-- Trust Seals -->
+        <div class="trust-seals mb-4 text-center">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-12">
+                    <p class="text-muted small mb-2">
+                        <i class="fas fa-lock text-success"></i> 
+                        Your payment is secure and encrypted via Paystack
+                    </p>
+                    <div class="payment-icons">
+                        <i class="fab fa-cc-visa fa-3x mx-2 text-primary"></i>
+                        <i class="fab fa-cc-mastercard fa-3x mx-2 text-danger"></i>
+                        <i class="fas fa-credit-card fa-3x mx-2 text-info" style="color: #1a1a8a;"></i>
+                        <span class="font-weight-bold text-dark mx-1" style="font-size: 1.5rem;">VERVE</span>
+                        <i class="fab fa-cc-amex fa-3x mx-2 text-primary"></i>
+                        <i class="fas fa-university fa-3x mx-2 text-success"></i>
+                        <span class="font-weight-bold text-dark mx-1" style="font-size: 1.2rem;">Paystack</span>
+                    </div>
+                    <div class="mt-3">
+                        <span class="badge badge-success mr-2">
+                            <i class="fas fa-check-circle"></i> SSL Secure
+                        </span>
+                        <span class="badge badge-info mr-2">
+                            <i class="fas fa-shield-alt"></i> 100% Protected
+                        </span>
+                        <span class="badge badge-primary mr-2">
+                            <i class="fas fa-university"></i> Bank Transfer
+                        </span>
+                        <span class="badge badge-warning">
+                            <i class="fas fa-clock"></i> Instant Checkout
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+
         <div class="mx-auto">
+            <div class="mb-3">
+                {% if user.is_authenticated %}
+                    <input type="email" id="email-address" name="email" 
+                        value="{{ user.email }}" readonly 
+                        class="form-control bg-light" 
+                        aria-label="Email Address"
+                        style="background-color: #e9ecef; opacity: 1;">
+                {% else %}
+                    <input type="email" id="email-address" class="form-control"
+                        placeholder="Email Address" required
+                        value="" 
+                        aria-label="Email Address">
+                {% endif %}
+            </div>
 
-    <div class="mb-3">
+            <div class="mb-3">
+                {% if user.is_authenticated %}
+                    <input type="tel" id="phone-number" name="phone-number" 
+                        value="{{ user.customer.phonenumber|default:'' }}" readonly
+                        class="form-control bg-light" 
+                        aria-label="Phone Number"
+                        style="background-color: #e9ecef; opacity: 1;">
+                {% else %}
+                    <input type="tel" id="phone-number" class="form-control"
+                        placeholder="Phone Number" required
+                        value="" 
+                        aria-label="Phone Number">
+                {% endif %}
+            </div>
 
-        {% if user.is_authenticated %}
-      
-            <input type="email" id="email-address" name="email" 
-                value="{{ user.email }}" readonly 
-                class="form-control bg-light" 
-                aria-label="Email Address"
-                style="background-color: #e9ecef; opacity: 1;">
-        {% else %}
-        
-            <input type="email" id="email-address" class="form-control"
-                placeholder="Email Address" required
-                value="" 
-                aria-label="Email Address">
-         {% endif %}
-    </div>
+            <div class="mb-3">
+                {% if user.is_authenticated %}
+                    <input type="text" id="first-name" name="first-name" 
+                        value="{{ user.first_name }}" readonly
+                        class="form-control bg-light" 
+                        aria-label="First Name"
+                        style="background-color: #e9ecef; opacity: 1;">
+                {% else %}
+                    <input type="text" id="first-name" class="form-control"
+                        placeholder="First Name" required
+                        aria-label="First Name">
+                {% endif %}
+            </div>
 
-    <div class="mb-3">
-        {% if user.is_authenticated %}
-      
-            <input type="tel" id="phone-number" name="phone-number" 
-            value="{{ user.customer.phonenumber|default:'' }}" readonly
-            class="form-control bg-light" 
-            aria-label="Phone Number"
-            style="background-color: #e9ecef; opacity: 1;">
-        {% else %}
-        
-            <input type="tel" id="phone-number" class="form-control"
-               placeholder="Phone Number" required
-               value="" 
-               aria-label="Phone Number">
-        {% endif %}
-        
-    </div>
+            <div class="mb-3">
+                {% if user.is_authenticated %}
+                    <input type="text" id="last-name" name="last-name" 
+                        value="{{ user.last_name }}" readonly
+                        class="form-control bg-light" 
+                        aria-label="Last Name"
+                        style="background-color: #e9ecef; opacity: 1;">
+                {% else %}
+                    <input type="text" id="last-name" class="form-control"
+                        placeholder="Last Name" required
+                        aria-label="Last Name">
+                {% endif %}
+            </div>
 
-    <div class="mb-3">
-        {% if user.is_authenticated %}
-      
-            <input type="text" id="first-name" name="first-name" 
-            value="{{ user.first_name }}" readonly
-            class="form-control bg-light" 
-            aria-label="First Name"
-            style="background-color: #e9ecef; opacity: 1;">
-        {% else %}
-        <input type="text" id="first-name" class="form-control"
-               placeholder="First Name" required
-               aria-label="First Name">
-        {% endif %}
-    </div>
+            <div class="mb-3">
+                <select id="country" class="form-control" required aria-label="Country">
+                    <option value="">Country</option>
+                    <option value="NG">Nigeria</option>
+                    <option value="US">United States</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="AT">Austria</option>
+                    <option value="AU">Australia</option>
+                    <option value="CA">Canada</option>
+                    <option value="GH">Ghana</option>
+                    <option value="BJ">Benin</option>
+                    <option value="BF">Burkina Faso</option>
+                    <option value="CI">Côte d’Ivoire</option>
+                    <option value="GW">Guinea-Bissau</option>
+                    <option value="ML">Mali</option>
+                    <option value="NE">Niger</option>
+                    <option value="SN">Senegal</option>
+                    <option value="TG">Togo</option>
+                    <option value="CM">Cameroon</option>
+                    <option value="CF">Central African Republic</option>
+                    <option value="TD">Chad</option>
+                    <option value="CG">Republic of the Congo</option>
+                    <option value="GQ">Equatorial Guinea</option>
+                    <option value="GA">Gabon</option>
+                </select>
+            </div>
 
-    <div class="mb-3">
-        {% if user.is_authenticated %}
-      
-            <input type="text" id="last-name" name="last-name" 
-            value="{{ user.last_name }}" readonly
-            class="form-control bg-light" 
-            aria-label="Last Name"
-            style="background-color: #e9ecef; opacity: 1;">
-        {% else %}
-        <input type="text" id="last-name" class="form-control"
-               placeholder="Last Name" required
-               aria-label="Last Name">
-        {% endif %}
-    </div>
+            <div class="mb-3">
+                <input type="text" id="state" class="form-control"
+                    placeholder="State" required aria-label="State">
+            </div>
 
-    <div class="mb-3">
-        <select id="country" class="form-control" required
-                aria-label="Country">
-            <option value="">Country</option>
+            <div class="mb-3">
+                <select id="shipping_method" class="form-control"
+                    onchange="handleShippingSelection(this)"
+                    onclick="hidePlaceholder()"
+                    aria-label="Shipping Method">
+                    <option id="shipping_placeholder" value="">Select Shipping Method</option>
+                    <option value="seller">Seller Shipping (Car/Bus Waybill)</option>
+                    <option value="dhl">DHL Express</option>
+                </select>
+            </div>
+        </div>
 
-            <option value="NG">Nigeria</option>
-            <option value="US">United States</option>
-            <option value="GB">United Kingdom</option>
-            <option value="AT">Austria</option>
-            <option value="AU">Australia</option>
-            <option value="CA">Canada</option>
-            <option value="GH">Ghana</option>
+        <!-- Terms and Conditions Checkbox -->
+        <div class="form-group mb-3 p-3 bg-light rounded border">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input custom-control-input-lg" id="termsCheckbox" required>
+                <label class="custom-control-label font-weight-bold" for="termsCheckbox" style="font-size: 1.05rem;">
+                    <i class="fas fa-check-circle text-primary"></i>
+                    I have read and agree to the 
+                    <a href="{% url 'terms' %}" target="_blank" class="text-primary font-weight-bold">
+                        Terms and Conditions
+                    </a>
+                    and 
+                    <a href="{% url 'privacy' %}" target="_blank" class="text-primary font-weight-bold">
+                        Privacy Policy
+                    </a>
+                </label>
+                <div class="invalid-feedback d-block mt-1">
+                    <i class="fas fa-exclamation-circle"></i> You must agree to the Terms and Conditions to proceed.
+                </div>
+            </div>
+        </div>
 
-            <!-- CFA West -->
-            <option value="BJ">Benin</option>
-            <option value="BF">Burkina Faso</option>
-            <option value="CI">Côte d’Ivoire</option>
-            <option value="GW">Guinea-Bissau</option>
-            <option value="ML">Mali</option>
-            <option value="NE">Niger</option>
-            <option value="SN">Senegal</option>
-            <option value="TG">Togo</option>
+        <button id="payBtn" class="btn btn-lg btn-block btn-secondary" disabled>
+            Pay Securely with Paystack
+        </button>
 
-            <!-- CFA Central -->
-            <option value="CM">Cameroon</option>
-            <option value="CF">Central African Republic</option>
-            <option value="TD">Chad</option>
-            <option value="CG">Republic of the Congo</option>
-            <option value="GQ">Equatorial Guinea</option>
-            <option value="GA">Gabon</option>
-        </select>
-    </div>
+        <a href="{% url 'home' %}" 
+           id="ctnshopBtn" 
+           class="btn btn-lg btn-block btn-info text-white text-center">
+            Continue Shopping
+        </a>
 
-    <div class="mb-3">
-        <input type="text" id="state" class="form-control"
-               placeholder="State" required
-               aria-label="State">
-    </div>
-
-    <div class="mb-3">
-    <select id="shipping_method" class="form-control"
-            onchange="handleShippingSelection(this)"
-            onclick="hidePlaceholder()"
-            aria-label="Shipping Method">
-        <option id="shipping_placeholder" value="">Select Shipping Method</option>
-        <option value="seller">Seller Shipping (Car/Bus Waybill)</option>
-        <option value="dhl">DHL Express</option>
-    </select>
-</div>
-
-</div>
-
-
-
-
-                <script>
-                    function requiredShippingFieldsFilled() {
-                        const country = document.getElementById("country").value;
-                        const state = document.getElementById("state").value.trim();
-                        const email = document.getElementById("email-address").value.trim();
-                        const phone = document.getElementById("phone-number").value.trim();
-                        
-
-                        return country && state && email && phone;
-                    }
-                </script>
+        <!-- JavaScript for Voucher Validation -->
+        <script>
+            // Voucher validation
+            document.getElementById('voucher-input')?.addEventListener('input', function() {
+                const code = this.value;
+                const feedback = document.getElementById('voucher-feedback');
                 
-               
-                <script>
-                    function hidePlaceholder() {
-                        const placeholder = document.getElementById('shipping_placeholder');
-                        if (placeholder) {
-                            placeholder.style.display = 'none';
-                        }
-                    }
-
-                    function handleShippingSelection(select) {
-                        if (select.value === 'dhl') {
-                            alert('DHL Express shipping is coming soon! Please select "Seller Shipping" for now.');
-                            select.value = '';
-                            return;
-                        }
-                        
-                        // If seller is selected, proceed with applyShipping
-                        if (select.value === 'seller') {
-                            applyShipping();
-                        }
-                    }
-
-                    function applyShipping(){
-
-                        if (!requiredShippingFieldsFilled()) {
-                        alert(
-                            "Please fill in your contact details and delivery address before selecting a shipping method."
-                        );
-
-                        // Reset shipping selection
-                        document.getElementById("shipping_method").value = "";
-                        return;
-                    }
-
-                        const method = document.getElementById("shipping_method").value;
-                        const country = document.getElementById("country").value;
-                        const state = document.getElementById("state").value;
-
-
-                        fetch("/shipping/set-shipping/", {
-                            method:"POST",
-                            headers: {
-                                "Content-Type":"application/json",
-                                "X-CSRFToken": "{{ csrf_token }}"
-                            },
-                            body: JSON.stringify({ method, country, state })
-                        })
+                if (code.length > 2) {
+                    fetch(`/get-voucher-info/?code=${code}`)
                         .then(res => res.json())
                         .then(data => {
-
-                            const currency = "{{ ACTIVE_CURRENCY }}";
-
-                            const shippingNGN = parseFloat(data.shipping.amount_ngn);
-                            const shippingFX  = parseFloat(data.shipping.amount_fx);
-
-                            const cartTotalNGN = parseFloat("{{ total_ngn }}");
-                            const cartTotalFX  = parseFloat("{{ total_fx }}");
-
-                            const grandTotalNGN = cartTotalNGN + shippingNGN;
-                            const grandTotalFX  = cartTotalFX  + shippingFX;
-
-                            console.log({
-                            cartTotalNGN,
-                            shippingNGN,
-                            grandTotalNGN,
-                            cartTotalFX,
-                            shippingFX,
-                            grandTotalFX
-                            });
-
-                            function format(amount){
-                                if(currency === "NGN") return "₦" + amount.toLocaleString();
-                                if(currency === "GHS") return "₵" + amount.toLocaleString();
-                                if(currency === "USD") return "$" + amount.toLocaleString();
-                                if(currency === "XOF") return "CFA " + amount.toLocaleString();
-                                return amount.toLocaleString();
-                            }
-                            if(currency === "NGN"){
-                                document.getElementById("shipping_costng_ui").style.display = "inline";
-                                document.getElementById("grand_totalng_ui").style.display = "inline";
-
-                                document.getElementById("shipping_costfx_ui").style.display = "none";
-                                document.getElementById("grand_totalfx_ui").style.display = "none";
-
-                                document.getElementById("shipping_costng_ui").innerText = format(shippingNGN);
-                                document.getElementById("grand_totalng_ui").innerText = format(grandTotalNGN);
+                            if (data.valid) {
+                                feedback.innerHTML = `<span class="text-success">
+                                    <i class="fas fa-check-circle"></i> Valid! Apply to get ₦${data.discount_amount} off
+                                </span>`;
                             } else {
-                                document.getElementById("shipping_costfx_ui").style.display = "inline";
-                                document.getElementById("grand_totalfx_ui").style.display = "inline";
-
-                                document.getElementById("shipping_costng_ui").style.display = "none";
-                                document.getElementById("grand_totalng_ui").style.display = "none";
-
-                                document.getElementById("shipping_costfx_ui").innerText = format(shippingFX);
-                                document.getElementById("grand_totalfx_ui").innerText = format(grandTotalFX);
-}
-
-                            document.getElementById("shipping_label_ui").innerText = data.shipping.label;
-
-
-
-
-                            document.getElementById("payBtn").disabled = false;
-                            document.getElementById("payBtn").classList.remove("btn-secondary");
-                            document.getElementById("payBtn").classList.add("btn-success");
+                                feedback.innerHTML = `<span class="text-muted">${data.message}</span>`;
+                            }
                         });
+                }
+            });
+        </script>
 
+        <!-- Shipping Scripts -->
+        <script>
+            function requiredShippingFieldsFilled() {
+                const country = document.getElementById("country").value;
+                const state = document.getElementById("state").value.trim();
+                const email = document.getElementById("email-address").value.trim();
+                const phone = document.getElementById("phone-number").value.trim();
+                return country && state && email && phone;
+            }
+
+            function hidePlaceholder() {
+                const placeholder = document.getElementById('shipping_placeholder');
+                if (placeholder) {
+                    placeholder.style.display = 'none';
+                }
+            }
+
+            function handleShippingSelection(select) {
+                if (select.value === 'dhl') {
+                    alert('DHL Express shipping is coming soon! Please select "Seller Shipping" for now.');
+                    select.value = '';
+                    return;
+                }
+                if (select.value === 'seller') {
+                    applyShipping();
+                }
+            }
+
+            function applyShipping(){
+                if (!requiredShippingFieldsFilled()) {
+                    alert("Please fill in your contact details and delivery address before selecting a shipping method.");
+                    document.getElementById("shipping_method").value = "";
+                    return;
+                }
+
+                const method = document.getElementById("shipping_method").value;
+                const country = document.getElementById("country").value;
+                const state = document.getElementById("state").value;
+
+                fetch("/shipping/set-shipping/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify({ method, country, state })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    const currency = "{{ ACTIVE_CURRENCY }}";
+                    const shippingNGN = parseFloat(data.shipping.amount_ngn);
+                    const shippingFX = parseFloat(data.shipping.amount_fx);
+                    const cartTotalNGN = parseFloat("{{ total_ngn }}");
+                    const cartTotalFX = parseFloat("{{ total_fx }}");
+                    const grandTotalNGN = cartTotalNGN + shippingNGN;
+                    const grandTotalFX = cartTotalFX + shippingFX;
+
+                    function format(amount){
+                        if(currency === "NGN") return "₦" + amount.toLocaleString();
+                        if(currency === "GHS") return "₵" + amount.toLocaleString();
+                        if(currency === "USD") return "$" + amount.toLocaleString();
+                        if(currency === "XOF") return "CFA " + amount.toLocaleString();
+                        return amount.toLocaleString();
                     }
 
-                    
+                    if(currency === "NGN"){
+                        document.getElementById("shipping_costng_ui").style.display = "inline";
+                        document.getElementById("grand_totalng_ui").style.display = "inline";
+                        document.getElementById("shipping_costfx_ui").style.display = "none";
+                        document.getElementById("grand_totalfx_ui").style.display = "none";
+                        document.getElementById("shipping_costng_ui").innerText = format(shippingNGN);
+                        document.getElementById("grand_totalng_ui").innerText = format(grandTotalNGN);
+                    } else {
+                        document.getElementById("shipping_costfx_ui").style.display = "inline";
+                        document.getElementById("grand_totalfx_ui").style.display = "inline";
+                        document.getElementById("shipping_costng_ui").style.display = "none";
+                        document.getElementById("grand_totalng_ui").style.display = "none";
+                        document.getElementById("shipping_costfx_ui").innerText = format(shippingFX);
+                        document.getElementById("grand_totalfx_ui").innerText = format(grandTotalFX);
+                    }
 
-                    </script>
-                    
+                    document.getElementById("shipping_label_ui").innerText = data.shipping.label;
+                    document.getElementById("payBtn").disabled = false;
+                    document.getElementById("payBtn").classList.remove("btn-secondary");
+                    document.getElementById("payBtn").classList.add("btn-success");
+                });
+            }
+        </script>
 
+        <!-- Payment Script -->
+        <script>
+            document.getElementById("termsCheckbox").addEventListener("change", function() {
+                const payBtn = document.getElementById("payBtn");
+                if (this.checked) {
+                    payBtn.disabled = false;
+                    payBtn.classList.remove("btn-secondary");
+                    payBtn.classList.add("btn-success");
+                } else {
+                    payBtn.disabled = true;
+                    payBtn.classList.remove("btn-success");
+                    payBtn.classList.add("btn-secondary");
+                }
+            });
 
+            document.getElementById("payBtn").addEventListener("click", function(){
+                const termsCheckbox = document.getElementById("termsCheckbox");
+                if (!termsCheckbox.checked) {
+                    termsCheckbox.classList.add("is-invalid");
+                    alert("Please agree to the Terms and Conditions before proceeding.");
+                    return;
+                }
+                termsCheckbox.classList.remove("is-invalid");
 
+                let email = document.getElementById("email-address").value;
+                let currency = "{{ ACTIVE_CURRENCY }}";
+                let phonenumber = document.getElementById("phone-number").value;
+                let firstName = document.getElementById("first-name").value;
+                let lastName = document.getElementById("last-name").value;
+                let country = document.getElementById("country").value;
+                let state = document.getElementById("state").value;
 
+                if(!email){
+                    alert("Please enter your email");
+                    return;
+                }
 
-                            <!-- Add this right before the Pay button -->
+                fetch("{% url 'init_payment' %}", {
+                    method: "POST",
+                    headers:{
+                        "X-CSRFToken": "{{ csrf_token }}",
+                        "Content-Type":"application/x-www-form-urlencoded"
+                    },
+                    body: new URLSearchParams({
+                        email: email,
+                        phonenumber: phonenumber,
+                        firstName: firstName,
+                        lastName: lastName,
+                        country: country,
+                        state: state
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(!data.status){
+                        alert(data.message || "Payment init failed");
+                        return;
+                    }
+                    window.location.href = data.paystack_url;
+                });
+            });
+        </script>
 
-                <!-- Terms and Conditions Checkbox -->
-                <div class="form-group mb-3 p-3 bg-light rounded border">
-    <div class="custom-control custom-checkbox">
-        <input type="checkbox" class="custom-control-input custom-control-input-lg" id="termsCheckbox" required>
-        <label class="custom-control-label font-weight-bold" for="termsCheckbox" style="font-size: 1.05rem;">
-            <i class="fas fa-check-circle text-primary"></i>
-            I have read and agree to the 
-            <a href="{% url 'terms' %}" target="_blank" class="text-primary font-weight-bold">
-                Terms and Conditions
-            </a>
-            and 
-            <a href="{% url 'privacy' %}" target="_blank" class="text-primary font-weight-bold">
-                Privacy Policy
-            </a>
-        </label>
-        <div class="invalid-feedback d-block mt-1">
-            <i class="fas fa-exclamation-circle"></i> You must agree to the Terms and Conditions to proceed.
-        </div>
     </div>
 </div>
-
-                <button id="payBtn" class="btn btn-lg btn-block btn-secondary" disabled>
-                    Pay Securely with Paystack
-                </button>
-    
-            <!-- <button id="payBtn" class="btn btn-lg btn-block btn-secondary" disabled>
-                Pay Securely with Paystack
-            </button> -->
-
-               
-            <a href="{% url 'home' %}" 
-                id="ctnshopBtn" 
-                class="btn btn-lg btn-block btn-info text-white text-center">
-                    Continue Shopping
-            </a>
-
-            <<script>
-                // Enable/disable pay button based on checkbox
-                document.getElementById("termsCheckbox").addEventListener("change", function() {
-                    const payBtn = document.getElementById("payBtn");
-                    if (this.checked) {
-                        payBtn.disabled = false;
-                        payBtn.classList.remove("btn-secondary");
-                        payBtn.classList.add("btn-success");
-                    } else {
-                        payBtn.disabled = true;
-                        payBtn.classList.remove("btn-success");
-                        payBtn.classList.add("btn-secondary");
-                    }
-                });
-
-                document.getElementById("payBtn").addEventListener("click", function(){
-                    // ✅ Check Terms checkbox
-                    const termsCheckbox = document.getElementById("termsCheckbox");
-                    if (!termsCheckbox.checked) {
-                        termsCheckbox.classList.add("is-invalid");
-                        alert("Please agree to the Terms and Conditions before proceeding.");
-                        return;
-                    }
-                    termsCheckbox.classList.remove("is-invalid");
-
-                    let email = document.getElementById("email-address").value;
-                    let currency = "{{ ACTIVE_CURRENCY }}";
-                    let phonenumber = document.getElementById("phone-number").value;
-                    let firstName = document.getElementById("first-name").value;
-                    let lastName = document.getElementById("last-name").value;
-                    let country = document.getElementById("country").value;
-                    let state = document.getElementById("state").value;
-
-                    if(!email){
-                        alert("Please enter your email");
-                        return;
-                    }
-
-                    fetch("{% url 'init_payment' %}", {
-                        method: "POST",
-                        headers:{
-                            "X-CSRFToken": "{{ csrf_token }}",
-                            "Content-Type":"application/x-www-form-urlencoded"
-                        },
-                        body: new URLSearchParams({
-                            email: email,
-                            phonenumber: phonenumber,
-                            firstName: firstName,
-                            lastName: lastName,
-                            country: country,
-                            state: state
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if(!data.status){
-                            alert(data.message || "Payment init failed");
-                            return;
-                        }
-                        window.location.href = data.paystack_url;
-                    });
-                });
-            </script>
-
-
-            
-
-
-
-
-        </div>
-            
-
-    </div>
- </div>
- {% endif %}
+{% endif %}
 {% endblock %}
