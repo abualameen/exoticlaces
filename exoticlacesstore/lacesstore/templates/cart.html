@@ -183,7 +183,7 @@ Cart
             </div>
         </div>
 
-        <div class="mx-auto">
+        <div class="mx-auto" id="checkout-form">
             <div class="mb-3">
                 {% if user.is_authenticated %}
                     <input type="email" id="email-address" name="email" 
@@ -285,28 +285,30 @@ Cart
                 </select>
             </div>
 
-            <!-- ✅ VOUCHER SECTION - AJAX Version (No Page Reload) -->
-            <div class="voucher-section mt-4 p-3 bg-light rounded">
+            <!-- ✅ VOUCHER SECTION - COMPLETE AJAX VERSION -->
+            <div class="voucher-section mt-4 p-3 bg-light rounded" id="voucher-section">
                 <h5><i class="fas fa-ticket-alt"></i> Have a voucher?</h5>
                 
-                {% if request.session.voucher_code %}
-                    <div class="alert alert-success" id="voucher-applied-alert">
-                        <i class="fas fa-check-circle"></i>
-                        Voucher <strong>{{ request.session.voucher_code }}</strong> applied!
-                        <a href="{% url 'remove_voucher' %}" class="text-danger float-right">
-                            <i class="fas fa-times"></i> Remove
-                        </a>
-                    </div>
-                {% else %}
-                    <div class="input-group">
-                        <input type="text" name="code" class="form-control" 
-                               placeholder="Enter voucher code" id="voucher-input">
-                        <div class="input-group-append">
-                            <button type="button" class="btn btn-secondary" id="apply-voucher-btn">Apply</button>
+                <div id="voucher-content">
+                    {% if request.session.voucher_code %}
+                        <div class="alert alert-success" id="voucher-applied-alert">
+                            <i class="fas fa-check-circle"></i>
+                            Voucher <strong>{{ request.session.voucher_code }}</strong> applied!
+                            <button type="button" class="btn btn-link text-danger float-right" id="remove-voucher-btn">
+                                <i class="fas fa-times"></i> Remove
+                            </button>
                         </div>
-                    </div>
-                    <div id="voucher-feedback" class="mt-1"></div>
-                {% endif %}
+                    {% else %}
+                        <div class="input-group" id="voucher-input-group">
+                            <input type="text" name="code" class="form-control" 
+                                   placeholder="Enter voucher code" id="voucher-input">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-secondary" id="apply-voucher-btn">Apply</button>
+                            </div>
+                        </div>
+                        <div id="voucher-feedback" class="mt-1"></div>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
@@ -341,9 +343,10 @@ Cart
             Continue Shopping
         </a>
 
-        <!-- AJAX Voucher Script -->
+        <!-- ============ ALL SCRIPTS ============ -->
+        
+        <!-- Voucher Validation Script -->
         <script>
-            // Voucher real-time validation on input
             document.getElementById('voucher-input')?.addEventListener('input', function() {
                 const code = this.value;
                 const feedback = document.getElementById('voucher-feedback');
@@ -362,8 +365,10 @@ Cart
                         });
                 }
             });
+        </script>
 
-            // Apply voucher without page reload - UPDATE TOTALS DYNAMICALLY
+        <!-- Apply Voucher AJAX - NO PAGE RELOAD -->
+        <script>
             document.getElementById('apply-voucher-btn')?.addEventListener('click', function() {
                 const code = document.getElementById('voucher-input').value;
                 const feedback = document.getElementById('voucher-feedback');
@@ -373,7 +378,6 @@ Cart
                     return;
                 }
                 
-                // Show loading state
                 const btn = this;
                 const originalText = btn.innerText;
                 btn.innerText = 'Applying...';
@@ -395,81 +399,52 @@ Cart
                     btn.disabled = false;
                     
                     if (data.success) {
-                        feedback.innerHTML = `<span class="text-success">
-                            <i class="fas fa-check-circle"></i> ${data.message}
-                        </span>`;
-                        // ✅ Update totals without reloading
-                        updateTotals(data.discount);
+                        feedback.innerHTML = '';
+                        // ✅ Update UI without reload
+                        updateVoucherUI(data.code, data.discount);
                     } else {
                         feedback.innerHTML = `<span class="text-danger">
                             <i class="fas fa-exclamation-circle"></i> ${data.message}
                         </span>`;
                     }
                 })
-                .catch(error => {
+                .catch(() => {
                     btn.innerText = originalText;
                     btn.disabled = false;
                     feedback.innerHTML = `<span class="text-danger">An error occurred. Please try again.</span>`;
                 });
             });
+        </script>
 
-            function updateTotals(discount) {
-                // Get product total from the displayed element
-                const productTotalEl = document.getElementById('product_total_display');
-                const productTotalText = productTotalEl?.innerText || '0';
-                const productTotal = parseFloat(productTotalText.replace(/[₦,]/g, '')) || 0;
+        <!-- Update Voucher UI - NO PAGE RELOAD -->
+        <script>
+            function updateVoucherUI(code, discount) {
+                const voucherContent = document.getElementById('voucher-content');
+                const section = document.getElementById('voucher-section');
                 
-                // Get shipping cost
-                const shippingEl = document.getElementById('shipping_costng_ui');
-                const shippingText = shippingEl?.innerText || '0';
-                const shippingCost = parseFloat(shippingText.replace(/[₦,]/g, '')) || 0;
+                // Update totals
+                updateTotals(discount);
                 
-                // Calculate new grand total
-                const grandTotal = productTotal - discount + shippingCost;
-                
-                // Update grand total display
-                const grandTotalEl = document.getElementById('grand_totalng_ui');
-                if (grandTotalEl) {
-                    grandTotalEl.innerText = '₦' + grandTotal.toLocaleString();
-                    grandTotalEl.style.display = 'inline';
-                }
-                
-                // Show voucher applied badge
-                const voucherSection = document.querySelector('.voucher-section');
-                if (voucherSection) {
-                    // Remove existing alert
-                    const oldAlert = voucherSection.querySelector('.alert');
-                    if (oldAlert) oldAlert.remove();
-                    
-                    // Add new alert
-                    const alertDiv = document.createElement('div');
-                    alertDiv.className = 'alert alert-success mt-2';
-                    alertDiv.id = 'voucher-applied-alert';
-                    alertDiv.innerHTML = `
-                        <i class="fas fa-check-circle"></i> 
-                        Voucher applied! You saved ₦${discount.toLocaleString()}
-                        <a href="{% url 'remove_voucher' %}" class="text-danger float-right" id="remove-voucher-link">
+                // Replace content with applied voucher
+                voucherContent.innerHTML = `
+                    <div class="alert alert-success" id="voucher-applied-alert">
+                        <i class="fas fa-check-circle"></i>
+                        Voucher <strong>${code}</strong> applied! You saved ₦${discount.toLocaleString()}
+                        <button type="button" class="btn btn-link text-danger float-right" id="remove-voucher-btn">
                             <i class="fas fa-times"></i> Remove
-                        </a>
-                    `;
-                    voucherSection.prepend(alertDiv);
-                    
-                    // Hide the input
-                    const inputGroup = voucherSection.querySelector('.input-group');
-                    if (inputGroup) inputGroup.style.display = 'none';
-                    
-                    // Hide feedback
-                    const feedback = document.getElementById('voucher-feedback');
-                    if (feedback) feedback.innerHTML = '';
-                    
-                    // Add remove voucher handler
-                    document.getElementById('remove-voucher-link')?.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        removeVoucher();
-                    });
-                }
+                        </button>
+                    </div>
+                `;
+                
+                // Add remove handler
+                document.getElementById('remove-voucher-btn')?.addEventListener('click', function() {
+                    removeVoucher();
+                });
             }
+        </script>
 
+        <!-- Remove Voucher AJAX - NO PAGE RELOAD -->
+        <script>
             function removeVoucher() {
                 fetch("{% url 'remove_voucher_ajax' %}", {
                     method: "POST",
@@ -480,9 +455,133 @@ Cart
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        location.reload();
+                        // ✅ Restore UI without reload
+                        restoreVoucherUI();
                     }
                 });
+            }
+            
+            function restoreVoucherUI() {
+                const voucherContent = document.getElementById('voucher-content');
+                
+                // Restore the input form
+                voucherContent.innerHTML = `
+                    <div class="input-group" id="voucher-input-group">
+                        <input type="text" name="code" class="form-control" 
+                               placeholder="Enter voucher code" id="voucher-input">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-secondary" id="apply-voucher-btn">Apply</button>
+                        </div>
+                    </div>
+                    <div id="voucher-feedback" class="mt-1"></div>
+                `;
+                
+                // Re-add event listeners
+                document.getElementById('apply-voucher-btn')?.addEventListener('click', function() {
+                    // Reuse the apply logic above
+                    const code = document.getElementById('voucher-input').value;
+                    const feedback = document.getElementById('voucher-feedback');
+                    
+                    if (!code || code.length < 2) {
+                        feedback.innerHTML = `<span class="text-danger">Please enter a valid voucher code.</span>`;
+                        return;
+                    }
+                    
+                    const btn = this;
+                    const originalText = btn.innerText;
+                    btn.innerText = 'Applying...';
+                    btn.disabled = true;
+                    
+                    fetch("{% url 'apply_voucher_ajax' %}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": "{{ csrf_token }}",
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                        body: new URLSearchParams({ code: code })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        btn.innerText = originalText;
+                        btn.disabled = false;
+                        
+                        if (data.success) {
+                            feedback.innerHTML = '';
+                            updateVoucherUI(data.code, data.discount);
+                        } else {
+                            feedback.innerHTML = `<span class="text-danger">
+                                <i class="fas fa-exclamation-circle"></i> ${data.message}
+                            </span>`;
+                        }
+                    })
+                    .catch(() => {
+                        btn.innerText = originalText;
+                        btn.disabled = false;
+                        feedback.innerHTML = `<span class="text-danger">An error occurred. Please try again.</span>`;
+                    });
+                });
+                
+                // Re-add input validation
+                document.getElementById('voucher-input')?.addEventListener('input', function() {
+                    const code = this.value;
+                    const feedback = document.getElementById('voucher-feedback');
+                    
+                    if (code.length > 2) {
+                        fetch(`/get-voucher-info/?code=${code}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.valid) {
+                                    feedback.innerHTML = `<span class="text-success">
+                                        <i class="fas fa-check-circle"></i> Valid! Apply to get ₦${data.discount_amount} off
+                                    </span>`;
+                                } else {
+                                    feedback.innerHTML = `<span class="text-muted">${data.message}</span>`;
+                                }
+                            });
+                    }
+                });
+                
+                // Reset totals
+                resetTotals();
+            }
+        </script>
+
+        <!-- Update Totals - NO PAGE RELOAD -->
+        <script>
+            function updateTotals(discount) {
+                const productTotalEl = document.getElementById('product_total_display');
+                const productTotalText = productTotalEl?.innerText || '0';
+                const productTotal = parseFloat(productTotalText.replace(/[₦,]/g, '')) || 0;
+                
+                const shippingEl = document.getElementById('shipping_costng_ui');
+                const shippingText = shippingEl?.innerText || '0';
+                const shippingCost = parseFloat(shippingText.replace(/[₦,]/g, '')) || 0;
+                
+                const grandTotal = productTotal - discount + shippingCost;
+                
+                const grandTotalEl = document.getElementById('grand_totalng_ui');
+                if (grandTotalEl) {
+                    grandTotalEl.innerText = '₦' + grandTotal.toLocaleString();
+                    grandTotalEl.style.display = 'inline';
+                }
+            }
+            
+            function resetTotals() {
+                const productTotalEl = document.getElementById('product_total_display');
+                const productTotalText = productTotalEl?.innerText || '0';
+                const productTotal = parseFloat(productTotalText.replace(/[₦,]/g, '')) || 0;
+                
+                const shippingEl = document.getElementById('shipping_costng_ui');
+                const shippingText = shippingEl?.innerText || '0';
+                const shippingCost = parseFloat(shippingText.replace(/[₦,]/g, '')) || 0;
+                
+                const grandTotal = productTotal + shippingCost;
+                
+                const grandTotalEl = document.getElementById('grand_totalng_ui');
+                if (grandTotalEl) {
+                    grandTotalEl.innerText = '₦' + grandTotal.toLocaleString();
+                    grandTotalEl.style.display = 'inline';
+                }
             }
         </script>
 
