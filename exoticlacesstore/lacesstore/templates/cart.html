@@ -120,10 +120,24 @@ Cart
                 <tr>
                     <td class="text-left">
                         {% if currency == "NGN" %}
-                            Your total is: <strong id="product_total_display">{{ total_ngn|money:"NGN" }}</strong>   
+                            <strong>Subtotal:</strong> <span id="product_total_display">{{ total_ngn|money:"NGN" }}</span>
                         {% else %}
-                            Your total is: <strong id="product_total_display">{{ total_ngn|money:currency }}</strong> 
+                            <strong>Subtotal:</strong> <span id="product_total_display">{{ total_ngn|money:currency }}</span>
                         {% endif %}
+                    </td>
+                </tr>
+
+                <!-- ✅ VOUCHER DISCOUNT ROW -->
+                <tr id="voucher-discount-row" style="{% if not request.session.voucher_code %}display:none;{% endif %}">
+                    <td class="text-left text-success">
+                        <strong>Voucher Discount:</strong>
+                        <span id="voucher-discount-amount">
+                            {% if request.session.voucher_code and request.session.voucher_discount %}
+                                -{{ request.session.voucher_discount|money:currency }}
+                            {% else %}
+                                -₦0.00
+                            {% endif %}
+                        </span>
                     </td>
                 </tr>
 
@@ -285,7 +299,7 @@ Cart
                 </select>
             </div>
 
-            <!-- ✅ VOUCHER SECTION - COMPLETE AJAX VERSION -->
+            <!-- ✅ VOUCHER SECTION -->
             <div class="voucher-section mt-4 p-3 bg-light rounded" id="voucher-section">
                 <h5><i class="fas fa-ticket-alt"></i> Have a voucher?</h5>
                 
@@ -367,7 +381,7 @@ Cart
             });
         </script>
 
-        <!-- Apply Voucher AJAX - NO PAGE RELOAD -->
+        <!-- Apply Voucher AJAX -->
         <script>
             document.getElementById('apply-voucher-btn')?.addEventListener('click', function() {
                 const code = document.getElementById('voucher-input').value;
@@ -400,7 +414,6 @@ Cart
                     
                     if (data.success) {
                         feedback.innerHTML = '';
-                        // ✅ Update UI without reload
                         updateVoucherUI(data.code, data.discount);
                     } else {
                         feedback.innerHTML = `<span class="text-danger">
@@ -416,11 +429,23 @@ Cart
             });
         </script>
 
-        <!-- Update Voucher UI - NO PAGE RELOAD -->
+        <!-- Update Voucher UI -->
         <script>
             function updateVoucherUI(code, discount) {
                 const voucherContent = document.getElementById('voucher-content');
-                const section = document.getElementById('voucher-section');
+                
+                // Update discount row
+                const discountRow = document.getElementById('voucher-discount-row');
+                const discountAmount = document.getElementById('voucher-discount-amount');
+                if (discountRow && discountAmount) {
+                    discountRow.style.display = '';
+                    const currency = "{{ ACTIVE_CURRENCY }}";
+                    const symbol = currency === 'NGN' ? '₦' : 
+                                  currency === 'USD' ? '$' : 
+                                  currency === 'GHS' ? '₵' : 
+                                  currency === 'XOF' ? 'CFA' : '';
+                    discountAmount.innerText = `-${symbol}${discount.toLocaleString()}`;
+                }
                 
                 // Update totals
                 updateTotals(discount);
@@ -436,14 +461,13 @@ Cart
                     </div>
                 `;
                 
-                // Add remove handler
                 document.getElementById('remove-voucher-btn')?.addEventListener('click', function() {
                     removeVoucher();
                 });
             }
         </script>
 
-        <!-- Remove Voucher AJAX - NO PAGE RELOAD -->
+        <!-- Remove Voucher AJAX -->
         <script>
             function removeVoucher() {
                 fetch("{% url 'remove_voucher_ajax' %}", {
@@ -455,7 +479,9 @@ Cart
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        // ✅ Restore UI without reload
+                        // Hide discount row
+                        const discountRow = document.getElementById('voucher-discount-row');
+                        if (discountRow) discountRow.style.display = 'none';
                         restoreVoucherUI();
                     }
                 });
@@ -464,7 +490,6 @@ Cart
             function restoreVoucherUI() {
                 const voucherContent = document.getElementById('voucher-content');
                 
-                // Restore the input form
                 voucherContent.innerHTML = `
                     <div class="input-group" id="voucher-input-group">
                         <input type="text" name="code" class="form-control" 
@@ -478,7 +503,6 @@ Cart
                 
                 // Re-add event listeners
                 document.getElementById('apply-voucher-btn')?.addEventListener('click', function() {
-                    // Reuse the apply logic above
                     const code = document.getElementById('voucher-input').value;
                     const feedback = document.getElementById('voucher-feedback');
                     
@@ -521,7 +545,6 @@ Cart
                     });
                 });
                 
-                // Re-add input validation
                 document.getElementById('voucher-input')?.addEventListener('input', function() {
                     const code = this.value;
                     const feedback = document.getElementById('voucher-feedback');
@@ -546,7 +569,7 @@ Cart
             }
         </script>
 
-        <!-- Update Totals - NO PAGE RELOAD -->
+        <!-- Update Totals -->
         <script>
             function updateTotals(discount) {
                 const productTotalEl = document.getElementById('product_total_display');
