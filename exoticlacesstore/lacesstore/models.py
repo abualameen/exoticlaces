@@ -422,11 +422,12 @@ class Voucher(models.Model):
             return True
         return user in self.user_specific.all()
     
-    def apply_discount(self, total, items=None):
-        """Calculate discount amount"""
+    def apply_discount(self, total):
+        """Calculate discount amount based on product total ONLY"""
         if not self.is_valid():
             return 0
         
+        # ✅ Only apply to product total, not shipping
         if self.min_order_amount > total:
             return 0
         
@@ -437,9 +438,9 @@ class Voucher(models.Model):
         elif self.discount_type == 'fixed':
             discount = min(self.discount_value, total)
         else:  # free_shipping
-            # This will be handled in the cart view
             return 0
         
+        # ✅ Round to 2 decimal places
         return round(discount, 2)
     
     def increment_usage(self):
