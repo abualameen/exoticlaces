@@ -120,22 +120,10 @@ Cart
                 <tr>
                     <td class="text-left">
                         {% if currency == "NGN" %}
-                            <strong>Subtotal:</strong> {{ total_ngn|money:"NGN" }}
+                            Your total is: <strong id="product_total_display">{{ total_ngn|money:"NGN" }}</strong>   
                         {% else %}
-                            <strong>Subtotal:</strong> {{ total_ngn|money:currency }}
+                            Your total is: <strong id="product_total_display">{{ total_ngn|money:currency }}</strong> 
                         {% endif %}
-                    </td>
-                </tr>
-
-                <!-- ✅ VOUCHER DISCOUNT ROW -->
-                <tr id="voucher-discount-row" style="{% if not request.session.voucher_code %}display:none;{% endif %}">
-                    <td class="text-left text-success">
-                        <strong>Voucher Discount:</strong>
-                        <span id="voucher-discount-amount">
-                            {% if request.session.voucher_code %}
-                                -{{ request.session.voucher_discount|money:currency }}
-                            {% endif %}
-                        </span>
                     </td>
                 </tr>
 
@@ -297,7 +285,7 @@ Cart
                 </select>
             </div>
 
-            <!-- ✅ VOUCHER SECTION -->
+            <!-- ✅ VOUCHER SECTION - COMPLETE AJAX VERSION -->
             <div class="voucher-section mt-4 p-3 bg-light rounded" id="voucher-section">
                 <h5><i class="fas fa-ticket-alt"></i> Have a voucher?</h5>
                 
@@ -379,7 +367,7 @@ Cart
             });
         </script>
 
-        <!-- Apply Voucher AJAX -->
+        <!-- Apply Voucher AJAX - NO PAGE RELOAD -->
         <script>
             document.getElementById('apply-voucher-btn')?.addEventListener('click', function() {
                 const code = document.getElementById('voucher-input').value;
@@ -412,6 +400,7 @@ Cart
                     
                     if (data.success) {
                         feedback.innerHTML = '';
+                        // ✅ Update UI without reload
                         updateVoucherUI(data.code, data.discount);
                     } else {
                         feedback.innerHTML = `<span class="text-danger">
@@ -427,22 +416,11 @@ Cart
             });
         </script>
 
-        <!-- Update Voucher UI -->
+        <!-- Update Voucher UI - NO PAGE RELOAD -->
         <script>
             function updateVoucherUI(code, discount) {
                 const voucherContent = document.getElementById('voucher-content');
-                
-                // Update discount row
-                const discountRow = document.getElementById('voucher-discount-row');
-                const discountAmount = document.getElementById('voucher-discount-amount');
-                if (discountRow && discountAmount) {
-                    discountRow.style.display = '';
-                    const currency = "{{ ACTIVE_CURRENCY }}";
-                    const symbol = currency === 'NGN' ? '₦' : 
-                                  currency === 'USD' ? '$' : 
-                                  currency === 'GHS' ? '₵' : '';
-                    discountAmount.innerText = `-${symbol}${discount.toLocaleString()}`;
-                }
+                const section = document.getElementById('voucher-section');
                 
                 // Update totals
                 updateTotals(discount);
@@ -458,13 +436,14 @@ Cart
                     </div>
                 `;
                 
+                // Add remove handler
                 document.getElementById('remove-voucher-btn')?.addEventListener('click', function() {
                     removeVoucher();
                 });
             }
         </script>
 
-        <!-- Remove Voucher AJAX -->
+        <!-- Remove Voucher AJAX - NO PAGE RELOAD -->
         <script>
             function removeVoucher() {
                 fetch("{% url 'remove_voucher_ajax' %}", {
@@ -476,9 +455,7 @@ Cart
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        // Hide discount row
-                        const discountRow = document.getElementById('voucher-discount-row');
-                        if (discountRow) discountRow.style.display = 'none';
+                        // ✅ Restore UI without reload
                         restoreVoucherUI();
                     }
                 });
@@ -487,6 +464,7 @@ Cart
             function restoreVoucherUI() {
                 const voucherContent = document.getElementById('voucher-content');
                 
+                // Restore the input form
                 voucherContent.innerHTML = `
                     <div class="input-group" id="voucher-input-group">
                         <input type="text" name="code" class="form-control" 
@@ -500,6 +478,7 @@ Cart
                 
                 // Re-add event listeners
                 document.getElementById('apply-voucher-btn')?.addEventListener('click', function() {
+                    // Reuse the apply logic above
                     const code = document.getElementById('voucher-input').value;
                     const feedback = document.getElementById('voucher-feedback');
                     
@@ -542,6 +521,7 @@ Cart
                     });
                 });
                 
+                // Re-add input validation
                 document.getElementById('voucher-input')?.addEventListener('input', function() {
                     const code = this.value;
                     const feedback = document.getElementById('voucher-feedback');
@@ -566,7 +546,7 @@ Cart
             }
         </script>
 
-        <!-- Update Totals -->
+        <!-- Update Totals - NO PAGE RELOAD -->
         <script>
             function updateTotals(discount) {
                 const productTotalEl = document.getElementById('product_total_display');
