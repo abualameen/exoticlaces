@@ -657,17 +657,10 @@ Cart
                 }
             }
 
+            // In cart.html, update the applyShipping function
             function applyShipping(){
-                if (!requiredShippingFieldsFilled()) {
-                    alert("Please fill in your contact details and delivery address before selecting a shipping method.");
-                    document.getElementById("shipping_method").value = "";
-                    return;
-                }
-
-                const method = document.getElementById("shipping_method").value;
-                const country = document.getElementById("country").value;
-                const state = document.getElementById("state").value;
-
+                // ... existing code ...
+                
                 fetch("/shipping/set-shipping/", {
                     method: "POST",
                     headers: {
@@ -683,8 +676,14 @@ Cart
                     const shippingFX = parseFloat(data.shipping.amount_fx);
                     const cartTotalNGN = parseFloat("{{ total_ngn }}");
                     const cartTotalFX = parseFloat("{{ total_fx }}");
-                    const grandTotalNGN = cartTotalNGN + shippingNGN;
-                    const grandTotalFX = cartTotalFX + shippingFX;
+                    
+                    // ✅ Get discounts from template context
+                    const voucherDiscount = parseFloat("{{ voucher_discount|default:'0' }}");
+                    const flashSaleDiscount = parseFloat("{{ flash_sale_discount|default:'0' }}");
+                    
+                    // ✅ Calculate grand total with discounts
+                    const grandTotalNGN = cartTotalNGN - voucherDiscount - flashSaleDiscount + shippingNGN;
+                    const grandTotalFX = cartTotalFX - voucherDiscount - flashSaleDiscount + shippingFX;
 
                     function format(amount){
                         if(currency === "NGN") return "₦" + amount.toLocaleString();
