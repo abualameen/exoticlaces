@@ -102,33 +102,6 @@ Cart
     </div>
 
     <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
-        <!-- ✅ VOUCHER SECTION - ADDED HERE -->
-        <div class="voucher-section mb-4 p-3 bg-light rounded">
-            <h5><i class="fas fa-ticket-alt"></i> Have a voucher?</h5>
-            
-            {% if request.session.voucher_code %}
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle"></i>
-                    Voucher <strong>{{ request.session.voucher_code }}</strong> applied!
-                    <a href="{% url 'remove_voucher' %}" class="text-danger float-right">
-                        <i class="fas fa-times"></i> Remove
-                    </a>
-                </div>
-            {% else %}
-                <form method="post" action="{% url 'apply_voucher' %}" id="voucher-form">
-                    {% csrf_token %}
-                    <div class="input-group">
-                        <input type="text" name="code" class="form-control" 
-                               placeholder="Enter voucher code" id="voucher-input">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-secondary">Apply</button>
-                        </div>
-                    </div>
-                    <div id="voucher-feedback" class="mt-1"></div>
-                </form>
-            {% endif %}
-        </div>
-
         <table class="table cart_table">
             <thead class="cart_thead">
                 <tr>
@@ -310,6 +283,33 @@ Cart
                     <option value="seller">Seller Shipping (Car/Bus Waybill)</option>
                     <option value="dhl">DHL Express</option>
                 </select>
+            </div>
+
+            <!-- ✅ VOUCHER SECTION - MOVED HERE (After shipping selection) -->
+            <div class="voucher-section mt-4 p-3 bg-light rounded">
+                <h5><i class="fas fa-ticket-alt"></i> Have a voucher?</h5>
+                
+                {% if request.session.voucher_code %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        Voucher <strong>{{ request.session.voucher_code }}</strong> applied!
+                        <a href="{% url 'remove_voucher' %}" class="text-danger float-right">
+                            <i class="fas fa-times"></i> Remove
+                        </a>
+                    </div>
+                {% else %}
+                    <form method="post" action="{% url 'apply_voucher' %}" id="voucher-form">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="text" name="code" class="form-control" 
+                                   placeholder="Enter voucher code" id="voucher-input">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-secondary">Apply</button>
+                            </div>
+                        </div>
+                        <div id="voucher-feedback" class="mt-1"></div>
+                    </form>
+                {% endif %}
             </div>
         </div>
 
