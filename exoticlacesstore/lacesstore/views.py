@@ -751,8 +751,15 @@ def csrf_failure(request, reason=""):
 
 
 
+def get_cart(request):
+    """Get the current user's cart or create one"""
+    from .models import Cart
+    cart_id = _cart_id(request)
+    cart, created = Cart.objects.get_or_create(cart_id=cart_id)
+    return cart
 
 
+# lacesstore/views.py
 
 def apply_voucher(request):
     """Apply a voucher code to the current cart"""
@@ -777,25 +784,15 @@ def apply_voucher(request):
                 messages.error(request, "This voucher has reached its usage limit.")
                 return redirect('cart_detail')
             
-            # Check user-specific
-            if voucher.user_specific.exists() and request.user.is_authenticated:
-                if request.user not in voucher.user_specific.all():
-                    messages.error(request, "This voucher is not valid for your account.")
-                    return redirect('cart_detail')
-            
-            # Check if user already used this voucher
-            if request.user.is_authenticated:
-                existing_usage = UserVoucherUsage.objects.filter(
-                    user=request.user,
-                    voucher=voucher
-                ).count()
-                if existing_usage >= voucher.usage_limit:
-                    messages.error(request, "You have already used this voucher the maximum number of times.")
-                    return redirect('cart_detail')
-            
-            # Get cart and calculate total
+            # Get cart
             cart = get_cart(request)
             cart_items = CartItem.objects.filter(cart=cart, active=True)
+            
+            if not cart_items:
+                messages.error(request, "Your cart is empty.")
+                return redirect('cart_detail')
+            
+            # Calculate total
             total = sum(item.product.price * item.quantity for item in cart_items)
             
             # Check minimum order amount
@@ -805,7 +802,10 @@ def apply_voucher(request):
             
             # Store voucher in session
             request.session['voucher_code'] = code
-            messages.success(request, f"Voucher '{code}' applied successfully!")
+            
+            # Calculate discount for display
+            discount = voucher.apply_discount(total)
+            messages.success(request, f"Voucher '{code}' applied! You saved ₦{discount:,.2f}")
             
     return redirect('cart_detail')
 
