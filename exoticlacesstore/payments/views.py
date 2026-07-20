@@ -120,6 +120,7 @@ def init_payment(request):
             request.session.pop('voucher_discount', None)
 
     shipping_cost = Decimal(shipping.get("amount_ngn", 0))
+    # ✅ FIXED: Subtract BOTH discounts
     grand_total = cart_total - voucher_discount - flash_sale_discount + shipping_cost
     amount_kobo = int(grand_total * Decimal('100'))
 
