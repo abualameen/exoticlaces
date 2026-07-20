@@ -45,6 +45,10 @@ urlpatterns = [
 
 
     path('admin/dashboard/', views.dashboard, name='admin_dashboard'),
+
+    path('apply-voucher-ajax/', views.apply_voucher_ajax, name='apply_voucher_ajax'),
+
+    path('remove-voucher-ajax/', views.remove_voucher_ajax, name='remove_voucher_ajax'),
    
 
 

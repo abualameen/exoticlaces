@@ -285,7 +285,7 @@ Cart
                 </select>
             </div>
 
-            <!-- ✅ VOUCHER SECTION - MOVED HERE (After shipping selection) -->
+            <!-- ✅ VOUCHER SECTION - AJAX Version (No Page Reload) -->
             <div class="voucher-section mt-4 p-3 bg-light rounded">
                 <h5><i class="fas fa-ticket-alt"></i> Have a voucher?</h5>
                 
@@ -298,17 +298,14 @@ Cart
                         </a>
                     </div>
                 {% else %}
-                    <form method="post" action="{% url 'apply_voucher' %}" id="voucher-form">
-                        {% csrf_token %}
-                        <div class="input-group">
-                            <input type="text" name="code" class="form-control" 
-                                   placeholder="Enter voucher code" id="voucher-input">
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-secondary">Apply</button>
-                            </div>
+                    <div class="input-group">
+                        <input type="text" name="code" class="form-control" 
+                               placeholder="Enter voucher code" id="voucher-input">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-secondary" id="apply-voucher-btn">Apply</button>
                         </div>
-                        <div id="voucher-feedback" class="mt-1"></div>
-                    </form>
+                    </div>
+                    <div id="voucher-feedback" class="mt-1"></div>
                 {% endif %}
             </div>
         </div>
@@ -344,9 +341,48 @@ Cart
             Continue Shopping
         </a>
 
-        <!-- JavaScript for Voucher Validation -->
+        <!-- AJAX Voucher Script -->
         <script>
-            // Voucher validation
+            // Apply voucher without page reload
+            document.getElementById('apply-voucher-btn')?.addEventListener('click', function() {
+                const code = document.getElementById('voucher-input').value;
+                const feedback = document.getElementById('voucher-feedback');
+                
+                if (!code || code.length < 2) {
+                    feedback.innerHTML = `<span class="text-danger">Please enter a valid voucher code.</span>`;
+                    return;
+                }
+                
+                fetch("{% url 'apply_voucher_ajax' %}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: new URLSearchParams({
+                        code: code
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        feedback.innerHTML = `<span class="text-success">
+                            <i class="fas fa-check-circle"></i> ${data.message}
+                        </span>`;
+                        // Reload the page to show updated totals
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        feedback.innerHTML = `<span class="text-danger">
+                            <i class="fas fa-exclamation-circle"></i> ${data.message}
+                        </span>`;
+                    }
+                })
+                .catch(error => {
+                    feedback.innerHTML = `<span class="text-danger">An error occurred. Please try again.</span>`;
+                });
+            });
+
+            // Voucher real-time validation on input
             document.getElementById('voucher-input')?.addEventListener('input', function() {
                 const code = this.value;
                 const feedback = document.getElementById('voucher-feedback');

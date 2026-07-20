@@ -875,3 +875,74 @@ def flash_sale_detail(request, sale_id):
         'remaining_time': flash_sale.get_time_remaining(),
     }
     return render(request, 'flash_sale_detail.html', context)
+
+
+
+# lacesstore/views.py
+from django.http import JsonResponse
+
+def apply_voucher_ajax(request):
+    """Apply a voucher code via AJAX (no page reload)"""
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Invalid request'})
+    
+    code = request.POST.get('code', '').upper().strip()
+    
+    if not code:
+        return JsonResponse({'success': False, 'message': 'Please enter a voucher code.'})
+    
+    try:
+        voucher = Voucher.objects.get(
+            code=code,
+            active=True,
+            valid_from__lte=timezone.now(),
+            valid_to__gte=timezone.now()
+        )
+    except Voucher.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Invalid or expired voucher code.'})
+    
+    # Check usage limits
+    if voucher.used_count >= voucher.total_usage_limit:
+        return JsonResponse({'success': False, 'message': 'This voucher has reached its usage limit.'})
+    
+    # Get cart
+    cart = get_cart(request)
+    cart_items = CartItem.objects.filter(cart=cart, active=True)
+    
+    if not cart_items:
+        return JsonResponse({'success': False, 'message': 'Your cart is empty.'})
+    
+    # Calculate product total
+    product_total = sum(item.product.price * item.quantity for item in cart_items)
+    
+    # Check minimum order amount
+    if product_total < voucher.min_order_amount:
+        return JsonResponse({
+            'success': False, 
+            'message': f'Minimum order amount of ₦{voucher.min_order_amount:,.2f} required.'
+        })
+    
+    # Calculate discount
+    discount = voucher.apply_discount(product_total)
+    
+    # Store in session
+    request.session['voucher_code'] = code
+    request.session['voucher_discount'] = float(discount)
+    
+    return JsonResponse({
+        'success': True,
+        'message': f"Voucher '{code}' applied! You saved ₦{discount:,.2f}",
+        'discount': float(discount),
+        'code': code
+    })
+
+
+
+# lacesstore/views.py
+def remove_voucher_ajax(request):
+    """Remove the applied voucher via AJAX"""
+    if 'voucher_code' in request.session:
+        del request.session['voucher_code']
+        request.session.pop('voucher_discount', None)
+        return JsonResponse({'success': True, 'message': 'Voucher removed.'})
+    return JsonResponse({'success': False, 'message': 'No voucher applied.'})
