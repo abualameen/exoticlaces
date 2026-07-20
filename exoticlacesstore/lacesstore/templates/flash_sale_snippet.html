@@ -1,20 +1,30 @@
 <!-- flash_sale_snippet.html -->
 {% if active_flash_sales %}
+    {% for sale in active_flash_sales %}
     <div class="flash-sale-banner mb-4">
         <div class="bg-danger text-white p-3 rounded">
             <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h4><i class="fas fa-bolt"></i> Flash Sale!</h4>
-                    {% for sale in active_flash_sales %}
-                        <h5>{{ sale.title }}</h5>
-                        <p>{{ sale.discount_percentage }}% OFF - {{ sale.product.name }}</p>
-                    {% endfor %}
+                <div class="col-md-7">
+                    <h4><i class="fas fa-bolt"></i> 🔥 Flash Sale!</h4>
+                    <h5>{{ sale.title }}</h5>
+                    <p class="mb-0">
+                        <strong>{{ sale.discount_percentage }}% OFF</strong> - 
+                        {{ sale.product.name }}
+                        <span class="badge badge-light ml-2">
+                            Was: ₦{{ sale.product.price|floatformat:0 }}
+                        </span>
+                        <span class="badge badge-warning ml-1">
+                            Now: ₦{{ sale.get_discounted_price|floatformat:0 }}
+                        </span>
+                    </p>
                 </div>
-                <div class="col-md-6 text-right">
+                <div class="col-md-5 text-right">
                     <div class="countdown-timer" data-end="{{ sale.end_time|date:'Y-m-d H:i:s' }}">
-                        <span class="badge badge-light p-2" id="countdown-display"></span>
+                        <span class="badge badge-light p-2" id="countdown-display-{{ sale.id }}">
+                            Loading...
+                        </span>
                     </div>
-                    <a href="{% url 'flash_sale_detail' sale.id %}" class="btn btn-warning mt-2">
+                    <a href="{{ sale.product.get_url }}" class="btn btn-warning mt-2">
                         Shop Now <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -23,27 +33,31 @@
     </div>
 
     <script>
-        function updateCountdown() {
-            const timerEl = document.getElementById('countdown-display');
+        (function() {
+            const timerEl = document.getElementById('countdown-display-{{ sale.id }}');
             if (!timerEl) return;
             
-            const endTime = new Date(timerEl.parentElement.dataset.end).getTime();
-            const now = new Date().getTime();
-            const diff = endTime - now;
+            const endTime = new Date('{{ sale.end_time|date:"Y-m-d H:i:s" }}').getTime();
             
-            if (diff <= 0) {
-                timerEl.textContent = 'Expired';
-                return;
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const diff = endTime - now;
+                
+                if (diff <= 0) {
+                    timerEl.textContent = '🔥 Ended!';
+                    return;
+                }
+                
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                timerEl.textContent = `${hours}h ${minutes}m ${seconds}s`;
             }
             
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            timerEl.textContent = `${hours}h ${minutes}m ${seconds}s`;
-        }
-        
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        })();
     </script>
+    {% endfor %}
 {% endif %}

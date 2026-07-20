@@ -23,9 +23,7 @@ from decimal import Decimal  # add at the top of your views.py
 from payments.services.exchange import get_exchange_rate
 from django.template.loader import get_template
 from django.core.mail import EmailMessage
-from decimal import Decimal
-from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+
 from payments.models import ExchangeRate
 from .facebook_capi import send_facebook_event
 from django.views.decorators.csrf import csrf_exempt
@@ -39,10 +37,10 @@ import datetime
 
 
 # lacesstore/views.py
-from django.shortcuts import render, redirect, get_object_or_404
-from decimal import Decimal
+
 from .models import Cart, CartItem, Voucher, UserVoucherUsage, FlashSale
 from .forms import VoucherApplyForm
+from .models import Cart, CartItem, FlashSale, Voucher
 
 
 
@@ -306,6 +304,8 @@ def add_cart_variant(request, product_id, variant_id):
 
 
 
+
+
 def cart_detail(request):
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
@@ -313,27 +313,56 @@ def cart_detail(request):
 
         total_ngn = Decimal("0.00")
         counter = 0
+        flash_sale_discount = Decimal("0.00")
 
         # 1️⃣ CART TOTAL (NGN ONLY)
         for item in cart_items:
             total_ngn += item.product.price * item.quantity
             counter += item.quantity
 
-        # 2️⃣ SHIPPING (FROM SESSION)
+        # 2️⃣ CHECK FLASH SALE DISCOUNT
+        now = timezone.now()
+        for item in cart_items:
+            flash_sale = FlashSale.objects.filter(
+                product=item.product,
+                is_active=True,
+                start_time__lte=now,
+                end_time__gte=now
+            ).first()
+            if flash_sale:
+                discount_amount = item.product.price * (flash_sale.discount_percentage / 100)
+                flash_sale_discount += discount_amount * item.quantity
+
+        # 3️⃣ CHECK VOUCHER DISCOUNT
+        voucher_discount = Decimal('0.00')
+        voucher_code = request.session.get('voucher_code')
+        if voucher_code:
+            try:
+                voucher = Voucher.objects.get(code=voucher_code, active=True)
+                voucher_discount = voucher.apply_discount(total_ngn)
+                # Store the discount in session for display
+                request.session['voucher_discount'] = float(voucher_discount)
+            except Voucher.DoesNotExist:
+                request.session.pop('voucher_code', None)
+                request.session.pop('voucher_discount', None)
+
+        # 4️⃣ SHIPPING (FROM SESSION)
         shipping_data = request.session.get("shipping", {})
         shipping_cost_ngn = Decimal(str(shipping_data.get("amount_ngn", 0)))
         shipping_label = shipping_data.get("label")
 
-        # 3️⃣ GRAND TOTAL (NGN ONLY)
-        grand_total_ngn = total_ngn + shipping_cost_ngn
+        # 5️⃣ GRAND TOTAL (NGN ONLY) - WITH DISCOUNTS APPLIED
+        grand_total_ngn = total_ngn - voucher_discount - flash_sale_discount + shipping_cost_ngn
 
-        # 4️⃣ FX (DISPLAY ONLY)
+        # 6️⃣ FX (DISPLAY ONLY)
         active_currency = request.session.get("currency", "NGN")
         fx_rate, rate_source = get_exchange_rate(active_currency)
 
         total_fx = round(total_ngn * Decimal(str(fx_rate)), 2)
         shipping_fx = round(shipping_cost_ngn * Decimal(str(fx_rate)), 2)
         grand_total_fx = round(grand_total_ngn * Decimal(str(fx_rate)), 2)
+        voucher_discount_fx = round(voucher_discount * Decimal(str(fx_rate)), 2)
+        flash_sale_discount_fx = round(flash_sale_discount * Decimal(str(fx_rate)), 2)
 
     except ObjectDoesNotExist:
         cart_items = []
@@ -343,11 +372,15 @@ def cart_detail(request):
         total_fx = Decimal("0.00")
         shipping_fx = Decimal("0.00")
         grand_total_fx = Decimal("0.00")
+        voucher_discount = Decimal("0.00")
+        flash_sale_discount = Decimal("0.00")
+        voucher_discount_fx = Decimal("0.00")
+        flash_sale_discount_fx = Decimal("0.00")
         shipping_label = None
         counter = 0
         active_currency = "NGN"
 
-    # 5️⃣ PAYSTACK (ALWAYS NGN)
+    # 7️⃣ PAYSTACK (ALWAYS NGN) - WITH DISCOUNTS APPLIED
     paystack_amount = int(grand_total_ngn * 100)
 
     return render(request, "cart.html", {
@@ -357,11 +390,15 @@ def cart_detail(request):
         "total_ngn": total_ngn,
         "shipping_ngn": shipping_cost_ngn,
         "grand_total_ngn": grand_total_ngn,
+        "voucher_discount": voucher_discount,
+        "flash_sale_discount": flash_sale_discount,
 
         # FX (display)
         "total_fx": total_fx,
         "shipping_fx": shipping_fx,
         "grand_total_fx": grand_total_fx,
+        "voucher_discount_fx": voucher_discount_fx,
+        "flash_sale_discount_fx": flash_sale_discount_fx,
 
         "currency": active_currency,
         "shipping_label": shipping_label,
