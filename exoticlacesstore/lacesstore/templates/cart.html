@@ -168,11 +168,14 @@ Cart
                     </td>
                 </tr>
 
+                <!-- In cart.html, find the Grand Total row -->
                 <tr>
                     <td><strong>Grand Total</strong></td>
                     <td></td>
                     <td>
-                        <strong id="grand_totalng_ui" style="display:none"></strong>
+                        <strong id="grand_totalng_ui">
+                            {{ grand_total_ngn|money:currency }}
+                        </strong>
                         <strong id="grand_totalfx_ui" style="display:none"></strong>
                     </td>
                 </tr>

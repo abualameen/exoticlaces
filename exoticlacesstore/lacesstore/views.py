@@ -357,6 +357,8 @@ def cart_detail(request):
         # 5️⃣ ✅ GRAND TOTAL - SUBTRACT BOTH DISCOUNTS
         grand_total_ngn = total_ngn - voucher_discount - flash_sale_discount + shipping_cost_ngn
 
+        print(f"DEBUG: total_ngn={total_ngn}, voucher={voucher_discount}, flash={flash_sale_discount}, shipping={shipping_cost_ngn}, grand={grand_total_ngn}")
+
         # 6️⃣ FX (DISPLAY ONLY)
         active_currency = request.session.get("currency", "NGN")
         fx_rate, rate_source = get_exchange_rate(active_currency)
