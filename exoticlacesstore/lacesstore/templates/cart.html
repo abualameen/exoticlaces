@@ -168,14 +168,11 @@ Cart
                     </td>
                 </tr>
 
-                <!-- In cart.html, find the Grand Total row -->
                 <tr>
                     <td><strong>Grand Total</strong></td>
                     <td></td>
                     <td>
-                        <strong id="grand_totalng_ui">
-                            {{ grand_total_ngn|money:currency }}
-                        </strong>
+                        <strong id="grand_totalng_ui" style="display:none"></strong>
                         <strong id="grand_totalfx_ui" style="display:none"></strong>
                     </td>
                 </tr>
@@ -468,8 +465,8 @@ Cart
                     discountAmount.innerText = `-${symbol}${discount.toLocaleString()}`;
                 }
                 
-                // Update totals
-                updateTotals(discount);
+                // ✅ Update grand total with shipping
+                updateGrandTotal();
                 
                 // Replace content with applied voucher
                 voucherContent.innerHTML = `
@@ -590,9 +587,9 @@ Cart
             }
         </script>
 
-        <!-- Update Totals -->
+        <!-- Update Grand Total Function -->
         <script>
-            function updateTotals(discount) {
+            function updateGrandTotal() {
                 const productTotalEl = document.getElementById('product_total_display');
                 const productTotalText = productTotalEl?.innerText || '0';
                 const productTotal = parseFloat(productTotalText.replace(/[₦,]/g, '')) || 0;
@@ -601,11 +598,19 @@ Cart
                 const shippingText = shippingEl?.innerText || '0';
                 const shippingCost = parseFloat(shippingText.replace(/[₦,]/g, '')) || 0;
                 
-                const grandTotal = productTotal - discount + shippingCost;
+                const voucherDiscount = parseFloat("{{ voucher_discount|default:'0' }}") || 0;
+                const flashSaleDiscount = parseFloat("{{ flash_sale_discount|default:'0' }}") || 0;
+                
+                const grandTotal = productTotal - voucherDiscount - flashSaleDiscount + shippingCost;
                 
                 const grandTotalEl = document.getElementById('grand_totalng_ui');
                 if (grandTotalEl) {
-                    grandTotalEl.innerText = '₦' + grandTotal.toLocaleString();
+                    const currency = "{{ ACTIVE_CURRENCY }}";
+                    const symbol = currency === 'NGN' ? '₦' : 
+                                  currency === 'USD' ? '$' : 
+                                  currency === 'GHS' ? '₵' : 
+                                  currency === 'XOF' ? 'CFA' : '';
+                    grandTotalEl.innerText = `${symbol}${grandTotal.toLocaleString()}`;
                     grandTotalEl.style.display = 'inline';
                 }
             }
@@ -623,10 +628,23 @@ Cart
                 
                 const grandTotalEl = document.getElementById('grand_totalng_ui');
                 if (grandTotalEl) {
-                    grandTotalEl.innerText = '₦' + grandTotal.toLocaleString();
+                    const currency = "{{ ACTIVE_CURRENCY }}";
+                    const symbol = currency === 'NGN' ? '₦' : 
+                                  currency === 'USD' ? '$' : 
+                                  currency === 'GHS' ? '₵' : 
+                                  currency === 'XOF' ? 'CFA' : '';
+                    grandTotalEl.innerText = `${symbol}${grandTotal.toLocaleString()}`;
                     grandTotalEl.style.display = 'inline';
                 }
             }
+            
+            // Call updateGrandTotal on page load if shipping is already selected
+            document.addEventListener('DOMContentLoaded', function() {
+                const shippingEl = document.getElementById('shipping_costng_ui');
+                if (shippingEl && shippingEl.style.display !== 'none') {
+                    updateGrandTotal();
+                }
+            });
         </script>
 
         <!-- Shipping Scripts -->
@@ -657,7 +675,7 @@ Cart
                 }
             }
 
-            function applyShipping(){
+            function applyShipping() {
                 if (!requiredShippingFieldsFilled()) {
                     alert("Please fill in your contact details and delivery address before selecting a shipping method.");
                     document.getElementById("shipping_method").value = "";
@@ -683,10 +701,16 @@ Cart
                     const shippingFX = parseFloat(data.shipping.amount_fx);
                     const cartTotalNGN = parseFloat("{{ total_ngn }}");
                     const cartTotalFX = parseFloat("{{ total_fx }}");
-                    const grandTotalNGN = cartTotalNGN + shippingNGN;
-                    const grandTotalFX = cartTotalFX + shippingFX;
+                    
+                    // ✅ Get discounts from the page context
+                    const voucherDiscount = parseFloat("{{ voucher_discount|default:'0' }}") || 0;
+                    const flashSaleDiscount = parseFloat("{{ flash_sale_discount|default:'0' }}") || 0;
+                    
+                    // ✅ Calculate grand total WITH discounts
+                    const grandTotalNGN = cartTotalNGN - voucherDiscount - flashSaleDiscount + shippingNGN;
+                    const grandTotalFX = cartTotalFX - voucherDiscount - flashSaleDiscount + shippingFX;
 
-                    function format(amount){
+                    function format(amount) {
                         if(currency === "NGN") return "₦" + amount.toLocaleString();
                         if(currency === "GHS") return "₵" + amount.toLocaleString();
                         if(currency === "USD") return "$" + amount.toLocaleString();
@@ -733,7 +757,7 @@ Cart
                 }
             });
 
-            document.getElementById("payBtn").addEventListener("click", function(){
+            document.getElementById("payBtn").addEventListener("click", function() {
                 const termsCheckbox = document.getElementById("termsCheckbox");
                 if (!termsCheckbox.checked) {
                     termsCheckbox.classList.add("is-invalid");
