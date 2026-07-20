@@ -64,8 +64,6 @@ def init_payment(request):
     if not email:
         return JsonResponse({"status": False, "message": "Email required"}, status=400)
 
-
-    
     checkout_data = {
         'phonenumber': request.POST.get('phonenumber'),
         'firstName': request.POST.get('firstName'),
@@ -83,8 +81,6 @@ def init_payment(request):
     
     request.session['checkout_data'] = checkout_data
 
-    
-
     # 🔹 Calculate totals SERVER-SIDE
     cart = Cart.objects.get(cart_id=_cart_id(request))
     cart_items = CartItem.objects.filter(cart=cart, active=True)
@@ -93,23 +89,37 @@ def init_payment(request):
     for item in cart_items:
         cart_total += Decimal(item.product.price * item.quantity)
 
-    # shipping_cost = Decimal(shipping.get("amount", 0))
     shipping_cost = Decimal(shipping.get("amount_ngn", 0))  # NGN
 
-    grand_total = cart_total + shipping_cost
-    amount_kobo = int(grand_total * Decimal('100'))  # convert to kobo
+    # ✅ Apply voucher discount if present
+    voucher_discount = Decimal('0.00')
+    voucher_code = request.session.get('voucher_code')
+    if voucher_code:
+        try:
+            from lacesstore.models import Voucher
+            voucher = Voucher.objects.get(code=voucher_code, active=True)
+            voucher_discount = voucher.apply_discount(cart_total)
+            print(f"✅ Voucher discount applied: ₦{voucher_discount}")
+        except Voucher.DoesNotExist:
+            print("⚠️ Voucher not found, skipping discount")
+            # Clear invalid voucher
+            request.session.pop('voucher_code', None)
+            request.session.pop('voucher_discount', None)
 
+    # ✅ Calculate grand total with discount
+    grand_total = cart_total - voucher_discount + shipping_cost
+    amount_kobo = int(grand_total * Decimal('100'))  # convert to kobo
 
     # 🔹 DEBUG
     print("\n========== PAYSTACK INIT DEBUG ==========")
     print("CART TOTAL (NGN):", cart_total)
+    print("VOUCHER DISCOUNT (NGN):", voucher_discount)
     print("SHIPPING COST (NGN):", shipping_cost)
     print("GRAND TOTAL (NGN):", grand_total)
     print("PAYSTACK AMOUNT (KOBO):", amount_kobo)
     print("ACTIVE CURRENCY (UI):", currency)
     print("SHIPPING METHOD:", shipping.get("method"))
     print("========================================\n")
-
 
     # 🔹 Init Paystack
     headers = {
@@ -133,13 +143,6 @@ def init_payment(request):
         json=data
     ).json()
 
-    # if not response.get("status"):
-    #     return JsonResponse({
-    #         "status": False,
-    #         "message": "Paystack init failed",
-    #         "paystack": response
-    #     }, status=400)
-    # 🔥 DEBUG: Print the FULL response
     print("=" * 50)
     print("PAYSTACK RESPONSE:")
     print(response)
@@ -149,7 +152,7 @@ def init_payment(request):
         return JsonResponse({
             "status": False,
             "message": response.get("message", "Paystack init failed"),
-            "paystack": response  # Include full response for debugging
+            "paystack": response
         }, status=400)
 
     # 🔹 Save transaction locally
