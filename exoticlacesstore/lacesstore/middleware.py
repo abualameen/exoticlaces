@@ -1,35 +1,102 @@
 # lacesstore/middleware.py
 from django.utils.timezone import now
-from django.contrib.sessions.models import Session
-from .models import Visitor, DailyVisitorStats
-from django.contrib.auth.models import User
+from .models import Visitor
 import re
 
-# Common bot user agents
+# Comprehensive bot patterns
 BOT_PATTERNS = [
+    # Search engines
+    r'googlebot',
+    r'bingbot',
+    r'slurp',
+    r'duckduckbot',
+    r'baiduspider',
+    r'yandexbot',
+    r'sogou',
+    r'exabot',
+    r'facebot',
+    r'facebookexternalhit',
+    r'twitterbot',
+    r'linkedinbot',
+    r'pinterestbot',
+    r'slackbot',
+    r'discordbot',
+    r'telegrambot',
+    r'whatsapp',
+    
+    # Generic bots
     r'bot',
     r'crawler',
     r'spider',
-    r'googlebot',
-    r'facebookexternalhit',
-    r'facebot',
-    r'twitterbot',
-    r'linkedinbot',
-    r'Slackbot',
-    r'Pingdom',
-    r'UptimeRobot',
-    r'StatusCake',
-    r'NewRelic',
-    r'Datadog',
+    r'scraper',
+    r'curl',
+    r'wget',
+    r'python-requests',
+    r'http-client',
+    r'java/',
+    r'okhttp',
+    r'go-http-client',
+    r'headless',
+    r'phantomjs',
+    r'selenium',
+    r'puppeteer',
+    
+    # Monitoring services
+    r'pingdom',
+    r'uptimerobot',
+    r'statuscake',
+    r'newrelic',
+    r'datadog',
+    r'grafana',
+    r'prometheus',
+    
+    # Cloud providers
+    r'amazonaws',
+    r'cloudflare',
+    r'googlecloud',
+    r'azure',
+    r'digitalocean',
+    
+    # Other
+    r'feedfetcher',
+    r'pulse',
+    r'subscriptions',
+    r'readability',
+    r'instapaper',
+    r'pocket',
 ]
 
-def is_bot(user_agent):
-    """Check if the user agent belongs to a bot/crawler"""
+# Known bot IP ranges (add as needed)
+BOT_IP_PATTERNS = [
+    r'^66\.249\.',    # Googlebot
+    r'^157\.55\.',    # Bing
+    r'^40\.77\.',     # Bing
+    r'^207\.46\.',    # Bing
+    r'^52\.\d+\.\d+\.\d+',  # AWS
+    r'^54\.\d+\.\d+\.\d+',  # AWS
+    r'^35\.\d+\.\d+\.\d+',  # Google Cloud
+    r'^34\.\d+\.\d+\.\d+',  # Google Cloud
+]
+
+
+def is_bot(user_agent, ip=None):
+    """Check if the request is from a bot"""
+    
+    # Check user agent
     if not user_agent:
         return True  # No user agent = likely a bot
+    
+    user_agent_lower = user_agent.lower()
     for pattern in BOT_PATTERNS:
-        if re.search(pattern, user_agent, re.IGNORECASE):
+        if re.search(pattern, user_agent_lower):
             return True
+    
+    # Check IP if provided
+    if ip:
+        for pattern in BOT_IP_PATTERNS:
+            if re.search(pattern, ip):
+                return True
+    
     return False
 
 
@@ -39,10 +106,8 @@ class VisitorTrackingMiddleware:
 
     def __call__(self, request):
         if not request.path.startswith('/admin') and not request.path.startswith('/static'):
-            # Track visitor (with bot filtering)
             self.track_visitor(request)
             
-            # Send PageView to Facebook CAPI with event_id
             try:
                 from .facebook_capi import send_facebook_event
                 import uuid
@@ -63,9 +128,11 @@ class VisitorTrackingMiddleware:
         return response
 
     def track_visitor(self, request):
-        # Skip bots
         user_agent = request.META.get('HTTP_USER_AGENT', '')
-        if is_bot(user_agent):
+        ip = self.get_client_ip(request)
+        
+        # ✅ Enhanced bot detection
+        if is_bot(user_agent, ip):
             return
         
         # Get or create session
@@ -73,9 +140,6 @@ class VisitorTrackingMiddleware:
             request.session.create()
         
         session_key = request.session.session_key
-        
-        # Get visitor information
-        ip = self.get_client_ip(request)
         referer = request.META.get('HTTP_REFERER', '')
         
         # Get or create visitor
@@ -88,25 +152,21 @@ class VisitorTrackingMiddleware:
             }
         )
         
-        # Update visitor
         if not created:
             visitor.visit_count += 1
             visitor.last_visit = now()
             visitor.save()
         else:
-            # Update first visit with more info
             visitor.ip_address = ip
             visitor.user_agent = user_agent
             visitor.referer = referer
             visitor.save()
         
-        # Link user if authenticated
         if request.user.is_authenticated:
             visitor.user = request.user
             visitor.save()
     
     def get_client_ip(self, request):
-        """Get client IP address from request"""
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
         if x_forwarded_for:
             ip = x_forwarded_for.split(',')[0]
