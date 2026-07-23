@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.db import models
 from decimal import Decimal
 from .models import Auction, AuctionBid, AuctionDeposit, AuctionPayment
+from exoticlacesstore.utils.currency import get_symbol
 
 
 
@@ -80,7 +81,7 @@ def auction_detail(request, auction_id):
         'deposit_optional': auction.security_deposit > 0,
         # ✅ Currency support
         'currency': active_currency,
-        'currency_symbol': currency_data.get('currency_symbol', '₦'),
+        'currency_symbol': get_symbol(active_currency, '₦'),
         'time_remaining': (auction.end_time - timezone.now()).total_seconds(),
     }
     return render(request, 'kwantacious/auction_detail.html', context)
