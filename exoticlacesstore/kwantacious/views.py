@@ -32,7 +32,6 @@ def auction_list(request):
         'active_auctions': active_auctions,
         'upcoming_auctions': upcoming_auctions,
         'ended_auctions': ended_auctions,
-        'now': timezone.now(),
     }
     return render(request, 'kwantacious/auction_list.html', context)
 
