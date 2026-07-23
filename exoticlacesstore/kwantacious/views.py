@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.db import models
 from decimal import Decimal
 from .models import Auction, AuctionBid, AuctionDeposit, AuctionPayment
+from django.utils import timezone
 
 
 def auction_list(request):
@@ -31,6 +32,7 @@ def auction_list(request):
         'active_auctions': active_auctions,
         'upcoming_auctions': upcoming_auctions,
         'ended_auctions': ended_auctions,
+        'now': timezone.now(),
     }
     return render(request, 'kwantacious/auction_list.html', context)
 
