@@ -120,7 +120,7 @@ def place_deposit(request, auction_id):
         'currency': active_currency,  # ✅ Add this
     })
 
-
+# kwantacious/views.py
 @login_required
 def place_bid(request, auction_id):
     """Place a bid - COMPLETELY FREE, no payment required"""
@@ -128,17 +128,10 @@ def place_bid(request, auction_id):
     user = request.user
     
     if not auction.is_active():
-        return JsonResponse({'success': False, 'message': 'Auction is not active.'}, status=400)
-    
-    # ✅ Free bidding - no payment required to bid
-    # Deposit is optional and only required if the admin has set it
-    if auction.security_deposit > 0:
-        has_deposit = AuctionDeposit.objects.filter(auction=auction, user=user, status='held').exists()
-        if not has_deposit:
-            return JsonResponse({
-                'success': False, 
-                'message': f'You can bid without a deposit, but placing a refundable deposit of ₦{auction.security_deposit:,.2f} helps show you are serious. You get it back if you lose!'
-            }, status=400)
+        return JsonResponse({
+            'success': False, 
+            'message': 'Auction is not active.'
+        }, status=400)
     
     if request.method == 'POST':
         amount = Decimal(request.POST.get('amount', 0))
@@ -157,7 +150,7 @@ def place_bid(request, auction_id):
                 'message': f'Minimum bid increment is ₦{auction.minimum_bid_increment:,.2f}'
             }, status=400)
         
-        # ✅ Create bid - FREE, no payment
+        # Create bid
         bid = AuctionBid.objects.create(
             auction=auction,
             user=user,
@@ -171,18 +164,51 @@ def place_bid(request, auction_id):
         auction.save()
         
         # Auto-extend
+        extended = False
         if auction.auto_extend:
             time_left = (auction.end_time - timezone.now()).total_seconds() / 60
             if time_left < auction.auto_extend_minutes:
                 auction.end_time = timezone.now() + timezone.timedelta(minutes=auction.auto_extend_minutes)
                 auction.save()
+                extended = True
+        
+        # ✅ Get updated top bids for display
+        top_bids = AuctionBid.objects.filter(auction=auction).order_by('-amount')[:10]
+        user_bids = AuctionBid.objects.filter(auction=auction, user=user).order_by('-amount')
+        
+        # ✅ Prepare bid history for rendering
+        bid_history = []
+        for b in top_bids:
+            bid_history.append({
+                'username': b.user.username,
+                'amount': str(b.amount),
+                'is_winner': b.user == auction.current_winner,
+                'is_user': b.user == user,
+                'placed_at': b.placed_at.strftime('%H:%M:%S %d/%m/%Y'),
+            })
+        
+        # ✅ Check if auction is fully funded (if reserve met)
+        reserve_met = auction.reserve_met()
         
         return JsonResponse({
             'success': True,
-            'message': f'Bid of ₦{amount:,.2f} placed successfully!',
+            'message': f'✅ Bid of ₦{amount:,.2f} placed successfully!',
             'current_bid': str(amount),
             'current_winner': user.username,
+            'current_winner_avatar': user.email[:1].upper() if user.email else 'U',
             'time_remaining': (auction.end_time - timezone.now()).total_seconds(),
+            'bid_count': auction.get_bid_count(),
+            'is_highest_bidder': True,
+            'extended': extended,
+            'reserve_met': reserve_met,
+            'user_bids': [
+                {'amount': str(b.amount), 'placed_at': b.placed_at.strftime('%H:%M:%S')}
+                for b in user_bids[:5]
+            ],
+            'top_bids': bid_history,
         })
     
-    return JsonResponse({'success': False, 'message': 'Invalid request method.'}, status=400)
+    return JsonResponse({
+        'success': False, 
+        'message': 'Invalid request method.'
+    }, status=400)
