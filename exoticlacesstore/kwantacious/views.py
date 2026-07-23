@@ -8,7 +8,7 @@ from django.db import models
 from decimal import Decimal
 from .models import Auction, AuctionBid, AuctionDeposit, AuctionPayment
 from exoticlacesstore.utils.currency import get_symbol
-
+from django.urls import reverse
 
 
 def auction_list(request):
@@ -36,38 +36,48 @@ def auction_list(request):
         'active_auctions': active_auctions,
         'upcoming_auctions': upcoming_auctions,
         'ended_auctions': ended_auctions,
-        'currency': active_currency,  # ✅ Add this
+        'currency': active_currency,
     }
     return render(request, 'kwantacious/auction_list.html', context)
 
 
-# kwantacious/views.py
 def auction_detail(request, auction_id):
-    """View auction details - FREE for everyone"""
+    """View auction details - FREE for everyone to view, but need to login to bid"""
     auction = get_object_or_404(Auction, id=auction_id)
     user = request.user
     
     # ✅ Get user's currency preference
     active_currency = request.session.get('currency', 'NGN')
     
-    # Get user's deposit if any
+    # ✅ Check if auction exists and is active
+    if not auction.is_active():
+        messages.warning(request, "This auction is no longer active.")
+        return redirect('kwantacious:auction_list')
+    
+    # ✅ Handle user-specific data safely for guests
     user_deposit = None
     has_deposit = False
-    if user.is_authenticated:
+    user_bids = []
+    has_bid = False
+    is_winner = False
+    user_is_authenticated = user.is_authenticated
+    
+    if user_is_authenticated:
+        # Get user's deposit if any
         user_deposit = AuctionDeposit.objects.filter(auction=auction, user=user).first()
         has_deposit = user_deposit is not None
+        
+        # Get user's bids
+        user_bids = AuctionBid.objects.filter(auction=auction, user=user).order_by('-amount')
+        has_bid = user_bids.exists()
+        
+        # Check if user is winner
+        is_winner = auction.current_winner == user if auction.current_winner else False
     
-    # Get user's bids
-    user_bids = AuctionBid.objects.filter(auction=auction, user=user).order_by('-amount')
-    has_bid = user_bids.exists() if user.is_authenticated else False
-    
-    # Get top bids
+    # Get top bids (always available)
     top_bids = AuctionBid.objects.filter(auction=auction).order_by('-amount')[:10]
     
     # ✅ Format amounts with currency
-    from currency.context_processors import currency_context
-    currency_data = currency_context(request)
-    
     context = {
         'auction': auction,
         'has_deposit': has_deposit,
@@ -75,7 +85,7 @@ def auction_detail(request, auction_id):
         'user_bids': user_bids,
         'top_bids': top_bids,
         'reserve_met': auction.reserve_met(),
-        'is_winner': auction.current_winner == user if user.is_authenticated else False,
+        'is_winner': is_winner,
         'bid_count': auction.get_bid_count(),
         'security_deposit': auction.security_deposit,
         'deposit_optional': auction.security_deposit > 0,
@@ -83,6 +93,8 @@ def auction_detail(request, auction_id):
         'currency': active_currency,
         'currency_symbol': get_symbol(active_currency),
         'time_remaining': (auction.end_time - timezone.now()).total_seconds(),
+        # ✅ User authentication status
+        'user_is_authenticated': user_is_authenticated,
     }
     return render(request, 'kwantacious/auction_detail.html', context)
 
@@ -123,22 +135,13 @@ def place_deposit(request, auction_id):
     
     return render(request, 'kwantacious/place_deposit.html', {
         'auction': auction,
-        'currency': active_currency,  # ✅ Add this
+        'currency': active_currency,
     })
-
-
-
-
-
-
-
-
-
 
 
 @login_required
 def place_bid(request, auction_id):
-    """Place a bid - COMPLETELY FREE, no payment required"""
+    """Place a bid - Only for authenticated users"""
     auction = get_object_or_404(Auction, id=auction_id)
     user = request.user
     
@@ -161,64 +164,71 @@ def place_bid(request, auction_id):
             return redirect('kwantacious:auction_detail', auction_id=auction.id)
     
     if request.method == 'POST':
-        amount = Decimal(request.POST.get('amount', 0))
-        current_max = auction.bids.aggregate(max_bid=models.Max('amount'))['max_bid'] or auction.starting_price
-        
-        # Validate bid
-        if amount <= current_max:
+        try:
+            amount = Decimal(request.POST.get('amount', 0))
+            current_max = auction.bids.aggregate(max_bid=models.Max('amount'))['max_bid'] or auction.starting_price
+            
+            # Validate bid
+            if amount <= current_max:
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': False, 
+                        'message': f'Bid must be higher than current bid of ₦{current_max:,.2f}'
+                    }, status=400)
+                messages.error(request, f"Bid must be higher than current bid of ₦{current_max:,.2f}")
+                return redirect('kwantacious:auction_detail', auction_id=auction.id)
+            
+            if amount - current_max < auction.minimum_bid_increment:
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': False, 
+                        'message': f'Minimum bid increment is ₦{auction.minimum_bid_increment:,.2f}'
+                    }, status=400)
+                messages.error(request, f"Minimum bid increment is ₦{auction.minimum_bid_increment:,.2f}")
+                return redirect('kwantacious:auction_detail', auction_id=auction.id)
+            
+            # ✅ Create bid
+            bid = AuctionBid.objects.create(
+                auction=auction,
+                user=user,
+                amount=amount
+            )
+            
+            # Update auction
+            auction.current_bid = amount
+            auction.current_winner = user
+            auction.bid_count += 1
+            auction.save()
+            
+            # Auto-extend
+            extend_message = ""
+            if auction.auto_extend:
+                time_left = (auction.end_time - timezone.now()).total_seconds() / 60
+                if time_left < auction.auto_extend_minutes:
+                    auction.end_time = timezone.now() + timezone.timedelta(minutes=auction.auto_extend_minutes)
+                    auction.save()
+                    extend_message = " Auction extended by 5 minutes!"
+            
+            # ✅ For AJAX requests, return JSON with success and redirect URL
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({
-                    'success': False, 
-                    'message': f'Bid must be higher than current bid of ₦{current_max:,.2f}'
-                }, status=400)
-            messages.error(request, f"Bid must be higher than current bid of ₦{current_max:,.2f}")
+                    'success': True,
+                    'message': f'✅ Bid of ₦{amount:,.2f} placed successfully!{extend_message}',
+                    'current_bid': str(amount),
+                    'current_winner': user.username,
+                    'redirect_url': reverse('kwantacious:auction_detail', args=[auction.id]),
+                    'time_remaining': (auction.end_time - timezone.now()).total_seconds(),
+                })
+            
+            # ✅ For regular form submission, redirect to detail page
+            messages.success(request, f"✅ Bid of ₦{amount:,.2f} placed successfully!{extend_message}")
             return redirect('kwantacious:auction_detail', auction_id=auction.id)
-        
-        if amount - current_max < auction.minimum_bid_increment:
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'success': False, 
-                    'message': f'Minimum bid increment is ₦{auction.minimum_bid_increment:,.2f}'
-                }, status=400)
-            messages.error(request, f"Minimum bid increment is ₦{auction.minimum_bid_increment:,.2f}")
+            
+        except (ValueError, TypeError, Decimal.InvalidOperation):
+            messages.error(request, "Please enter a valid bid amount.")
             return redirect('kwantacious:auction_detail', auction_id=auction.id)
-        
-        # ✅ Create bid
-        bid = AuctionBid.objects.create(
-            auction=auction,
-            user=user,
-            amount=amount
-        )
-        
-        # Update auction
-        auction.current_bid = amount
-        auction.current_winner = user
-        auction.bid_count += 1
-        auction.save()
-        
-        # Auto-extend
-        if auction.auto_extend:
-            time_left = (auction.end_time - timezone.now()).total_seconds() / 60
-            if time_left < auction.auto_extend_minutes:
-                auction.end_time = timezone.now() + timezone.timedelta(minutes=auction.auto_extend_minutes)
-                auction.save()
-                extend_message = " Auction extended by 5 minutes!"
-            else:
-                extend_message = ""
-        
-        # ✅ For AJAX requests, return JSON with success and redirect URL
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({
-                'success': True,
-                'message': f'✅ Bid of ₦{amount:,.2f} placed successfully!{extend_message}',
-                'current_bid': str(amount),
-                'current_winner': user.username,
-                'redirect_url': reverse('kwantacious:auction_detail', args=[auction.id]),
-                'time_remaining': (auction.end_time - timezone.now()).total_seconds(),
-            })
-        
-        # ✅ For regular form submission, redirect to detail page
-        messages.success(request, f"✅ Bid of ₦{amount:,.2f} placed successfully!{extend_message}")
-        return redirect('kwantacious:auction_detail', auction_id=auction.id)
+        except Exception as e:
+            messages.error(request, f"An error occurred: {str(e)}")
+            return redirect('kwantacious:auction_detail', auction_id=auction.id)
     
     return JsonResponse({'success': False, 'message': 'Invalid request method.'}, status=400)
