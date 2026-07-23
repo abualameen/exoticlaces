@@ -1,186 +1,213 @@
-<!-- kwantacious/templates/kwantacious/auction_detail.html -->
 {% extends 'base.html' %}
 {% load static %}
+{% load currency_filters %}
 
 {% block title %}{{ auction.title }} - Kwantacious Auction{% endblock %}
 
 {% block content %}
 <div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'kwantacious:auction_list' %}">Auctions</a></li>
+            <li class="breadcrumb-item active">{{ auction.title }}</li>
+        </ol>
+    </nav>
+
     <div class="row">
-        <!-- Product Image & Info -->
-        <div class="col-md-6">
-            <img src="{{ auction.product.image.url }}" class="img-fluid rounded shadow" alt="{{ auction.product.name }}">
-            
-            {% if auction.security_deposit > 0 %}
-            <div class="alert alert-info mt-3">
-                <i class="fas fa-info-circle"></i> 
-                <strong>Optional Deposit:</strong> ₦{{ auction.security_deposit|floatformat:2 }} (100% refundable if you don't win)
-            </div>
-            {% endif %}
-            
-            <div class="mt-3">
-                <h4>{{ auction.product.name }}</h4>
-                <p class="text-muted">{{ auction.product.description }}</p>
-                <p><strong>Starting Price:</strong> ₦{{ auction.starting_price|floatformat:2 }}</p>
-                {% if auction.reserve_price %}
-                <p><strong>Reserve Price:</strong> ₦{{ auction.reserve_price|floatformat:2 }}</p>
-                {% endif %}
+        <!-- Product Image -->
+        <div class="col-md-5">
+            <div class="card">
+                <img src="{{ auction.product.image.url }}" class="card-img-top" alt="{{ auction.product.name }}">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ auction.product.name }}</h5>
+                    <p class="text-muted">{{ auction.product.description|truncatechars:100 }}</p>
+                </div>
             </div>
         </div>
-        
-        <!-- Auction Bidding -->
-        <div class="col-md-6">
-            <div class="card shadow">
+
+        <!-- Auction Details -->
+        <div class="col-md-7">
+            <div class="card">
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0"><i class="fas fa-gavel"></i> {{ auction.title }}</h4>
                 </div>
                 <div class="card-body">
-                    <!-- Timer -->
-                    <div class="text-center mb-3">
-                        <div class="row">
-                            <div class="col-6">
-                                <p class="mb-0 text-muted">Time Remaining</p>
-                                <h3 id="timer-display" class="text-primary">
-                                    <i class="fas fa-clock"></i> 
-                                    <span id="timer-text">Loading...</span>
-                                </h3>
-                            </div>
-                            <div class="col-6">
-                                <p class="mb-0 text-muted">Current Bid</p>
-                                <h3 class="text-success">
-                                    ₦<span id="current-bid-display">{{ auction.current_bid|floatformat:2 }}</span>
+                    <!-- Description -->
+                    <p>{{ auction.description }}</p>
+
+                    <!-- Auction Stats -->
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <div class="border rounded p-2 text-center">
+                                <small class="text-muted">Current Bid</small>
+                                <h3 class="text-success mb-0">
+                                    {{ auction.current_bid|money:currency }}
                                 </h3>
                             </div>
                         </div>
+                        <div class="col-6">
+                            <div class="border rounded p-2 text-center">
+                                <small class="text-muted">Time Remaining</small>
+                                <h4 class="text-danger mb-0" id="timer">Loading...</h4>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <!-- Current Winner -->
-                    <div class="alert alert-info text-center">
-                        <strong>Current Leader:</strong> 
-                        {% if auction.current_winner %}
-                            <span id="current-winner-display">{{ auction.current_winner.username }}</span>
-                        {% else %}
-                            <span id="current-winner-display">No bids yet</span>
-                        {% endif %}
-                        <br>
-                        <small class="text-muted">{{ auction.get_bid_count }} bid(s) placed</small>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <small class="text-muted">Starting Price</small>
+                            <p><strong>{{ auction.starting_price|money:currency }}</strong></p>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Total Bids</small>
+                            <p><strong>{{ auction.get_bid_count }}</strong></p>
+                        </div>
                     </div>
-                    
+
+                    <!-- Reserve Price Info -->
+                    {% if auction.reserve_price %}
+                    <div class="alert alert-info">
+                        <small>
+                            <i class="fas fa-info-circle"></i> 
+                            Reserve Price: {{ auction.reserve_price|money:currency }}
+                            {% if auction.reserve_met %}
+                                <span class="badge badge-success">✅ Met</span>
+                            {% else %}
+                                <span class="badge badge-warning">⚠️ Not Met</span>
+                            {% endif %}
+                        </small>
+                    </div>
+                    {% endif %}
+
+                    <!-- Security Deposit Info -->
+                    {% if auction.security_deposit > 0 %}
+                    <div class="alert alert-secondary">
+                        <small>
+                            <i class="fas fa-hand-holding-heart"></i> 
+                            Refundable Deposit: {{ auction.security_deposit|money:currency }}
+                            <span class="text-muted">(100% refundable if you don't win)</span>
+                        </small>
+                    </div>
+                    {% endif %}
+
                     <!-- Bid Form -->
-                    {% if user.is_authenticated and auction.is_active %}
-                        <form id="bid-form" method="POST" action="{% url 'kwantacious:place_bid' auction.id %}">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="bid-amount">Your Bid (₦)</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">₦</span>
-                                    </div>
-                                    <input type="number" 
-                                           id="bid-amount" 
-                                           name="amount" 
-                                           class="form-control form-control-lg"
-                                           step="{{ auction.minimum_bid_increment }}"
-                                           min="{{ auction.current_bid|add:auction.minimum_bid_increment|default:auction.starting_price }}"
-                                           placeholder="Enter your bid">
-                                    <div class="input-group-append">
-                                        <button type="submit" class="btn btn-success btn-lg" id="place-bid-btn">
-                                            <i class="fas fa-gavel"></i> Place Bid
-                                        </button>
-                                    </div>
-                                </div>
-                                <small class="text-muted">
-                                    Minimum increment: ₦{{ auction.minimum_bid_increment|floatformat:2 }}
-                                    {% if auction.current_bid %}
-                                        <br>Current bid: ₦{{ auction.current_bid|floatformat:2 }}
-                                    {% endif %}
-                                </small>
+                    {% if auction.is_active %}
+                        {% if user.is_authenticated %}
+                            <!-- Deposit Required Message -->
+                            {% if auction.security_deposit > 0 and not has_deposit %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                To place a bid, please place a refundable deposit of 
+                                <strong>{{ auction.security_deposit|money:currency }}</strong>.
+                                <a href="{% url 'kwantacious:place_deposit' auction.id %}" class="btn btn-sm btn-primary ml-2">
+                                    Place Deposit
+                                </a>
                             </div>
-                        </form>
-                        
-                        <!-- Message display -->
-                        <div id="bid-message" class="mt-2" style="display:none;"></div>
-                        
-                        <!-- Optional Deposit Notice -->
-                        {% if auction.security_deposit > 0 %}
-                            <div class="mt-2">
-                                <small class="text-muted">
-                                    <i class="fas fa-info-circle"></i> 
-                                    <a href="{% url 'kwantacious:place_deposit' auction.id %}" class="text-primary">
-                                        Place refundable deposit (optional)
-                                    </a>
-                                </small>
+                            {% else %}
+                                <!-- Bid Form -->
+                                <form method="post" action="{% url 'kwantacious:place_bid' auction.id %}" id="bid-form">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="bid-amount">Your Bid ({{ currency }})</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">{{ currency_symbol }}</span>
+                                            </div>
+                                            <input type="number" 
+                                                   name="amount" 
+                                                   id="bid-amount" 
+                                                   class="form-control form-control-lg"
+                                                   step="{{ auction.minimum_bid_increment }}"
+                                                   min="{{ auction.current_bid|add:auction.minimum_bid_increment }}"
+                                                   placeholder="Enter your bid amount"
+                                                   required>
+                                        </div>
+                                        <small class="text-muted">
+                                            Minimum bid: <strong>{{ auction.current_bid|add:auction.minimum_bid_increment|money:currency }}</strong>
+                                            <br>
+                                            Bid increment: {{ auction.minimum_bid_increment|money:currency }}
+                                        </small>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                        <i class="fas fa-gavel"></i> Place Bid
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% else %}
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                Please <a href="{% url 'signin' %}">sign in</a> to place a bid.
                             </div>
                         {% endif %}
-                        
-                    {% elif auction.is_active %}
-                        <div class="alert alert-warning">
-                            <i class="fas fa-sign-in-alt"></i> Please <a href="{% url 'signin' %}">sign in</a> to bid.
-                        </div>
                     {% else %}
-                        <div class="alert alert-secondary">
-                            This auction has ended.
+                        <div class="alert {% if auction.status == 'ended' %}alert-success{% else %}alert-secondary{% endif %}">
+                            {% if auction.status == 'ended' %}
+                                <i class="fas fa-check-circle"></i> This auction has ended.
+                                {% if is_winner %}
+                                    <h5 class="mt-2">🎉 Congratulations! You won this auction!</h5>
+                                    <p>Winning bid: <strong>{{ auction.winning_bid|money:currency }}</strong></p>
+                                {% endif %}
+                            {% else %}
+                                This auction is not currently active.
+                            {% endif %}
                         </div>
                     {% endif %}
                 </div>
-                
-                <!-- Bid History -->
-                <div class="card-footer" id="bid-history">
-                    <h6 class="mb-2"><i class="fas fa-list"></i> Bid History</h6>
-                    <div id="bid-list">
-                        {% if top_bids %}
-                            <div class="table-responsive">
-                                <table class="table table-sm table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Bidder</th>
-                                            <th>Amount</th>
-                                            <th>Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="bid-table-body">
-                                        {% for bid in top_bids %}
-                                            <tr class="{% if bid.user == auction.current_winner %}table-success{% endif %}{% if bid.user == user %}table-info{% endif %}">
-                                                <td>
-                                                    {% if bid.user == auction.current_winner %}
-                                                        <i class="fas fa-crown text-warning"></i>
-                                                    {% endif %}
-                                                    {{ bid.user.username }}
-                                                    {% if bid.user == user %}
-                                                        <span class="badge badge-primary">You</span>
-                                                    {% endif %}
-                                                </td>
-                                                <td>₦{{ bid.amount|floatformat:2 }}</td>
-                                                <td>{{ bid.placed_at|date:"H:i:s" }}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        {% else %}
-                            <p class="text-muted">No bids yet. Be the first!</p>
-                        {% endif %}
-                    </div>
+            </div>
+
+            <!-- Top Bids -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Top Bids</h5>
+                </div>
+                <div class="card-body">
+                    {% if top_bids %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>User</th>
+                                        <th>Amount</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for bid in top_bids %}
+                                    <tr {% if bid.user == user %}class="table-success"{% endif %}>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>
+                                            {{ bid.user.username }}
+                                            {% if bid.user == user %}<span class="badge badge-success">You</span>{% endif %}
+                                        </td>
+                                        <td><strong>{{ bid.amount|money:currency }}</strong></td>
+                                        <td>{{ bid.placed_at|timesince }} ago</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No bids yet. Be the first!</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- JavaScript for Live Updates -->
 <script>
     // Timer countdown
     function updateTimer() {
-        const timerText = document.getElementById('timer-text');
-        if (!timerText) return;
+        const timerElement = document.getElementById('timer');
+        if (!timerElement) return;
         
         const endTime = new Date('{{ auction.end_time|date:"Y-m-d H:i:s" }}').getTime();
         const now = new Date().getTime();
         const diff = endTime - now;
         
         if (diff <= 0) {
-            timerText.textContent = '⏰ Ended!';
-            document.getElementById('place-bid-btn').disabled = true;
+            timerElement.textContent = 'Auction Ended';
             return;
         }
         
@@ -188,112 +215,54 @@
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
         
-        timerText.textContent = `${hours}h ${minutes}m ${seconds}s`;
+        timerElement.textContent = `${hours}h ${minutes}m ${seconds}s`;
     }
     
+    // Update timer every second
     updateTimer();
     setInterval(updateTimer, 1000);
     
-    // AJAX Bid Submission
+    // Auto-refresh page when bid is placed via AJAX
     document.getElementById('bid-form')?.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const btn = document.getElementById('place-bid-btn');
-        const amount = document.getElementById('bid-amount').value;
-        const messageDiv = document.getElementById('bid-message');
         const formData = new FormData(this);
+        const amount = formData.get('amount');
         
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Placing...';
-        
-        fetch("{% url 'kwantacious:place_bid' auction.id %}", {
+        fetch(this.action, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': '{{ csrf_token }}',
                 'X-Requested-With': 'XMLHttpRequest',
             },
-            body: new URLSearchParams(formData),
+            body: new URLSearchParams({
+                amount: amount
+            })
         })
         .then(response => response.json())
         .then(data => {
-            messageDiv.style.display = 'block';
-            
             if (data.success) {
-                // ✅ Success - Update the page dynamically
-                messageDiv.className = 'alert alert-success';
-                messageDiv.innerHTML = `
-                    <i class="fas fa-check-circle"></i> ${data.message}
-                    <br>
-                    <small>Current bid: ₦${parseFloat(data.current_bid).toLocaleString()}</small>
-                `;
-                
-                // Update current bid display
-                document.getElementById('current-bid-display').textContent = parseFloat(data.current_bid).toLocaleString();
-                document.getElementById('current-winner-display').textContent = data.current_winner;
-                
-                // Update bid count
-                document.querySelector('.alert-info small').textContent = `${data.bid_count} bid(s) placed`;
-                
-                // Update bid history
-                const tableBody = document.getElementById('bid-table-body');
-                if (data.top_bids && tableBody) {
-                    let html = '';
-                    data.top_bids.forEach(bid => {
-                        const isWinner = bid.is_winner ? '<i class="fas fa-crown text-warning"></i>' : '';
-                        const isUser = bid.is_user ? '<span class="badge badge-primary">You</span>' : '';
-                        html += `
-                            <tr class="${bid.is_winner ? 'table-success' : ''}${bid.is_user ? 'table-info' : ''}">
-                                <td>${isWinner} ${bid.username} ${isUser}</td>
-                                <td>₦${parseFloat(bid.amount).toLocaleString()}</td>
-                                <td>${bid.placed_at}</td>
-                            </tr>
-                        `;
-                    });
-                    tableBody.innerHTML = html;
-                }
-                
-                // Update min bid amount
-                const currentBid = parseFloat(data.current_bid);
-                const increment = parseFloat('{{ auction.minimum_bid_increment }}');
-                const minBid = currentBid + increment;
-                document.getElementById('bid-amount').min = minBid;
-                document.getElementById('bid-amount').placeholder = `Min: ₦${minBid.toLocaleString()}`;
-                
-                // Clear the input
-                document.getElementById('bid-amount').value = '';
-                
-                // Auto-scroll to message
-                messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
+                // Show success message
+                alert(data.message);
+                // Reload page to show updated bid
+                location.reload();
             } else {
-                // ❌ Error
-                messageDiv.className = 'alert alert-danger';
-                messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.message}`;
+                alert(data.message);
             }
-            
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-gavel"></i> Place Bid';
         })
         .catch(error => {
-            messageDiv.style.display = 'block';
-            messageDiv.className = 'alert alert-danger';
-            messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> An error occurred. Please try again.`;
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-gavel"></i> Place Bid';
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
         });
     });
 </script>
 
 <style>
-    .table-success td {
-        background-color: #d4edda !important;
+    .input-group-text {
+        font-weight: bold;
     }
-    .table-info td {
-        background-color: #d1ecf1 !important;
-    }
-    #bid-history {
-        max-height: 300px;
-        overflow-y: auto;
+    #bid-amount {
+        font-size: 1.2rem;
     }
 </style>
 {% endblock %}
