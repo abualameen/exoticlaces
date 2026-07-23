@@ -5,95 +5,54 @@
 
 {% block content %}
 <div class="container py-4">
-    <!-- Header Section -->
-    <div class="row">
-        <div class="col-10 mx-auto my-2 text-center">
-            <h1 class="text-uppercase font-weight-bold">
-                <i class="fas fa-gavel text-warning"></i> Kwantacious
-            </h1>
-            <p class="lead">Bid on premium lace fabrics and win at amazing prices!</p>
-            <p class="text-muted">No entry fees. Just bid and win. <i class="fas fa-hand-holding-heart text-success"></i></p>
-        </div>
+    <div class="text-center mb-4">
+        <h1 class="display-4">
+            <i class="fas fa-gavel text-warning"></i> Kwantacious
+        </h1>
+        <p class="lead">Bid on premium lace fabrics and win at amazing prices!</p>
+        <p class="text-muted">No entry fees. Just bid and win. <i class="fas fa-hand-holding-heart text-success"></i></p>
     </div>
 
-    <!-- Active Auctions - Using Product Card Style -->
-    <div class="py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-10 mx-auto my-2 text-center">
-                    <h2 class="text-uppercase font-weight-bold">Live Auctions</h2>
-                </div>
-            </div>
-        </div>   
-    </div>
-
-    <div class="container">
-        <div class="row product-grid">
-            {% load currency_filters %}
+    <!-- Active Auctions -->
+    <h2 class="mb-3">Live Auctions</h2>
+    {% if active_auctions %}
+        <div class="row">
             {% for auction in active_auctions %}
-            
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="product-card">
-                    <div class="product-image-wrapper">
-                        <!-- ✅ AUCTION BADGE -->
-                        <span class="badge badge-warning flash-sale-badge" style="background: #ff6b00;">
-                            <i class="fas fa-gavel"></i> Auction
-                        </span>
-                        
-                        {% if auction.product.image %}
-                        <a href="{% url 'kwantacious:auction_detail' auction.id %}">
-                            <img src="{{ auction.product.image.url }}" class="product-image" alt="{{ auction.product.name }}" loading="lazy">
-                        </a>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="product-info">
-                        <p class="product-name">{{ auction.title }}</p>
-                        <p class="product-sku">{{ auction.product.name }}</p>
-                        
-                        <!-- ✅ Current Bid -->
-                        <div class="auction-bid-info">
-                            <p class="product-price" style="font-size: 0.9rem;">
-                                Current Bid: 
-                                <span class="text-success font-weight-bold">
-                                    {% if auction.current_bid > 0 %}
-                                        {{ auction.current_bid|money:currency }}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="{{ auction.product.image.url }}" class="card-img-top" alt="{{ auction.product.name }}" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ auction.title }}</h5>
+                            <p class="card-text text-muted">{{ auction.product.name }}</p>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Current Bid:</strong>
+                                    <span class="text-success">₦{{ auction.current_bid|floatformat:2 }}</span>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Bids:</strong> {{ auction.get_bid_count }}
+                                </div>
+                            </div>
+                            <p class="mt-2">
+                                <small class="text-muted">
+                                    <i class="far fa-clock"></i> 
+                                    {% if auction.end_time|timeuntil > "0" %}
+                                        Ends in {{ auction.end_time|timeuntil }}
                                     {% else %}
-                                        {{ auction.starting_price|money:currency }}
+                                        Ended
                                     {% endif %}
-                                </span>
+                                </small>
                             </p>
+                            <a href="{% url 'kwantacious:auction_detail' auction.id %}" class="btn btn-primary btn-block">
+                                <i class="fas fa-gavel"></i> Place Bid
+                            </a>
                         </div>
-                        
-                        <!-- ✅ Bid Count & Time -->
-                        <div class="auction-stats" style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #6c757d; margin-top: 4px;">
-                            <span><i class="fas fa-gavel"></i> {{ auction.get_bid_count }} bids</span>
-                            <span>
-                                <i class="far fa-clock"></i> 
-                                {% if auction.end_time|timeuntil > "0" %}
-                                    {{ auction.end_time|timeuntil }}
-                                {% else %}
-                                    Ended
-                                {% endif %}
-                            </span>
-                        </div>
-                        
-                        <!-- ✅ View Auction Button -->
-                        <a href="{% url 'kwantacious:auction_detail' auction.id %}" class="btn btn-primary btn-block mt-2">
-                            <i class="fas fa-gavel"></i> Place Bid
-                        </a>
                     </div>
                 </div>
-            </div>
-
-            {% empty %}
-            <div class="col-12">
-                <div class="alert alert-info text-center">
-                    <i class="fas fa-info-circle"></i> No active auctions at the moment. Check back soon!
-                </div>
-            </div>
             {% endfor %}
         </div>
-    </div>
+    {% else %}
+        <div class="alert alert-info">No active auctions at the moment. Check back soon!</div>
+    {% endif %}
 </div>
 {% endblock %}
