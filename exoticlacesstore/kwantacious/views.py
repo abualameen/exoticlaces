@@ -28,10 +28,14 @@ def auction_list(request):
         status='ended'
     ).select_related('product')[:10]
     
+    # ✅ Get currency from session like home view
+    active_currency = request.session.get("currency", "NGN")
+    
     context = {
         'active_auctions': active_auctions,
         'upcoming_auctions': upcoming_auctions,
         'ended_auctions': ended_auctions,
+        'currency': active_currency,  # ✅ Add this
     }
     return render(request, 'kwantacious/auction_list.html', context)
 
@@ -58,6 +62,9 @@ def auction_detail(request, auction_id):
     # ✅ Auction stats
     reserve_met = auction.reserve_met()
     
+    # ✅ Get currency from session like home view
+    active_currency = request.session.get("currency", "NGN")
+    
     context = {
         'auction': auction,
         'has_deposit': has_deposit,
@@ -68,8 +75,8 @@ def auction_detail(request, auction_id):
         'is_winner': auction.current_winner == user if user.is_authenticated else False,
         'bid_count': auction.get_bid_count(),
         'security_deposit': auction.security_deposit,
-        # ✅ Show if deposit is optional
         'deposit_optional': auction.security_deposit > 0,
+        'currency': active_currency,  # ✅ Add this
     }
     return render(request, 'kwantacious/auction_detail.html', context)
 
@@ -105,7 +112,13 @@ def place_deposit(request, auction_id):
         messages.success(request, f"Security deposit of ₦{auction.security_deposit:,.2f} placed! (100% refundable if you don't win)")
         return redirect('kwantacious:auction_detail', auction_id=auction.id)
     
-    return render(request, 'kwantacious/place_deposit.html', {'auction': auction})
+    # ✅ Get currency from session
+    active_currency = request.session.get("currency", "NGN")
+    
+    return render(request, 'kwantacious/place_deposit.html', {
+        'auction': auction,
+        'currency': active_currency,  # ✅ Add this
+    })
 
 
 @login_required
