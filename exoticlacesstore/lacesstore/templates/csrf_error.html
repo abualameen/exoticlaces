@@ -1,0 +1,52 @@
+<!-- lacesstore/templates/csrf_error.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Session Expired{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Session Expired</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Your session has expired or your browser cookies have been cleared.</p>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Why did this happen?</strong>
+                        <ul class="mt-2 mb-0">
+                            <li>You may have cleared your browser cookies</li>
+                            <li>Your session expired after inactivity</li>
+                            <li>You opened the page from an old session</li>
+                            <li>Browser privacy settings are blocking cookies</li>
+                        </ul>
+                    </div>
+                    
+                    <h6>What you can do:</h6>
+                    <ul>
+                        <li><i class="fas fa-sync-alt"></i> <strong>Refresh the page</strong> and try again</li>
+                        <li><i class="fas fa-cookie-bite"></i> <strong>Clear your browser cookies</strong> and reload</li>
+                        <li><i class="fas fa-window-restore"></i> <strong>Try a different browser</strong> or incognito mode</li>
+                        <li><i class="fas fa-sign-in-alt"></i> <strong>Log out and log back in</strong></li>
+                    </ul>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'home' %}" class="btn btn-primary">
+                            <i class="fas fa-home"></i> Return to Home
+                        </a>
+                        <button onclick="location.reload()" class="btn btn-secondary">
+                            <i class="fas fa-sync-alt"></i> Refresh Page
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
