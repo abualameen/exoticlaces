@@ -49,6 +49,8 @@ urlpatterns = [
     path('apply-voucher-ajax/', views.apply_voucher_ajax, name='apply_voucher_ajax'),
 
     path('remove-voucher-ajax/', views.remove_voucher_ajax, name='remove_voucher_ajax'),
+
+    path('resend-confirmation/', resend_confirmation, name='resend_confirmation'),
    
 
 

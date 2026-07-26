@@ -8,6 +8,26 @@
 <div class="container">
     <br>
     <h1 class="product_title text-center">Login or Create a New Account</h1>
+    
+    <!-- ✅ Display messages with proper styling -->
+    {% if messages %}
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                {% for message in messages %}
+                    <div class="alert 
+                        {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} 
+                        alert-dismissible fade show" 
+                        role="alert">
+                        {{ message|safe }}  {# ✅ Allow HTML in messages #}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+    
     <div class="row">
         <div class="col-12 col-sm-12 col-lg-6 text-center custom_div">
             <br>
@@ -28,12 +48,25 @@
                     <button type="submit" name="button" class="btn btn-secondary">Sign in</button>
                 </form>
                 <br>
-                 <!-- Add Forgot Password Link -->
+                <!-- Forgot Password Link -->
                 <div class="text-center">
                     <a href="{% url 'password_reset' %}" class="text-muted">
                         <small>Forgot your password?</small>
                     </a>
                 </div>
+                
+                <!-- ✅ Resend Confirmation Link (shown only if there's a message) -->
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if "confirm" in message|lower or "activate" in message|lower %}
+                            <div class="text-center mt-2">
+                                <a href="{% url 'resend_confirmation' %}" class="text-primary">
+                                    <small>Didn't receive the email? Click here to resend.</small>
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
                 <br>
             </div>
         </div>

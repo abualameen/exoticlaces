@@ -578,30 +578,50 @@ def signinView(request):
             password = form.cleaned_data.get('password')
             print(f"Username: {username}")
             
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                # ✅ Check if user is active (email confirmed)
+            # ✅ First check if user exists
+            try:
+                user = User.objects.get(username=username)
+                
+                # ✅ Check if user is inactive (email not confirmed)
                 if not user.is_active:
                     print(f"User {username} is not active - email not confirmed")
-                    messages.error(request, "Please confirm your email address first. Check your inbox for the confirmation link.")
+                    
+                    # ✅ Check if email address exists in allauth
+                    email_exists = EmailAddress.objects.filter(user=user, verified=False).exists()
+                    
+                    if email_exists:
+                        messages.error(request, "⚠️ Please confirm your email address first. We sent a confirmation link to your email. Check your inbox (and spam folder).")
+                    else:
+                        # If no email record, maybe they need to resend confirmation
+                        messages.error(request, "⚠️ Your account is not activated. Please check your email for the confirmation link, or <a href='#'>click here to resend</a>.")
+                    
                     return render(request, 'signin.html', {'form': form})
                 
-                print(f"User authenticated: {user.username}")
-                login(request, user)
-                messages.success(request, f"Welcome back, {username}!")
+                # ✅ Now authenticate the user
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    print(f"User authenticated: {user.username}")
+                    login(request, user)
+                    messages.success(request, f"Welcome back, {username}!")
+                    
+                    # Redirect to next parameter if present
+                    next_url = request.GET.get('next')
+                    if next_url:
+                        return redirect(next_url)
+                    return redirect('home')
+                else:
+                    print("Authentication failed - wrong password")
+                    messages.error(request, "❌ Invalid password. Please try again.")
+                    
+            except User.DoesNotExist:
+                print(f"User {username} does not exist")
+                messages.error(request, "❌ No account found with this username.")
                 
-                # Redirect to next parameter if present
-                next_url = request.GET.get('next')
-                if next_url:
-                    return redirect(next_url)
-                return redirect('home')
-            else:
-                print("Authentication failed - user is None")
-                messages.error(request, "Invalid username or password.")
         else:
             print("Form is invalid")
             print("Form errors:", form.errors)
-            messages.error(request, "Invalid username or password.")
+            messages.error(request, "❌ Invalid username or password.")
+            
     else:
         print("GET request to login page")
         form = AuthenticationForm()
@@ -1034,3 +1054,33 @@ def remove_voucher_ajax(request):
         request.session.pop('voucher_discount', None)
         return JsonResponse({'success': True, 'message': 'Voucher removed.'})
     return JsonResponse({'success': False, 'message': 'No voucher applied.'})
+
+
+
+
+
+
+from allauth.account.models import EmailAddress
+from django.contrib.auth.models import User
+
+def resend_confirmation(request):
+    """Resend email confirmation link"""
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            user = User.objects.get(email=email)
+            if not user.is_active:
+                # Check if email address exists in allauth
+                email_address = EmailAddress.objects.filter(user=user, verified=False).first()
+                if email_address:
+                    # Resend confirmation
+                    email_address.send_confirmation(request)
+                    messages.success(request, f"✅ Confirmation email resent to {email}. Please check your inbox.")
+                else:
+                    messages.error(request, "No unconfirmed email found for this account.")
+            else:
+                messages.info(request, "This account is already active. Please login.")
+        except User.DoesNotExist:
+            messages.error(request, "No account found with this email.")
+    
+    return redirect('signin')
