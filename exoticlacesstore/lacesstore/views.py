@@ -1067,20 +1067,24 @@ def resend_confirmation(request):
     """Resend email confirmation link"""
     if request.method == 'POST':
         email = request.POST.get('email')
+        if not email:
+            messages.error(request, "Please provide your email address.")
+            return render(request, 'resend_confirmation.html')
+            
         try:
             user = User.objects.get(email=email)
             if not user.is_active:
-                # Check if email address exists in allauth
                 email_address = EmailAddress.objects.filter(user=user, verified=False).first()
                 if email_address:
-                    # Resend confirmation
                     email_address.send_confirmation(request)
-                    messages.success(request, f"✅ Confirmation email resent to {email}. Please check your inbox.")
+                    messages.success(request, f"✅ Confirmation email resent to {email}. Please check your inbox (and spam folder).")
+                    return redirect('signin')
                 else:
                     messages.error(request, "No unconfirmed email found for this account.")
             else:
                 messages.info(request, "This account is already active. Please login.")
+                return redirect('signin')
         except User.DoesNotExist:
             messages.error(request, "No account found with this email.")
     
-    return redirect('signin')
+    return render(request, 'resend_confirmation.html')
