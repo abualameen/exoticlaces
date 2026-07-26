@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import resend_confirmation  # ✅ Add this import
+
 
 
 
@@ -54,7 +54,7 @@ urlpatterns = [
 
     path('remove-voucher-ajax/', views.remove_voucher_ajax, name='remove_voucher_ajax'),
 
-    path('resend-confirmation/', resend_confirmation, name='resend_confirmation'),
+    path('resend-confirmation/', views.resend_confirmation, name='resend_confirmation'),
    
     
 
