@@ -564,7 +564,12 @@ def signupView(request):
 #     print("Rendering login page again")
 #     return render(request, 'signin.html', {'form': form})
 
-
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from allauth.account.models import EmailAddress
 
 def signinView(request):
     if request.method == 'POST':
@@ -579,7 +584,7 @@ def signinView(request):
             password = form.cleaned_data.get('password')
             print(f"Username: {username}")
             
-            # ✅ Check if user exists FIRST
+            # ✅ FIRST: Check if user exists
             try:
                 user = User.objects.get(username=username)
                 print(f"User found: {user.username}, is_active: {user.is_active}")
@@ -588,14 +593,15 @@ def signinView(request):
                 if not user.is_active:
                     print(f"User {username} is not active - email not confirmed")
                     
-                    # Get email address info
+                    # Check if email address exists and is not verified
                     email_address = EmailAddress.objects.filter(user=user).first()
                     
                     if email_address and not email_address.verified:
                         messages.error(request, "⚠️ Please confirm your email address first. We sent a confirmation link to your email. Check your inbox and spam folder.")
                     else:
-                        messages.error(request, "⚠️ Your account is not activated. Please contact support.")
+                        messages.error(request, "⚠️ Your account is not activated. Please check your email for the confirmation link.")
                     
+                    # ✅ Return the login page with the error message
                     return render(request, 'signin.html', {'form': form})
                 
                 # ✅ User is active, now check password
@@ -630,9 +636,7 @@ def signinView(request):
         print("GET request to login page")
         form = AuthenticationForm()
     
-    print("Rendering login page again")
     return render(request, 'signin.html', {'form': form})
-
 
 def signoutView(request):
     logout(request)
