@@ -563,7 +563,6 @@ def signupView(request):
     
 #     print("Rendering login page again")
 #     return render(request, 'signin.html', {'form': form})
-
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
@@ -576,61 +575,53 @@ def signinView(request):
         print("=" * 50)
         print("POST data received:", request.POST)
         
-        form = AuthenticationForm(request, data=request.POST)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         
-        if form.is_valid():
-            print("Form is valid")
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            print(f"Username: {username}")
+        if not username or not password:
+            messages.error(request, "Please enter both username and password.")
+            return render(request, 'signin.html', {'form': AuthenticationForm()})
+        
+        # ✅ FIRST: Check if user exists
+        try:
+            user = User.objects.get(username=username)
+            print(f"User found: {user.username}, is_active: {user.is_active}")
             
-            # ✅ FIRST: Check if user exists
-            try:
-                user = User.objects.get(username=username)
-                print(f"User found: {user.username}, is_active: {user.is_active}")
+            # ✅ Check if user is inactive (email not confirmed)
+            if not user.is_active:
+                print(f"User {username} is not active - email not confirmed")
                 
-                # ✅ Check if user is inactive (email not confirmed)
-                if not user.is_active:
-                    print(f"User {username} is not active - email not confirmed")
-                    
-                    # Check if email address exists and is not verified
-                    email_address = EmailAddress.objects.filter(user=user).first()
-                    
-                    if email_address and not email_address.verified:
-                        messages.error(request, "⚠️ Please confirm your email address first. We sent a confirmation link to your email. Check your inbox and spam folder.")
-                    else:
-                        messages.error(request, "⚠️ Your account is not activated. Please check your email for the confirmation link.")
-                    
-                    # ✅ Return the login page with the error message
-                    return render(request, 'signin.html', {'form': form})
+                # Check if email address exists and is not verified
+                email_address = EmailAddress.objects.filter(user=user).first()
                 
-                # ✅ User is active, now check password
-                user = authenticate(username=username, password=password)
-                if user is not None:
-                    print(f"User authenticated: {user.username}")
-                    login(request, user)
-                    messages.success(request, f"Welcome back, {username}!")
-                    
-                    # Redirect to next parameter if present
-                    next_url = request.GET.get('next')
-                    if next_url:
-                        return redirect(next_url)
-                    return redirect('home')
+                if email_address and not email_address.verified:
+                    messages.error(request, "⚠️ Please confirm your email address first. We sent a confirmation link to your email. Check your inbox and spam folder.")
                 else:
-                    print("Authentication failed - wrong password")
-                    messages.error(request, "❌ Invalid password. Please try again.")
-                    return render(request, 'signin.html', {'form': form})
-                    
-            except User.DoesNotExist:
-                print(f"User {username} does not exist")
-                messages.error(request, "❌ No account found with this username.")
-                return render(request, 'signin.html', {'form': form})
+                    messages.error(request, "⚠️ Your account is not activated. Please check your email for the confirmation link.")
                 
-        else:
-            print("Form is invalid")
-            print("Form errors:", form.errors)
-            messages.error(request, "❌ Invalid username or password.")
-            return render(request, 'signin.html', {'form': form})
+                return render(request, 'signin.html', {'form': AuthenticationForm()})
+            
+            # ✅ User is active, now check password
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                print(f"User authenticated: {user.username}")
+                login(request, user)
+                messages.success(request, f"Welcome back, {username}!")
+                
+                # Redirect to next parameter if present
+                next_url = request.GET.get('next')
+                if next_url:
+                    return redirect(next_url)
+                return redirect('home')
+            else:
+                print("Authentication failed - wrong password")
+                messages.error(request, "❌ Invalid password. Please try again.")
+                return render(request, 'signin.html', {'form': AuthenticationForm()})
+                
+        except User.DoesNotExist:
+            print(f"User {username} does not exist")
+            messages.error(request, "❌ No account found with this username.")
+            return render(request, 'signin.html', {'form': AuthenticationForm()})
     
     else:
         print("GET request to login page")
