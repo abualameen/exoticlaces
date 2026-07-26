@@ -490,7 +490,7 @@ def signupView(request):
                 # messages.error(request, 'An account with this email already exists.')
             
             user = form.save(commit=False)
-            #user.is_active = False  # Deactivate account until email confirmation
+            user.is_active = False  # Deactivate account until email confirmation
             user.save()
 
 
@@ -530,6 +530,40 @@ def signupView(request):
 
 
 
+# def signinView(request):
+#     if request.method == 'POST':
+#         print("=" * 50)
+#         print("POST data received:", request.POST)
+#         print("CSRF token present:", 'csrfmiddlewaretoken' in request.POST)
+        
+#         form = AuthenticationForm(request, data=request.POST)
+        
+#         if form.is_valid():
+#             print("Form is valid")
+#             username = form.cleaned_data.get('username')
+#             password = form.cleaned_data.get('password')
+#             print(f"Username: {username}")
+            
+#             user = authenticate(username=username, password=password)
+#             if user is not None:
+#                 print(f"User authenticated: {user.username}")
+#                 login(request, user)
+#                 messages.success(request, f"Welcome back, {username}!")
+#                 return redirect('home')
+#             else:
+#                 print("Authentication failed - user is None")
+#                 messages.error(request, "Invalid username or password.")
+#         else:
+#             print("Form is invalid")
+#             print("Form errors:", form.errors)
+#             messages.error(request, "Invalid username or password.")
+#     else:
+#         print("GET request to login page")
+#         form = AuthenticationForm()
+    
+#     print("Rendering login page again")
+#     return render(request, 'signin.html', {'form': form})
+
 def signinView(request):
     if request.method == 'POST':
         print("=" * 50)
@@ -545,11 +579,29 @@ def signinView(request):
             print(f"Username: {username}")
             
             user = authenticate(username=username, password=password)
+            
             if user is not None:
-                print(f"User authenticated: {user.username}")
-                login(request, user)
-                messages.success(request, f"Welcome back, {username}!")
-                return redirect('home')
+                # ✅ Check if user has confirmed their email
+                if user.is_active:
+                    print(f"User authenticated and active: {user.username}")
+                    login(request, user)
+                    messages.success(request, f"Welcome back, {username}!")
+                    return redirect('home')
+                else:
+                    print(f"User exists but is inactive: {user.username}")
+                    # ✅ Check if confirmation email was sent
+                    email_address = EmailAddress.objects.filter(user=user, primary=True).first()
+                    if email_address and not email_address.verified:
+                        # Resend confirmation email
+                        email_address.send_confirmation(request)
+                        messages.warning(request, 
+                            f"⚠️ Your email address ({user.email}) has not been verified. "
+                            f"We've sent a new confirmation link to your email. "
+                            f"Please check your inbox and spam folder.")
+                        return redirect('signin')
+                    else:
+                        messages.error(request, "Your account has not been activated. Please contact support.")
+                        return redirect('signin')
             else:
                 print("Authentication failed - user is None")
                 messages.error(request, "Invalid username or password.")
@@ -559,10 +611,12 @@ def signinView(request):
             messages.error(request, "Invalid username or password.")
     else:
         print("GET request to login page")
+        # ✅ Check for unverified email message
         form = AuthenticationForm()
     
     print("Rendering login page again")
     return render(request, 'signin.html', {'form': form})
+
 
 
 def signoutView(request):
