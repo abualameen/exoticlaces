@@ -579,29 +579,22 @@ def signinView(request):
             print(f"Username: {username}")
             
             user = authenticate(username=username, password=password)
-            
             if user is not None:
-                # ✅ Check if user has confirmed their email
-                if user.is_active:
-                    print(f"User authenticated and active: {user.username}")
-                    login(request, user)
-                    messages.success(request, f"Welcome back, {username}!")
-                    return redirect('home')
-                else:
-                    print(f"User exists but is inactive: {user.username}")
-                    # ✅ Check if confirmation email was sent
-                    email_address = EmailAddress.objects.filter(user=user, primary=True).first()
-                    if email_address and not email_address.verified:
-                        # Resend confirmation email
-                        email_address.send_confirmation(request)
-                        messages.warning(request, 
-                            f"⚠️ Your email address ({user.email}) has not been verified. "
-                            f"We've sent a new confirmation link to your email. "
-                            f"Please check your inbox and spam folder.")
-                        return redirect('signin')
-                    else:
-                        messages.error(request, "Your account has not been activated. Please contact support.")
-                        return redirect('signin')
+                # ✅ Check if user is active (email confirmed)
+                if not user.is_active:
+                    print(f"User {username} is not active - email not confirmed")
+                    messages.error(request, "Please confirm your email address first. Check your inbox for the confirmation link.")
+                    return render(request, 'signin.html', {'form': form})
+                
+                print(f"User authenticated: {user.username}")
+                login(request, user)
+                messages.success(request, f"Welcome back, {username}!")
+                
+                # Redirect to next parameter if present
+                next_url = request.GET.get('next')
+                if next_url:
+                    return redirect(next_url)
+                return redirect('home')
             else:
                 print("Authentication failed - user is None")
                 messages.error(request, "Invalid username or password.")
@@ -611,7 +604,6 @@ def signinView(request):
             messages.error(request, "Invalid username or password.")
     else:
         print("GET request to login page")
-        # ✅ Check for unverified email message
         form = AuthenticationForm()
     
     print("Rendering login page again")
