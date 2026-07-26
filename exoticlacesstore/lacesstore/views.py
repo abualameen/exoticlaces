@@ -1060,7 +1060,7 @@ def remove_voucher_ajax(request):
 
 
 
-from allauth.account.models import EmailAddress
+
 from django.contrib.auth.models import User
 
 def resend_confirmation(request):
