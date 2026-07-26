@@ -563,7 +563,6 @@ def signupView(request):
     
 #     print("Rendering login page again")
 #     return render(request, 'signin.html', {'form': form})
-
 def signinView(request):
     if request.method == 'POST':
         print("=" * 50)
@@ -578,7 +577,7 @@ def signinView(request):
             password = form.cleaned_data.get('password')
             print(f"Username: {username}")
             
-            # ✅ First check if user exists
+            # ✅ FIRST: Check if user exists and is inactive
             try:
                 user = User.objects.get(username=username)
                 
@@ -586,18 +585,17 @@ def signinView(request):
                 if not user.is_active:
                     print(f"User {username} is not active - email not confirmed")
                     
-                    # ✅ Check if email address exists in allauth
+                    # Check if email address exists in allauth
                     email_exists = EmailAddress.objects.filter(user=user, verified=False).exists()
                     
                     if email_exists:
-                        messages.error(request, "⚠️ Please confirm your email address first. We sent a confirmation link to your email. Check your inbox (and spam folder).")
+                        messages.error(request, "⚠️ Please confirm your email address first. We sent a confirmation link to your email. Check your inbox and spam folder.")
                     else:
-                        # If no email record, maybe they need to resend confirmation
-                        messages.error(request, "⚠️ Your account is not activated. Please check your email for the confirmation link, or <a href='#'>click here to resend</a>.")
+                        messages.error(request, "⚠️ Your account is not activated. Please check your email for the confirmation link.")
                     
                     return render(request, 'signin.html', {'form': form})
                 
-                # ✅ Now authenticate the user
+                # ✅ Now check if password is correct
                 user = authenticate(username=username, password=password)
                 if user is not None:
                     print(f"User authenticated: {user.username}")
@@ -612,23 +610,24 @@ def signinView(request):
                 else:
                     print("Authentication failed - wrong password")
                     messages.error(request, "❌ Invalid password. Please try again.")
+                    return render(request, 'signin.html', {'form': form})
                     
             except User.DoesNotExist:
                 print(f"User {username} does not exist")
                 messages.error(request, "❌ No account found with this username.")
+                return render(request, 'signin.html', {'form': form})
                 
         else:
             print("Form is invalid")
             print("Form errors:", form.errors)
             messages.error(request, "❌ Invalid username or password.")
-            
+    
     else:
         print("GET request to login page")
         form = AuthenticationForm()
     
     print("Rendering login page again")
     return render(request, 'signin.html', {'form': form})
-
 
 
 def signoutView(request):
