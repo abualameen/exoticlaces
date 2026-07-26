@@ -2,6 +2,10 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from .views import resend_confirmation  # ✅ Add this import
+
+
+
 urlpatterns = [
     path('', views.home, name='home'),
     path('category/<slug:category_slug>', views.home, name='products_by_category'),
@@ -52,7 +56,7 @@ urlpatterns = [
 
     path('resend-confirmation/', resend_confirmation, name='resend_confirmation'),
    
-
+    
 
 
 ]
