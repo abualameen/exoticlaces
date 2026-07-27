@@ -34,6 +34,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
 import datetime
 
+from django_ratelimit.decorators import ratelimit
+
 
 
 # lacesstore/views.py
@@ -479,7 +481,7 @@ def thanks_page(request, order_id):
 
 
 
-
+@ratelimit(key='ip', rate='5/h', method='POST', block=True)
 def signupView(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
