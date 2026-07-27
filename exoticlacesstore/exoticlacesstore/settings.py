@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'django_facebook_capi',
+    'django_recaptcha',
 ]
 
 MIDDLEWARE = [
@@ -346,3 +347,8 @@ LOGGING = {
 
 
 CSRF_FAILURE_VIEW = 'lacesstore.views.csrf_failure'
+
+
+
+RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY', default='')
+RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', default='')

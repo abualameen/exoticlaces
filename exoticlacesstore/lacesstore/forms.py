@@ -11,6 +11,7 @@ class SignUpForm(UserCreationForm):
     last_name = forms.CharField(max_length=100, required=True)
     phonenumber = forms.CharField(max_length=20, required=False)
     email = forms.EmailField(max_length=250, help_text='eg. youremail@gmail.com')
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox)
     
 
     class Meta:
