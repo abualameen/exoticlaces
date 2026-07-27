@@ -1071,7 +1071,7 @@ def remove_voucher_ajax(request):
 
 
 
-from django.contrib.auth.models import User
+
 
 
 def resend_confirmation(request):
