@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'payments',
     'shipping',
     'currency',
-    'kwantacious', 
+    'kwantacious',
+    'vendor_products',
     'crispy_forms',
     'crispy_bootstrap4',
     'django.contrib.admin',
@@ -91,6 +92,7 @@ TEMPLATES = [
                 'lacesstore.context_processors.social_links',
                 'lacesstore.context_processors.facebook_pixel',
                 'lacesstore.context_processors.sale_context',  # Add this
+                'vendor_products.views.vendor_products_home_context',  # Add this
             ],
         },
     },

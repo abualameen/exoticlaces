@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load currency_filters %}
+
+{% block title %}Vendor Products - Exotic Laces{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="text-center mb-4">
+        <h1 class="display-4">Partner Collections</h1>
+        <p class="lead">Curated premium lace from our trusted partners</p>
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <strong>How It Works:</strong> These products are fulfilled directly by our partner vendors. 
+            Your payment is securely held until we confirm availability, ensuring a risk-free purchase.
+        </div>
+    </div>
+
+    <div class="row">
+        {% for product in vendor_products %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="product-card">
+                <div class="product-image-wrapper">
+                    <span class="badge badge-info" style="position: absolute; top: 10px; left: 10px; z-index: 2;">
+                        <i class="fas fa-handshake"></i> Partner
+                    </span>
+                    <span class="badge badge-warning" style="position: absolute; top: 10px; right: 10px; z-index: 2;">
+                        {{ product.get_delivery_range }}
+                    </span>
+                    <a href="{% url 'vendor_products:product_detail' product.id %}">
+                        <img src="{{ product.main_image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy">
+                    </a>
+                </div>
+                <div class="product-info">
+                    <p class="product-name">{{ product.name }}</p>
+                    <p class="product-sku">{{ product.vendor.business_name }}</p>
+                    <p class="product-price">{{ product.price|money:currency }}</p>
+                    <a href="{% url 'vendor_products:product_detail' product.id %}" class="btn btn-primary btn-block">
+                        <i class="fas fa-eye"></i> View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle"></i> No partner products available at the moment.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

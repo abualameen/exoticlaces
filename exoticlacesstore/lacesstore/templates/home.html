@@ -13,6 +13,62 @@
 <!-- ✅ FLASH SALE BANNER -->
 {% include 'flash_sale_snippet.html' %}
 
+<!-- ✅ VENDOR/PARTNER PRODUCTS SECTION -->
+{% if vendor_products %}
+<div class="py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-10 mx-auto my-2 text-center">
+                <h1 class="text-uppercase font-weight-bold">
+                    <i class="fas fa-handshake text-info"></i> Partner Collections
+                </h1>
+                <p class="text-muted">Premium lace from our trusted partner vendors</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row product-grid">
+        {% load currency_filters %}
+        {% for product in vendor_products %}
+        
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="product-card">
+                <div class="product-image-wrapper">
+                    <!-- ✅ VENDOR BADGE -->
+                    <span class="badge badge-info vendor-badge" style="position: absolute; top: 10px; left: 10px; z-index: 2;">
+                        <i class="fas fa-handshake"></i> Partner
+                    </span>
+                    
+                    <!-- ✅ DELIVERY TIME BADGE -->
+                    <span class="badge badge-warning delivery-badge" style="position: absolute; top: 10px; right: 10px; z-index: 2; font-size: 0.65rem;">
+                        <i class="fas fa-truck"></i> {{ product.get_delivery_range }}
+                    </span>
+                    
+                    <a href="{% url 'vendor_products:product_detail' product.id %}">
+                        <img src="{{ product.main_image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy">
+                    </a>
+                </div>
+                
+                <div class="product-info">
+                    <p class="product-name">{{ product.name }}</p>
+                    <p class="product-sku">By: {{ product.vendor.business_name }}</p>
+                    <p class="product-price">
+                        {{ product.price|money:currency }}
+                    </p>
+                    <a href="{% url 'vendor_products:product_detail' product.id %}" class="btn btn-outline-primary btn-sm btn-block">
+                        <i class="fas fa-eye"></i> View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
 <!-- Products Section -->
 <div class="py-4">
     <div class="container">
@@ -72,4 +128,51 @@
         {% endfor %}
     </div>
 </div>
+
+<!-- ✅ ADD SOME CSS FOR VENDOR BADGES -->
+<style>
+    .vendor-badge {
+        background: linear-gradient(135deg, #17a2b8, #0d6efd) !important;
+        color: white !important;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
+    }
+    
+    .delivery-badge {
+        background: linear-gradient(135deg, #ffc107, #fd7e14) !important;
+        color: #000 !important;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.6rem;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+    }
+    
+    .btn-outline-primary {
+        border: 2px solid #6c5ce7;
+        color: #6c5ce7;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+    
+    .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+    }
+    
+    .product-card {
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    }
+</style>
 {% endblock %}

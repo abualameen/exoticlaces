@@ -20,6 +20,7 @@ Create a New Account
             <p>Enter the following information to create a new account</p>
             <form method="post">
                 {% csrf_token %}
+                {{ form.honeypot }}  {# Hidden field that bots will fill but humans won't #}
                 <p>{{ form | crispy }}</p>
                 <button type="submit" name="button" class="btn btn-secondary">Sign Up</button>
 

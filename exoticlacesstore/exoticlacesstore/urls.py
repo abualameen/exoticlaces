@@ -60,6 +60,8 @@ urlpatterns = [
     path('shipping/', include('shipping.urls')),
     path("currency/", include("currency.urls")),
     path('auctions/', include('kwantacious.urls')),
+    # Add this to your urlpatterns
+    path('vendor-products/', include('vendor_products.urls')),
     
     
 
