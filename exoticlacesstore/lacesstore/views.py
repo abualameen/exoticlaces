@@ -44,6 +44,7 @@ from .models import Cart, CartItem, Voucher, UserVoucherUsage, FlashSale
 from .forms import VoucherApplyForm
 from .models import Cart, CartItem, FlashSale, Voucher
 
+from .utils import is_disposable_email, is_suspicious_username
 
 
 
@@ -481,56 +482,65 @@ def thanks_page(request, order_id):
 
 
 
+
 @ratelimit(key='ip', rate='5/h', method='POST', block=True)
 def signupView(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
+            username = form.cleaned_data.get('username')
+            
+            # ✅ Check for disposable email
+            if is_disposable_email(email):
+                messages.error(request, "Please use a valid email address. Temporary/disposable emails are not allowed.")
+                return render(request, 'signup.html', {'form': form})
+            
+            # ✅ Check for suspicious username (bots)
+            if is_suspicious_username(username):
+                messages.error(request, "Invalid username. Please use a real name.")
+                return render(request, 'signup.html', {'form': form})
+            
+            # ✅ Check if email already exists
             if User.objects.filter(email=email).exists():
                 return render(request, 'signup.html', {'form': form, 'email_exists': True, 'email': email})
-                # messages.error(request, 'An account with this email already exists.')
             
+            # ✅ Create user (inactive until email confirmation)
             user = form.save(commit=False)
             user.is_active = False  # Deactivate account until email confirmation
             user.save()
 
-
+            # ✅ Create customer profile
             customer = Customer.objects.create(
-                user=user,  # Link to the User
+                user=user,
                 email=email,
                 firstName=form.cleaned_data.get('first_name', ''),
                 lastName=form.cleaned_data.get('last_name', ''),
                 phonenumber=form.cleaned_data.get('phonenumber', ''),
             )
-            #form.save()
+            
+            # ✅ Add user to Customer group
             username = form.cleaned_data.get('username')
             signup_user = User.objects.get(username=username)
             customer_group = Group.objects.get(name='Customer')
             customer_group.user_set.add(signup_user)
 
-
-            # ✅ Send confirmation email using EmailAddress method
+            # ✅ Send confirmation email
             email_address = EmailAddress.objects.add_email(request, user, email)
             email_address.send_confirmation(request)
             
-            
-
-           
-            # Immediately remove the message that was just added
+            # ✅ Clear messages
             storage = messages.get_messages(request)
             print('storage:', storage)
             storage.used = True  # Clear all messages from this request
-
 
             request.session['confirmation_email'] = email
             
     else:
         form = SignUpForm()
+    
     email = request.session.get('confirmation_email', '')
-    return render(request, 'signup.html', {'form': form, 'email': email} )
-
-
+    return render(request, 'signup.html', {'form': form, 'email': email})
 
 # def signinView(request):
 #     if request.method == 'POST':
