@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from .models import Voucher
+from django_recaptcha.fields import ReCaptchaField  # ✅ Add this import
+from django_recaptcha.widgets import ReCaptchaV2Checkbox  # ✅ Add this import
 
 
 class SignUpForm(UserCreationForm):
