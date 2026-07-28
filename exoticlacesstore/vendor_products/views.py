@@ -4,16 +4,19 @@ from django.contrib import messages
 from django.utils import timezone
 from django.http import JsonResponse
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 import requests
 import json
 from decimal import Decimal
 
 from .models import VendorProduct, VendorOrder
 from lacesstore.models import Customer
+from exoticlacesstore.utils.currency import get_symbol  # ✅ Add this import
+
 
 def vendor_product_list(request):
     """Display all active vendor products"""
-    products = VendorProduct.objects.filter(status='active', is_available=True)
+    products = VendorProduct.objects.filter(status='active', available=True)  # ✅ Use 'available' not 'is_available'
     
     # Get currency
     active_currency = request.session.get("currency", "NGN")
@@ -26,7 +29,7 @@ def vendor_product_list(request):
     return render(request, 'vendor_products/product_list.html', context)
 
 
-def vendor_product_detail(request, product_id):
+def vendor_product_detail(request, product_id):  # ✅ Changed from product_id to match URL
     """Display single vendor product detail"""
     product = get_object_or_404(VendorProduct, id=product_id, status='active')
     
@@ -49,7 +52,7 @@ def place_order_request(request, product_id):
     """
     product = get_object_or_404(VendorProduct, id=product_id, status='active')
     
-    if not product.is_in_stock():
+    if product.stock <= 0 or not product.available:  # ✅ Use correct field names
         messages.error(request, "This product is currently out of stock.")
         return redirect('vendor_products:product_detail', product_id=product.id)
     
@@ -80,7 +83,7 @@ def place_order_request(request, product_id):
             paystack_data = initialize_paystack_hold(
                 amount=total_amount,
                 email=request.user.email,
-                reference=f"VENDOR-{order.id}-{timezone.now().timestamp()}",
+                reference=f"VENDOR-{order.id}-{int(timezone.now().timestamp())}",
                 order_id=order.id
             )
             
@@ -179,13 +182,13 @@ def capture_payment(request, order_id):
     """
     if not request.user.is_staff:
         messages.error(request, "You don't have permission to perform this action.")
-        return redirect('vendor_products:order_detail', order_id=order_id)
+        return redirect('vendor_products:product_list')
     
     order = get_object_or_404(VendorOrder, id=order_id)
     
     if not order.can_capture_payment():
         messages.error(request, "This order cannot be captured. Status must be 'secured' and payment authorized.")
-        return redirect('vendor_products:order_detail', order_id=order.id)
+        return redirect('vendor_products:product_list')
     
     # ✅ Capture the funds via Paystack
     url = "https://api.paystack.co/transaction/capture"
@@ -214,7 +217,7 @@ def capture_payment(request, order_id):
     except Exception as e:
         messages.error(request, f"An error occurred: {str(e)}")
     
-    return redirect('vendor_products:order_detail', order_id=order.id)
+    return redirect('vendor_products:product_list')
 
 
 @login_required
@@ -225,13 +228,13 @@ def cancel_order_hold(request, order_id):
     """
     if not request.user.is_staff:
         messages.error(request, "You don't have permission to perform this action.")
-        return redirect('vendor_products:order_detail', order_id=order_id)
+        return redirect('vendor_products:product_list')
     
     order = get_object_or_404(VendorOrder, id=order_id)
     
     if order.payment_status != 'authorized':
         messages.error(request, "This payment is not in authorized status.")
-        return redirect('vendor_products:order_detail', order_id=order.id)
+        return redirect('vendor_products:product_list')
     
     # ✅ Void the authorization - no money charged
     url = "https://api.paystack.co/transaction/void"
@@ -259,42 +262,40 @@ def cancel_order_hold(request, order_id):
     except Exception as e:
         messages.error(request, f"An error occurred: {str(e)}")
     
-    return redirect('vendor_products:order_detail', order_id=order.id)
+    return redirect('vendor_products:product_list')
 
 
 def vendor_products_home_context(request):
     """Context processor to add vendor products to home page"""
-    products = VendorProduct.objects.filter(status='active', is_available=True)[:8]
+    products = VendorProduct.objects.filter(status='active', available=True)[:8]  # ✅ Use correct field name
     return {
         'vendor_products': products,
         'has_vendor_products': products.exists(),
     }
 
 
-
-
-
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-import json
-
 @csrf_exempt
 def paystack_webhook(request):
     """Handle Paystack webhook events"""
     if request.method == 'POST':
-        payload = json.loads(request.body)
-        event = payload.get('event')
-        
-        if event == 'charge.success':
-            reference = payload['data']['reference']
-            # Update order status
-            try:
-                order = VendorOrder.objects.get(paystack_reference=reference)
-                order.payment_status = 'captured'
-                order.save()
-                print(f"✅ Payment captured for order {order.id}")
-            except VendorOrder.DoesNotExist:
-                print(f"⚠️ Order not found for reference {reference}")
-        
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'failed'}, status=400)
+        try:
+            payload = json.loads(request.body)
+            event = payload.get('event')
+            
+            if event == 'charge.success':
+                reference = payload['data']['reference']
+                # Update order status
+                try:
+                    order = VendorOrder.objects.get(paystack_reference=reference)
+                    order.payment_status = 'captured'
+                    order.save()
+                    print(f"✅ Payment captured for order {order.id}")
+                except VendorOrder.DoesNotExist:
+                    print(f"⚠️ Order not found for reference {reference}")
+            
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            print(f"Webhook error: {str(e)}")
+            return JsonResponse({'status': 'error'}, status=400)
+    
+    return JsonResponse({'status': 'failed'}, status=405)
