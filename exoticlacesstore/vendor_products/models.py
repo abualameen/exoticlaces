@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from decimal import Decimal
+from lacesstore.models import Category  # ✅ Import Category from main app
 
 class Vendor(models.Model):
     """Business partner/vendor who supplies products"""
@@ -12,7 +13,7 @@ class Vendor(models.Model):
     address = models.TextField(blank=True)
     website = models.URLField(blank=True)
     is_active = models.BooleanField(default=True)
-    commission_rate = models.DecimalField(max_digits=5, decimal_places=2, default=10.00, help_text="Commission percentage for each sale")
+    commission_rate = models.DecimalField(max_digits=5, decimal_places=2, default=10.00)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -24,7 +25,7 @@ class Vendor(models.Model):
 
 
 class VendorProduct(models.Model):
-    """Products from vendors (dropshipping model)"""
+    """Products from vendors (dropshipping model) with full product features"""
     STATUS_CHOICES = [
         ('draft', 'Draft'),
         ('active', 'Active'),
@@ -32,16 +33,22 @@ class VendorProduct(models.Model):
         ('out_of_stock', 'Out of Stock'),
     ]
     
+    # ✅ Vendor relationship
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='products')
     
-    # Product details
-    name = models.CharField(max_length=255)
-    sku = models.CharField(max_length=100, unique=True)
-    description = models.TextField()
+    # ✅ Category from main app
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='vendor_products')
+    
+    # ✅ Product details (matches main Product model)
+    name = models.CharField(max_length=250, unique=True)
+    slug = models.SlugField(max_length=250, unique=True)
+    description = models.TextField(blank=True)
+    
+    # ✅ Pricing
     price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Selling price (includes your profit)")
     vendor_price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price you pay to vendor")
     
-    # Product specifications (for Shariah compliance - eliminate Gharar)
+    # ✅ Product specifications (for Shariah compliance - eliminate Gharar)
     fabric_type = models.CharField(max_length=100, blank=True)
     length = models.CharField(max_length=50, blank=True, help_text="e.g., 6 yards, 5 meters")
     color = models.CharField(max_length=50, blank=True)
@@ -49,28 +56,78 @@ class VendorProduct(models.Model):
     material = models.CharField(max_length=100, blank=True)
     origin = models.CharField(max_length=100, blank=True, help_text="Country of origin")
     
-    # Images
-    main_image = models.ImageField(upload_to='vendor_products/')
+    # ✅ Images (matches main product)
+    image = models.ImageField(upload_to='vendor_products/', blank=True)
     additional_images = models.JSONField(default=list, blank=True, help_text="List of additional image URLs")
     
-    # Shipping
-    shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    # ✅ Stock
+    stock = models.IntegerField(default=0)
+    available = models.BooleanField(default=True)
+    
+    # ✅ YouTube Video (matches main product)
+    youtube_video_url = models.URLField(
+        max_length=500,
+        blank=True,
+        null=True,
+        verbose_name="YouTube Video URL",
+        help_text="Paste the full YouTube URL (e.g., https://www.youtube.com/watch?v=XXXXXXXXXXX)"
+    )
+    youtube_video_id = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        editable=False,
+        verbose_name="YouTube Video ID"
+    )
+    
+    # ✅ Delivery window (for Shariah compliance)
     estimated_delivery_min = models.IntegerField(default=5, help_text="Minimum delivery days")
     estimated_delivery_max = models.IntegerField(default=10, help_text="Maximum delivery days")
     
-    # Inventory
-    stock_quantity = models.IntegerField(default=0)
-    is_available = models.BooleanField(default=True)
-    
-    # Status
+    # ✅ Status
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     
-    # Timestamps
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    # ✅ Timestamps
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     
-    def __str__(self):
-        return f"{self.name} ({self.vendor.business_name})"
+    def save(self, *args, **kwargs):
+        # Extract YouTube video ID from URL
+        if self.youtube_video_url:
+            import re
+            patterns = [
+                r'(?:youtube\.com\/watch\?v=)([\w-]+)',
+                r'(?:youtu\.be\/)([\w-]+)',
+                r'(?:youtube\.com\/embed\/)([\w-]+)',
+                r'(?:youtube\.com\/shorts\/)([\w-]+)',
+                r'(?:youtube\.com\/v\/)([\w-]+)',
+                r'(?:youtube\.com\/live\/)([\w-]+)',
+                r'(?:youtube\.com\/.*[?&]v=)([\w-]+)',
+            ]
+            for pattern in patterns:
+                match = re.search(pattern, self.youtube_video_url)
+                if match:
+                    self.youtube_video_id = match.group(1)
+                    break
+            else:
+                if 'youtube.com' in self.youtube_video_url or 'youtu.be' in self.youtube_video_url:
+                    parts = self.youtube_video_url.rstrip('/').split('/')
+                    if parts:
+                        last_part = parts[-1]
+                        if '?' in last_part:
+                            last_part = last_part.split('?')[0]
+                        if last_part and len(last_part) >= 11:
+                            self.youtube_video_id = last_part
+                else:
+                    self.youtube_video_id = None
+        else:
+            self.youtube_video_id = None
+            
+        super().save(*args, **kwargs)
+    
+    def get_url(self):
+        from django.urls import reverse
+        return reverse('vendor_products:product_detail', args=[self.id])
     
     def get_delivery_range(self):
         """Return delivery range for display"""
@@ -81,10 +138,31 @@ class VendorProduct(models.Model):
         return (self.price - self.vendor_price) * Decimal('0.01') * self.vendor.commission_rate
     
     def is_in_stock(self):
-        return self.stock_quantity > 0 and self.is_available
+        return self.stock > 0 and self.available
     
     class Meta:
-        ordering = ['-created_at']
+        ordering = ('name',)
+        verbose_name = 'Vendor Product'
+        verbose_name_plural = 'Vendor Products'
+    
+    def __str__(self):
+        return f"{self.name} ({self.vendor.business_name})"
+
+
+class VendorProductVariant(models.Model):
+    """Product variants for vendor products (like main app)"""
+    product = models.ForeignKey(VendorProduct, related_name='variants', on_delete=models.CASCADE)
+    color_name = models.CharField(max_length=50)
+    color_code = models.CharField(max_length=20, blank=True)
+    image = models.ImageField(upload_to='vendor_product_variants')
+    stock = models.IntegerField(default=0)
+    is_default = models.BooleanField(default=False)
+    
+    class Meta:
+        unique_together = ('product', 'color_name')
+    
+    def __str__(self):
+        return f"{self.product.name} - {self.color_name}"
 
 
 class VendorOrder(models.Model):
@@ -108,6 +186,7 @@ class VendorOrder(models.Model):
     # Customer information
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='vendor_orders')
     product = models.ForeignKey(VendorProduct, on_delete=models.CASCADE, related_name='orders')
+    variant = models.ForeignKey(VendorProductVariant, on_delete=models.SET_NULL, null=True, blank=True)
     
     # Order details
     quantity = models.IntegerField(default=1)
@@ -123,11 +202,16 @@ class VendorOrder(models.Model):
     payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='authorized')
     
     # Vendor fulfillment
-    vendor_order_id = models.CharField(max_length=100, blank=True, help_text="Vendor's order reference")
+    vendor_order_id = models.CharField(max_length=100, blank=True)
     vendor_confirmed_at = models.DateTimeField(null=True, blank=True)
     
-    # Shipping
+    # Shipping (using existing shipping system)
     shipping_address = models.TextField()
+    country = models.CharField(max_length=100, blank=True)
+    state = models.CharField(max_length=100, blank=True)
+    shipping_method = models.CharField(max_length=50, blank=True)
+    shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
     tracking_number = models.CharField(max_length=100, blank=True)
     shipped_at = models.DateTimeField(null=True, blank=True)
     

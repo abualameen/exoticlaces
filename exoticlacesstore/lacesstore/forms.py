@@ -14,6 +14,15 @@ class SignUpForm(UserCreationForm):
     phonenumber = forms.CharField(max_length=20, required=False)
     email = forms.EmailField(max_length=250, help_text='eg. youremail@gmail.com')
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox)
+
+
+    honeypot = forms.CharField(required=False, widget=forms.HiddenInput)
+    
+    def clean_honeypot(self):
+        honeypot = self.cleaned_data.get('honeypot')
+        if honeypot:
+            raise forms.ValidationError("Spam detected.")
+        return honeypot
     
 
     class Meta:

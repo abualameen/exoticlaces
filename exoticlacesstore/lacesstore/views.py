@@ -49,18 +49,67 @@ from .utils import is_disposable_email, is_suspicious_username
 
 
 
-# Create your views here.
+# # Create your views here.
+# def home(request, category_slug=None):
+#     category_page = None
+#     products = None
+#     if category_slug!=None:
+#         category_page = get_object_or_404(Category, slug=category_slug)
+#         products = Product.objects.filter(category=category_page, available=True)
+#     else:
+#         products = Product.objects.all().filter(available=True)
+#     active_currency = request.session.get("currency", "NGN")
+
+#     return render(request, 'home.html', {'category': category_page, 'products': products, 'currency':active_currency})
+
+
+from vendor_products.models import VendorProduct
+
 def home(request, category_slug=None):
     category_page = None
     products = None
-    if category_slug!=None:
+    vendor_products = None
+    
+    if category_slug != None:
         category_page = get_object_or_404(Category, slug=category_slug)
         products = Product.objects.filter(category=category_page, available=True)
+        # ✅ Also get vendor products in this category
+        vendor_products = VendorProduct.objects.filter(category=category_page, status='active', available=True)
     else:
         products = Product.objects.all().filter(available=True)
+        # ✅ Get active vendor products
+        vendor_products = VendorProduct.objects.filter(status='active', available=True)
+    
     active_currency = request.session.get("currency", "NGN")
+    
+    # ✅ Combined products for display (with distinction)
+    all_products = []
+    
+    # Add main products with type indicator
+    for product in products:
+        all_products.append({
+            'product': product,
+            'type': 'main',
+            'is_vendor': False,
+        })
+    
+    # Add vendor products with type indicator
+    for vp in vendor_products:
+        all_products.append({
+            'product': vp,
+            'type': 'vendor',
+            'is_vendor': True,
+        })
 
-    return render(request, 'home.html', {'category': category_page, 'products': products, 'currency':active_currency})
+    return render(request, 'home.html', {
+        'category': category_page, 
+        'products': products,
+        'vendor_products': vendor_products,
+        'all_products': all_products,
+        'currency': active_currency,
+        'is_vendor_section': True,
+    })
+
 
 
 def aboutPage(request):
