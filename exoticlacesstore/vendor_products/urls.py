@@ -1,10 +1,11 @@
 from django.urls import path
 from . import views
+from . import *
 
 app_name = 'vendor_products'
 
 urlpatterns = [
-    # Product browsing
+ 
     path('', views.vendor_product_list, name='product_list'),
     
     # Product detail by ID
