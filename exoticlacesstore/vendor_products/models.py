@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from decimal import Decimal
-from lacesstore.models import Category  # ✅ Import Category from main app
+from lacesstore.models import Category  
 
 class Vendor(models.Model):
     """Business partner/vendor who supplies products"""
