@@ -20,7 +20,9 @@ class VendorProductAdmin(admin.ModelAdmin):
     search_fields = ['name', 'slug', 'vendor__business_name']
     prepopulated_fields = {'slug': ('name',)}
     inlines = [VendorProductVariantInline]
-    readonly_fields = ['youtube_video_id']  # ✅ Make it read-only
+    
+    # ✅ Add all auto-generated fields to readonly_fields
+    readonly_fields = ['youtube_video_id', 'created', 'updated']
     
     fieldsets = (
         ('Basic Information', {

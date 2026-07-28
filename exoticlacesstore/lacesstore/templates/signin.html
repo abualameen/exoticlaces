@@ -15,14 +15,25 @@
             <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                 {% for message in messages %}
                     <div class="alert 
-                        {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} 
+                        {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-warning{% else %}alert-{{ message.tags }}{% endif %} 
                         alert-dismissible fade show" 
                         role="alert">
-                        {{ message|safe }}  {# ✅ Allow HTML in messages #}
+                        {{ message|safe }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
+                {% endfor %}
+                
+                <!-- ✅ Resend Confirmation Link - Shows when there's a confirmation-related message -->
+                {% for message in messages %}
+                    {% if "confirm" in message|lower or "activate" in message|lower or "confirmation" in message|lower %}
+                        <div class="text-center mt-2">
+                            <a href="{% url 'resend_confirmation' %}" class="text-primary">
+                                <small><i class="fas fa-envelope"></i> Didn't receive the email? Click here to resend.</small>
+                            </a>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
@@ -54,19 +65,6 @@
                         <small>Forgot your password?</small>
                     </a>
                 </div>
-                
-                <!-- ✅ Resend Confirmation Link (shown only if there's a message) -->
-                {% if messages %}
-                    {% for message in messages %}
-                        {% if "confirm" in message|lower or "activate" in message|lower %}
-                            <div class="text-center mt-2">
-                                <a href="{% url 'resend_confirmation' %}" class="text-primary">
-                                    <small>Didn't receive the email? Click here to resend.</small>
-                                </a>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
                 <br>
             </div>
         </div>
