@@ -17,9 +17,10 @@ class VendorAdmin(admin.ModelAdmin):
 class VendorProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'category', 'vendor', 'price', 'stock', 'available', 'status']
     list_filter = ['status', 'available', 'category', 'vendor']
-    search_fields = ['name', 'sku', 'vendor__business_name']
+    search_fields = ['name', 'slug', 'vendor__business_name']
     prepopulated_fields = {'slug': ('name',)}
     inlines = [VendorProductVariantInline]
+    readonly_fields = ['youtube_video_id']  # ✅ Make it read-only
     
     fieldsets = (
         ('Basic Information', {
@@ -36,7 +37,8 @@ class VendorProductAdmin(admin.ModelAdmin):
         }),
         ('YouTube Video', {
             'fields': ('youtube_video_url', 'youtube_video_id'),
-            'classes': ('collapse',)
+            'classes': ('collapse',),
+            'description': 'Paste the YouTube video URL (e.g., https://www.youtube.com/watch?v=XXXXXXXXXXX)'
         }),
         ('Inventory & Status', {
             'fields': ('stock', 'available', 'status')
@@ -62,6 +64,7 @@ class VendorOrderAdmin(admin.ModelAdmin):
     actions = ['mark_as_secured', 'capture_payment_action', 'cancel_order_action']
     
     def mark_as_secured(self, request, queryset):
+        from django.utils import timezone
         queryset.update(status='secured', vendor_confirmed_at=timezone.now())
         self.message_user(request, f"✅ {queryset.count()} orders marked as secured.")
     mark_as_secured.short_description = "Mark selected orders as SECURED (vendor confirmed)"
