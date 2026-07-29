@@ -5,174 +5,138 @@
 {% block title %}{{ product.name }} - Partner Product{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'vendor_products:product_list' %}">Partner Products</a></li>
-            <li class="breadcrumb-item active">{{ product.name }}</li>
-        </ol>
-    </nav>
+<div class="container py-5">
+    <div class="row mt-5">
 
-    <div class="row">
-        <!-- Product Image -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="product-image-wrapper" style="position: relative;">
-                    <span class="badge badge-info" style="position: absolute; top: 15px; left: 15px; z-index: 2; padding: 8px 15px; font-size: 0.9rem;">
-                        <i class="fas fa-handshake"></i> Partner Product
-                    </span>
-                    {% if product.image %}
-                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="max-height: 500px; object-fit: contain; padding: 20px;">
-                    {% endif %}
-                </div>
-                <div class="card-body text-center">
-                    <h5 class="card-title">{{ product.name }}</h5>
-                    <p class="text-muted">By: {{ product.vendor.business_name }}</p>
-                </div>
+        <!-- Main Image -->
+        <div class="col-md-6 text-center">
+            <div class="position-relative">
+                <span class="badge badge-info" style="position: absolute; top: 10px; left: 10px; z-index: 10; padding: 8px 15px; font-size: 0.9rem;">
+                    <i class="fas fa-handshake"></i> Partner Product
+                </span>
+                <img id="mainImage" src="{% if product.image %}{{ product.image.url }}{% endif %}" class="img-fluid" style="max-height:500px; width:100%; object-fit:contain;">
             </div>
         </div>
 
-        <!-- Product Details -->
+        <!-- Product Info -->
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0"><i class="fas fa-info-circle"></i> Product Details</h4>
+            <h2>{{ product.name }}</h2>
+            <p class="text-muted">By: {{ product.vendor.business_name }}</p>
+            <h5 class="text-info">
+                {{ product.price|money:currency }}
+            </h5>
+            <p class="mt-3">{{ product.description }}</p>
+
+            <!-- Product Specifications -->
+            <div class="mt-4">
+                <strong>Product Details:</strong>
+                <div class="table-responsive mt-2">
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                            {% if product.fabric_type %}
+                            <tr>
+                                <td><strong>Fabric Type</strong></td>
+                                <td>{{ product.fabric_type }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if product.length %}
+                            <tr>
+                                <td><strong>Length</strong></td>
+                                <td>{{ product.length }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if product.color %}
+                            <tr>
+                                <td><strong>Color</strong></td>
+                                <td>{{ product.color }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if product.weight %}
+                            <tr>
+                                <td><strong>Weight</strong></td>
+                                <td>{{ product.weight }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if product.material %}
+                            <tr>
+                                <td><strong>Material</strong></td>
+                                <td>{{ product.material }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if product.origin %}
+                            <tr>
+                                <td><strong>Origin</strong></td>
+                                <td>{{ product.origin }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td><strong>Delivery</strong></td>
+                                <td><i class="fas fa-truck"></i> {{ product.get_delivery_range }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Stock</strong></td>
+                                <td>{% if product.stock > 0 %}{{ product.stock }} available{% else %}<span class="text-danger">Out of Stock</span>{% endif %}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="card-body">
-                    <h2>{{ product.name }}</h2>
-                    <p class="text-muted">{{ product.description }}</p>
+            </div>
 
-                    <!-- Product Specifications -->
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <strong>Price:</strong>
-                            <h3 class="text-success">{{ product.price|money:currency }}</h3>
-                        </div>
-                        <div class="col-6">
-                            <strong>Delivery:</strong>
-                            <p><i class="fas fa-truck"></i> {{ product.get_delivery_range }}</p>
-                        </div>
-                    </div>
+            <!-- YouTube Video -->
+            {% if product.youtube_video_id %}
+            <div class="mt-4">
+                <h5><i class="fab fa-youtube text-danger"></i> Watch Product Video</h5>
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe 
+                        class="embed-responsive-item"
+                        src="https://www.youtube.com/embed/{{ product.youtube_video_id }}" 
+                        title="{{ product.name }}"
+                        frameborder="0"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <small class="text-muted mt-2 d-block">
+                    <a href="https://www.youtube.com/watch?v={{ product.youtube_video_id }}" 
+                       target="_blank" 
+                       class="text-primary">
+                        Watch on YouTube <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </small>
+            </div>
+            {% endif %}
 
-                    <!-- Specifications Table -->
-                    <div class="table-responsive mb-3">
-                        <table class="table table-sm table-bordered">
-                            <thead class="table-light">
-                                <tr>
-                                    <th colspan="2">Product Specifications</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if product.fabric_type %}
-                                <tr>
-                                    <td><strong>Fabric Type</strong></td>
-                                    <td>{{ product.fabric_type }}</td>
-                                </tr>
-                                {% endif %}
-                                {% if product.length %}
-                                <tr>
-                                    <td><strong>Length</strong></td>
-                                    <td>{{ product.length }}</td>
-                                </tr>
-                                {% endif %}
-                                {% if product.color %}
-                                <tr>
-                                    <td><strong>Color</strong></td>
-                                    <td>{{ product.color }}</td>
-                                </tr>
-                                {% endif %}
-                                {% if product.weight %}
-                                <tr>
-                                    <td><strong>Weight</strong></td>
-                                    <td>{{ product.weight }}</td>
-                                </tr>
-                                {% endif %}
-                                {% if product.material %}
-                                <tr>
-                                    <td><strong>Material</strong></td>
-                                    <td>{{ product.material }}</td>
-                                </tr>
-                                {% endif %}
-                                {% if product.origin %}
-                                <tr>
-                                    <td><strong>Origin</strong></td>
-                                    <td>{{ product.origin }}</td>
-                                </tr>
-                                {% endif %}
-                                <tr>
-                                    <td><strong>Stock</strong></td>
-                                    <td>{% if product.stock > 0 %}{{ product.stock }} available{% else %}Out of Stock{% endif %}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Vendor Info -->
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle"></i>
-                        <strong>About the Vendor:</strong> {{ product.vendor.business_name }}
-                        {% if product.vendor.website %}
-                            <br><a href="{{ product.vendor.website }}" target="_blank">Visit Vendor Website</a>
-                        {% endif %}
-                    </div>
-
-                    <!-- YouTube Video -->
-                    {% if product.youtube_video_id %}
-                    <div class="mt-3">
-                        <h5><i class="fab fa-youtube text-danger"></i> Watch Product Video</h5>
-                        <div class="embed-responsive embed-responsive-16by9">
-                            <iframe 
-                                class="embed-responsive-item"
-                                src="https://www.youtube.com/embed/{{ product.youtube_video_id }}" 
-                                title="{{ product.name }}"
-                                frameborder="0"
-                                referrerpolicy="strict-origin-when-cross-origin"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                allowfullscreen>
-                            </iframe>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    <!-- Order Form -->
-                    {% if product.stock > 0 %}
-                        {% if user.is_authenticated %}
-                            <form method="post" action="{% url 'vendor_products:add_to_cart' product.id %}">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <label for="quantity">Quantity:</label>
-                                    <input type="number" name="quantity" id="quantity" 
-                                           class="form-control" value="1" min="1" max="{{ product.stock }}" style="width: 100px;">
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="shipping_address">Shipping Address:</label>
-                                    <textarea name="shipping_address" id="shipping_address" 
-                                              class="form-control" rows="3" 
-                                              placeholder="Enter your full shipping address" required></textarea>
-                                </div>
-                                
-                                <button type="submit" class="btn btn-success btn-lg btn-block mt-3">
-                                    <i class="fas fa-shopping-cart"></i> Add to Cart
-                                </button>
-                            </form>
-                            <small class="text-muted d-block text-center mt-2">
-                                <i class="fas fa-lock text-success"></i> 
-                                Your payment is secure. Funds are held until we confirm availability.
-                            </small>
-                        {% else %}
-                            <div class="alert alert-warning mt-3">
-                                <i class="fas fa-exclamation-circle"></i>
-                                Please <a href="{% url 'signin' %}?next={{ request.path }}">login</a> to order this product.
-                            </div>
-                        {% endif %}
+            <!-- Add to Cart / Order Now -->
+            <div class="mt-4">
+                {% if product.stock > 0 %}
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'vendor_products:add_to_cart' product.id %}" class="btn btn-secondary btn-lg btn-block">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </a>
+                        <small class="text-muted d-block text-center mt-2">
+                            <i class="fas fa-lock text-success"></i> 
+                            Payment is secure. Funds held until we confirm availability.
+                        </small>
                     {% else %}
-                        <div class="alert alert-danger mt-3">
-                            <i class="fas fa-exclamation-circle"></i> This product is currently out of stock.
-                        </div>
+                        <a href="{% url 'signin' %}?next={{ request.path }}" class="btn btn-secondary btn-lg btn-block">
+                            <i class="fas fa-sign-in-alt"></i> Login to Order
+                        </a>
                     {% endif %}
-                </div>
+                {% else %}
+                    <button class="btn btn-secondary btn-lg btn-block" disabled>
+                        <i class="fas fa-times-circle"></i> Out of Stock
+                    </button>
+                {% endif %}
+            </div>
+
+            <!-- Vendor Info -->
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-info-circle"></i>
+                <strong>About the Vendor:</strong> {{ product.vendor.business_name }}
+                {% if product.vendor.website %}
+                    <br><a href="{{ product.vendor.website }}" target="_blank">Visit Vendor Website <i class="fas fa-external-link-alt"></i></a>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -201,10 +165,6 @@
         width: 100%;
         height: 100%;
         border: 0;
-    }
-    .product-image-wrapper {
-        background: #f8f9fa;
-        border-radius: 8px;
     }
 </style>
 {% endblock %}

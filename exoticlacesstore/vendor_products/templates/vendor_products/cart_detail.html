@@ -2,16 +2,16 @@
 {% load static %}
 {% load currency_filters %}
 
-{% block title %}Vendor Cart - Partner Products{% endblock %}
+{% block title %}Partner Cart - Partner Products{% endblock %}
 
 {% block content %}
 <div class="container py-4">
-    <h1 class="text-center mb-4">Your Partner Products Cart</h1>
+    <h1 class="text-center mb-4">Your Partner Cart</h1>
     
     {% if not cart_items %}
         <div class="text-center">
             <div class="alert alert-info">
-                <i class="fas fa-info-circle"></i> Your cart is empty.
+                <i class="fas fa-info-circle"></i> Your partner cart is empty.
             </div>
             <a href="{% url 'vendor_products:product_list' %}" class="btn btn-primary">
                 <i class="fas fa-shopping-bag"></i> Browse Partner Products
@@ -22,37 +22,65 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Cart Items</h5>
+                        <h5 class="mb-0">Your Items</h5>
                     </div>
-                    <div class="card-body">
-                        {% for item in cart_items %}
-                            <div class="row mb-3 pb-3 border-bottom">
-                                <div class="col-3">
-                                    {% if item.product.image %}
-                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-fluid" style="max-height: 100px; object-fit: contain;">
-                                    {% endif %}
-                                </div>
-                                <div class="col-5">
-                                    <h6>{{ item.product.name }}</h6>
-                                    <small class="text-muted">By: {{ item.product.vendor.business_name }}</small>
-                                    <p class="mb-0"><small>Delivery: {{ item.product.get_delivery_range }}</small></p>
-                                </div>
-                                <div class="col-2">
-                                    <form method="post" action="{% url 'vendor_products:update_cart' item.id %}">
-                                        {% csrf_token %}
-                                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" class="form-control form-control-sm" style="width: 60px;">
-                                        <button type="submit" class="btn btn-sm btn-secondary mt-1">Update</button>
-                                    </form>
-                                </div>
-                                <div class="col-2 text-right">
-                                    <p class="font-weight-bold">{{ item.get_subtotal|money:currency }}</p>
-                                    <a href="{% url 'vendor_products:remove_from_cart' item.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Remove this item?')">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        {% endfor %}
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Subtotal</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in cart_items %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                {% if item.product.image %}
+                                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px; margin-right: 10px;">
+                                                {% endif %}
+                                                <div>
+                                                    <strong>{{ item.product.name }}</strong>
+                                                    <br>
+                                                    <small class="text-muted">By: {{ item.product.vendor.business_name }}</small>
+                                                    <br>
+                                                    <small class="text-muted">Delivery: {{ item.product.get_delivery_range }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <form method="post" action="{% url 'vendor_products:update_cart' item.id %}">
+                                                {% csrf_token %}
+                                                <div class="d-flex align-items-center">
+                                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" class="form-control form-control-sm" style="width: 60px;">
+                                                    <button type="submit" class="btn btn-sm btn-secondary ml-1">Update</button>
+                                                </div>
+                                            </form>
+                                        </td>
+                                        <td>{{ item.product.price|money:currency }}</td>
+                                        <td><strong>{{ item.get_subtotal|money:currency }}</strong></td>
+                                        <td>
+                                            <a href="{% url 'vendor_products:remove_from_cart' item.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Remove this item?')">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                </div>
+                
+                <div class="mt-3">
+                    <a href="{% url 'vendor_products:product_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Continue Shopping
+                    </a>
                 </div>
             </div>
             
@@ -62,33 +90,193 @@
                         <h5 class="mb-0">Order Summary</h5>
                     </div>
                     <div class="card-body">
+                        <!-- Subtotal -->
                         <div class="d-flex justify-content-between">
-                            <span>Total Items:</span>
-                            <span>{{ total_items }}</span>
+                            <span>Subtotal:</span>
+                            <span><strong id="product-total">{{ total|money:currency }}</strong></span>
                         </div>
-                        <div class="d-flex justify-content-between mt-2">
-                            <span><strong>Total:</strong></span>
-                            <span><strong>{{ total|money:currency }}</strong></span>
+                        
+                        <!-- Hidden data for calculations -->
+                        <div id="cart-data" 
+                             data-total-ngn="{{ total }}" 
+                             data-currency="{{ currency }}"
+                             style="display:none;">
                         </div>
+                        
+                        <!-- Shipping Section -->
                         <hr>
-                        <div class="alert alert-info small">
-                            <i class="fas fa-info-circle"></i>
-                            Payment will be authorized (held) until we confirm availability.
-                            No charges will be made until we secure your items.
+                        <div class="form-group">
+                            <label for="country"><strong>Country</strong></label>
+                            <select id="country" class="form-control" aria-label="Country">
+                                <option value="">Select Country</option>
+                                <option value="NG">Nigeria</option>
+                                <option value="US">United States</option>
+                                <option value="GB">United Kingdom</option>
+                                <option value="AT">Austria</option>
+                                <option value="AU">Australia</option>
+                                <option value="CA">Canada</option>
+                                <option value="GH">Ghana</option>
+                                <option value="BJ">Benin</option>
+                                <option value="BF">Burkina Faso</option>
+                                <option value="CI">Côte d'Ivoire</option>
+                                <option value="GW">Guinea-Bissau</option>
+                                <option value="ML">Mali</option>
+                                <option value="NE">Niger</option>
+                                <option value="SN">Senegal</option>
+                                <option value="TG">Togo</option>
+                                <option value="CM">Cameroon</option>
+                                <option value="CF">Central African Republic</option>
+                                <option value="TD">Chad</option>
+                                <option value="CG">Republic of the Congo</option>
+                                <option value="GQ">Equatorial Guinea</option>
+                                <option value="GA">Gabon</option>
+                            </select>
                         </div>
-                        <form method="post" action="{% url 'vendor_products:checkout' %}">
+                        
+                        <div class="form-group">
+                            <label for="state"><strong>State</strong></label>
+                            <input type="text" id="state" class="form-control" placeholder="Enter State">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="shipping_method"><strong>Shipping Method</strong></label>
+                            <select id="shipping_method" class="form-control" onchange="handleShippingSelection(this)">
+                                <option value="">Select Shipping Method</option>
+                                <option value="seller">Seller Shipping (Car/Bus Waybill)</option>
+                                <option value="dhl">DHL Express</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Shipping Cost Display -->
+                        <div id="shipping-details" style="display:none;">
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <span>Shipping:</span>
+                                <span id="shipping-cost-display"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Grand Total -->
+                        <hr>
+                        <div class="d-flex justify-content-between font-weight-bold">
+                            <span style="font-size: 1.2rem;">Grand Total:</span>
+                            <span style="font-size: 1.2rem; color: #28a745;" id="grand-total-display">{{ total|money:currency }}</span>
+                        </div>
+                        
+                        <!-- Trust & Security -->
+                        <div class="mt-3">
+                            <div class="alert alert-info small">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>How it works:</strong> Your payment will be authorized (held) until we confirm availability. 
+                                No charges will be made until we secure your items.
+                            </div>
+                            <div class="text-center">
+                                <span class="badge badge-success mr-1">
+                                    <i class="fas fa-lock"></i> Secure
+                                </span>
+                                <span class="badge badge-info mr-1">
+                                    <i class="fas fa-shield-alt"></i> Protected
+                                </span>
+                                <span class="badge badge-warning">
+                                    <i class="fas fa-handshake"></i> Islamic Compliant
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Checkout Button -->
+                        <form method="post" action="{% url 'vendor_products:checkout' %}" id="checkout-form">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-success btn-block btn-lg">
+                            <input type="hidden" name="shipping_cost" id="shipping_cost_input" value="0">
+                            <button type="submit" class="btn btn-success btn-block btn-lg mt-3" id="checkout-btn" disabled>
                                 <i class="fas fa-lock"></i> Proceed to Checkout
                             </button>
+                            <small class="text-muted d-block text-center mt-1">
+                                <i class="fas fa-credit-card"></i> Paystack Secured Payment
+                            </small>
                         </form>
-                        <a href="{% url 'vendor_products:product_list' %}" class="btn btn-link btn-block">
-                            Continue Shopping
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
     {% endif %}
 </div>
-{% endblock %}
+
+<script>
+    // Get cart data
+    const cartData = document.getElementById('cart-data');
+    const productTotal = parseFloat(cartData.dataset.totalNgn || 0);
+    const currency = cartData.dataset.currency || 'NGN';
+    
+    function formatCurrency(amount) {
+        if (currency === 'NGN') return '₦' + amount.toLocaleString();
+        if (currency === 'USD') return '$' + amount.toLocaleString();
+        if (currency === 'GHS') return '₵' + amount.toLocaleString();
+        if (currency === 'XOF') return 'CFA ' + amount.toLocaleString();
+        return amount.toLocaleString();
+    }
+    
+    function requiredFieldsFilled() {
+        const country = document.getElementById('country').value;
+        const state = document.getElementById('state').value.trim();
+        return country && state;
+    }
+    
+    function handleShippingSelection(select) {
+        if (!requiredFieldsFilled()) {
+            alert('Please select your country and enter your state first.');
+            select.value = '';
+            return;
+        }
+        
+        const method = select.value;
+        if (method === 'dhl') {
+            alert('DHL Express shipping is coming soon! Please select "Seller Shipping" for now.');
+            select.value = '';
+            return;
+        }
+        
+        if (method === 'seller') {
+            applyShipping();
+        }
+    }
+    
+    function applyShipping() {
+        const country = document.getElementById('country').value;
+        const state = document.getElementById('state').value;
+        const method = document.getElementById('shipping_method').value;
+        
+        if (!method) return;
+        
+        fetch('/shipping/set-shipping/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ method, country, state })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.shipping) {
+                const shippingCost = parseFloat(data.shipping.amount_ngn);
+                const grandTotal = productTotal + shippingCost;
+                
+                document.getElementById('shipping-details').style.display = 'block';
+                document.getElementById('shipping-cost-display').innerHTML = formatCurrency(shippingCost);
+                document.getElementById('grand-total-display').innerHTML = formatCurrency(grandTotal);
+                document.getElementById('shipping_cost_input').value = shippingCost;
+                document.getElementById('checkout-btn').disabled = false;
+                document.getElementById('checkout-btn').classList.remove('btn-secondary');
+                document.getElementById('checkout-btn').classList.add('btn-success');
+                
+                // Show success message
+                const shippingLabel = data.shipping.label || 'Seller Shipping';
+                document.getElementById('shipping-cost-display').innerHTML += ` <small>(${shippingLabel})</small>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error calculating shipping. Please try again.');
+        });
+    }
+</script>

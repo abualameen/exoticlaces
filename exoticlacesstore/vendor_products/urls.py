@@ -16,7 +16,6 @@ urlpatterns = [
     path('checkout/', views.checkout, name='checkout'),
     
     # Order management
-    path('place-order/<int:product_id>/', views.place_order_request, name='place_order'),
     path('order-success/<int:order_id>/', views.order_request_success, name='order_success'),
     
     # Admin actions
