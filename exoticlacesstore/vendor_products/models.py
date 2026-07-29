@@ -231,3 +231,42 @@ class VendorOrder(models.Model):
     
     class Meta:
         ordering = ['-created_at']
+
+
+
+
+class VendorCart(models.Model):
+    """Cart for vendor products (separate from main cart)"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='vendor_carts')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"Vendor Cart - {self.user.username}"
+    
+    def get_total(self):
+        total = 0
+        for item in self.items.all():
+            total += item.product.price * item.quantity
+        return total
+    
+    def get_total_items(self):
+        return sum(item.quantity for item in self.items.all())
+    
+    def clear(self):
+        self.items.all().delete()
+
+
+class VendorCartItem(models.Model):
+    """Items in vendor cart"""
+    cart = models.ForeignKey(VendorCart, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(VendorProduct, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    shipping_address = models.TextField()
+    added_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.product.name} x {self.quantity}"
+    
+    def get_subtotal(self):
+        return self.product.price * self.quantity

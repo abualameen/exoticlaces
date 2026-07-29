@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load currency_filters %}
+
+{% block title %}Vendor Cart - Partner Products{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="text-center mb-4">Your Partner Products Cart</h1>
+    
+    {% if not cart_items %}
+        <div class="text-center">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Your cart is empty.
+            </div>
+            <a href="{% url 'vendor_products:product_list' %}" class="btn btn-primary">
+                <i class="fas fa-shopping-bag"></i> Browse Partner Products
+            </a>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Cart Items</h5>
+                    </div>
+                    <div class="card-body">
+                        {% for item in cart_items %}
+                            <div class="row mb-3 pb-3 border-bottom">
+                                <div class="col-3">
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-fluid" style="max-height: 100px; object-fit: contain;">
+                                    {% endif %}
+                                </div>
+                                <div class="col-5">
+                                    <h6>{{ item.product.name }}</h6>
+                                    <small class="text-muted">By: {{ item.product.vendor.business_name }}</small>
+                                    <p class="mb-0"><small>Delivery: {{ item.product.get_delivery_range }}</small></p>
+                                </div>
+                                <div class="col-2">
+                                    <form method="post" action="{% url 'vendor_products:update_cart' item.id %}">
+                                        {% csrf_token %}
+                                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" class="form-control form-control-sm" style="width: 60px;">
+                                        <button type="submit" class="btn btn-sm btn-secondary mt-1">Update</button>
+                                    </form>
+                                </div>
+                                <div class="col-2 text-right">
+                                    <p class="font-weight-bold">{{ item.get_subtotal|money:currency }}</p>
+                                    <a href="{% url 'vendor_products:remove_from_cart' item.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Remove this item?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <span>Total Items:</span>
+                            <span>{{ total_items }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2">
+                            <span><strong>Total:</strong></span>
+                            <span><strong>{{ total|money:currency }}</strong></span>
+                        </div>
+                        <hr>
+                        <div class="alert alert-info small">
+                            <i class="fas fa-info-circle"></i>
+                            Payment will be authorized (held) until we confirm availability.
+                            No charges will be made until we secure your items.
+                        </div>
+                        <form method="post" action="{% url 'vendor_products:checkout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-block btn-lg">
+                                <i class="fas fa-lock"></i> Proceed to Checkout
+                            </button>
+                        </form>
+                        <a href="{% url 'vendor_products:product_list' %}" class="btn btn-link btn-block">
+                            Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

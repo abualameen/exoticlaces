@@ -55,7 +55,7 @@
                         </div>
                     </div>
 
-                    <!-- Specifications -->
+                    <!-- Specifications Table -->
                     <div class="table-responsive mb-3">
                         <table class="table table-sm table-bordered">
                             <thead class="table-light">
@@ -135,15 +135,38 @@
                     </div>
                     {% endif %}
 
-                    <!-- Order Button -->
+                    <!-- Order Form -->
                     {% if product.stock > 0 %}
-                        <a href="{% url 'vendor_products:place_order' product.id %}" class="btn btn-success btn-lg btn-block mt-3">
-                            <i class="fas fa-shopping-cart"></i> Order Now
-                        </a>
-                        <small class="text-muted d-block text-center mt-2">
-                            <i class="fas fa-lock text-success"></i> 
-                            Your payment is secure. Funds are held until we confirm availability.
-                        </small>
+                        {% if user.is_authenticated %}
+                            <form method="post" action="{% url 'vendor_products:add_to_cart' product.id %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="quantity">Quantity:</label>
+                                    <input type="number" name="quantity" id="quantity" 
+                                           class="form-control" value="1" min="1" max="{{ product.stock }}" style="width: 100px;">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="shipping_address">Shipping Address:</label>
+                                    <textarea name="shipping_address" id="shipping_address" 
+                                              class="form-control" rows="3" 
+                                              placeholder="Enter your full shipping address" required></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-success btn-lg btn-block mt-3">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </form>
+                            <small class="text-muted d-block text-center mt-2">
+                                <i class="fas fa-lock text-success"></i> 
+                                Your payment is secure. Funds are held until we confirm availability.
+                            </small>
+                        {% else %}
+                            <div class="alert alert-warning mt-3">
+                                <i class="fas fa-exclamation-circle"></i>
+                                Please <a href="{% url 'signin' %}?next={{ request.path }}">login</a> to order this product.
+                            </div>
+                        {% endif %}
                     {% else %}
                         <div class="alert alert-danger mt-3">
                             <i class="fas fa-exclamation-circle"></i> This product is currently out of stock.

@@ -9,14 +9,14 @@ import requests
 import json
 from decimal import Decimal
 
-from .models import VendorProduct, VendorOrder
+from .models import VendorProduct, VendorOrder, VendorCart, VendorCartItem
 from lacesstore.models import Customer
-from exoticlacesstore.utils.currency import get_symbol  # ✅ Add this import
+from exoticlacesstore.utils.currency import get_symbol
 
 
 def vendor_product_list(request):
     """Display all active vendor products"""
-    products = VendorProduct.objects.filter(status='active', available=True)  # ✅ Use 'available' not 'is_available'
+    products = VendorProduct.objects.filter(status='active', available=True)
     
     # Get currency
     active_currency = request.session.get("currency", "NGN")
@@ -29,7 +29,7 @@ def vendor_product_list(request):
     return render(request, 'vendor_products/product_list.html', context)
 
 
-def vendor_product_detail(request, product_id):  # ✅ Changed from product_id to match URL
+def vendor_product_detail(request, product_id):
     """Display single vendor product detail"""
     product = get_object_or_404(VendorProduct, id=product_id, status='active')
     
@@ -45,14 +45,168 @@ def vendor_product_detail(request, product_id):  # ✅ Changed from product_id t
 
 
 @login_required
+def add_to_cart(request, product_id):
+    """Add vendor product to vendor cart"""
+    product = get_object_or_404(VendorProduct, id=product_id, status='active')
+    
+    if product.stock <= 0:
+        messages.error(request, "This product is currently out of stock.")
+        return redirect('vendor_products:product_detail', product_id=product.id)
+    
+    if request.method == 'POST':
+        quantity = int(request.POST.get('quantity', 1))
+        shipping_address = request.POST.get('shipping_address', '').strip()
+        
+        if not shipping_address:
+            messages.error(request, "Please provide your shipping address.")
+            return redirect('vendor_products:product_detail', product_id=product.id)
+        
+        if quantity > product.stock:
+            messages.error(request, f"Only {product.stock} items available.")
+            return redirect('vendor_products:product_detail', product_id=product.id)
+        
+        # Get or create vendor cart
+        cart, created = VendorCart.objects.get_or_create(user=request.user)
+        
+        # Check if item already in cart
+        cart_item = VendorCartItem.objects.filter(cart=cart, product=product).first()
+        
+        if cart_item:
+            # Update existing item
+            cart_item.quantity += quantity
+            cart_item.shipping_address = shipping_address
+            cart_item.save()
+            messages.success(request, f"Updated {product.name} quantity in your cart.")
+        else:
+            # Add new item
+            VendorCartItem.objects.create(
+                cart=cart,
+                product=product,
+                quantity=quantity,
+                shipping_address=shipping_address
+            )
+            messages.success(request, f"{product.name} added to your cart!")
+        
+        return redirect('vendor_products:cart_detail')
+    
+    return redirect('vendor_products:product_detail', product_id=product.id)
+
+
+@login_required
+def cart_detail(request):
+    """Display vendor cart"""
+    cart = VendorCart.objects.filter(user=request.user).first()
+    
+    if not cart:
+        cart = VendorCart.objects.create(user=request.user)
+    
+    cart_items = cart.items.all()
+    total = cart.get_total()
+    
+    context = {
+        'cart_items': cart_items,
+        'total': total,
+        'currency': request.session.get("currency", "NGN"),
+        'total_items': cart.get_total_items(),
+    }
+    return render(request, 'vendor_products/cart_detail.html', context)
+
+
+@login_required
+def remove_from_cart(request, item_id):
+    """Remove item from vendor cart"""
+    cart_item = get_object_or_404(VendorCartItem, id=item_id, cart__user=request.user)
+    cart_item.delete()
+    messages.success(request, "Item removed from cart.")
+    return redirect('vendor_products:cart_detail')
+
+
+@login_required
+def update_cart_item(request, item_id):
+    """Update quantity of cart item"""
+    cart_item = get_object_or_404(VendorCartItem, id=item_id, cart__user=request.user)
+    
+    if request.method == 'POST':
+        quantity = int(request.POST.get('quantity', 1))
+        
+        if quantity <= 0:
+            cart_item.delete()
+            messages.success(request, "Item removed from cart.")
+        else:
+            cart_item.quantity = quantity
+            cart_item.save()
+            messages.success(request, "Cart updated.")
+    
+    return redirect('vendor_products:cart_detail')
+
+
+@login_required
+def checkout(request):
+    """Checkout vendor cart - Wa'ad model with Paystack preauthorization"""
+    cart = VendorCart.objects.filter(user=request.user).first()
+    
+    if not cart or not cart.items.exists():
+        messages.error(request, "Your cart is empty.")
+        return redirect('vendor_products:product_list')
+    
+    if request.method == 'POST':
+        cart_items = cart.items.all()
+        total = cart.get_total()
+        
+        # Create a single order for all items
+        order = VendorOrder.objects.create(
+            customer=request.user,
+            product=cart_items.first().product,  # Primary product
+            quantity=sum(item.quantity for item in cart_items),
+            total_amount=total,
+            shipping_address=cart_items.first().shipping_address,
+            status='pending',
+            payment_status='authorized'
+        )
+        
+        # Initialize Paystack Preauthorization
+        try:
+            paystack_data = initialize_paystack_hold(
+                amount=total,
+                email=request.user.email,
+                reference=f"VENDOR-{order.id}-{int(timezone.now().timestamp())}",
+                order_id=order.id
+            )
+            
+            if paystack_data.get('status'):
+                order.paystack_reference = paystack_data['data']['reference']
+                order.paystack_access_code = paystack_data['data']['access_code']
+                order.payment_intent_id = paystack_data['data']['reference']
+                order.save()
+                
+                # Clear the cart
+                cart.clear()
+                
+                # Redirect to Paystack
+                return redirect(paystack_data['data']['authorization_url'])
+            else:
+                messages.error(request, "Payment initialization failed. Please try again.")
+                order.delete()
+                return redirect('vendor_products:cart_detail')
+                
+        except Exception as e:
+            messages.error(request, f"An error occurred: {str(e)}")
+            order.delete()
+            return redirect('vendor_products:cart_detail')
+    
+    return redirect('vendor_products:cart_detail')
+
+
+@login_required
 def place_order_request(request, product_id):
     """
     Wa'ad (Promise to Purchase) - Customer places order request
     Payment is AUTHORIZED (hold) not captured
+    (Legacy - kept for compatibility)
     """
     product = get_object_or_404(VendorProduct, id=product_id, status='active')
     
-    if product.stock <= 0 or not product.available:  # ✅ Use correct field names
+    if product.stock <= 0 or not product.available:
         messages.error(request, "This product is currently out of stock.")
         return redirect('vendor_products:product_detail', product_id=product.id)
     
@@ -78,7 +232,7 @@ def place_order_request(request, product_id):
             payment_status='authorized'
         )
         
-        # ✅ Initialize Paystack Preauthorization (Hold)
+        # Initialize Paystack Preauthorization (Hold)
         try:
             paystack_data = initialize_paystack_hold(
                 amount=total_amount,
@@ -88,13 +242,11 @@ def place_order_request(request, product_id):
             )
             
             if paystack_data.get('status'):
-                # Save Paystack reference
                 order.paystack_reference = paystack_data['data']['reference']
                 order.paystack_access_code = paystack_data['data']['access_code']
                 order.payment_intent_id = paystack_data['data']['reference']
                 order.save()
                 
-                # Redirect to Paystack checkout
                 return redirect(paystack_data['data']['authorization_url'])
             else:
                 messages.error(request, "Payment initialization failed. Please try again.")
@@ -133,7 +285,6 @@ def initialize_paystack_hold(amount, email, reference, order_id):
             ]
         },
         "channels": ["card"],
-        # Hold for 7 days to allow time for manual vendor confirmation
         "expire_after_days": 7
     }
     
@@ -146,11 +297,9 @@ def order_request_success(request, order_id):
     """Order request success page after Paystack redirect"""
     order = get_object_or_404(VendorOrder, id=order_id, customer=request.user)
     
-    # Verify the payment hold was successful
     if order.paystack_reference:
         verification = verify_paystack_payment(order.paystack_reference)
         if verification.get('status'):
-            # Payment is on hold
             messages.success(request, "✅ Your order request has been placed! A temporary hold has been placed on your card. We'll confirm availability within 24 hours.")
         else:
             messages.warning(request, "Your order was placed but we're verifying payment status.")
@@ -190,7 +339,6 @@ def capture_payment(request, order_id):
         messages.error(request, "This order cannot be captured. Status must be 'secured' and payment authorized.")
         return redirect('vendor_products:product_list')
     
-    # ✅ Capture the funds via Paystack
     url = "https://api.paystack.co/transaction/capture"
     headers = {
         "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}",
@@ -236,7 +384,6 @@ def cancel_order_hold(request, order_id):
         messages.error(request, "This payment is not in authorized status.")
         return redirect('vendor_products:product_list')
     
-    # ✅ Void the authorization - no money charged
     url = "https://api.paystack.co/transaction/void"
     headers = {
         "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}",
@@ -267,7 +414,7 @@ def cancel_order_hold(request, order_id):
 
 def vendor_products_home_context(request):
     """Context processor to add vendor products to home page"""
-    products = VendorProduct.objects.filter(status='active', available=True)[:8]  # ✅ Use correct field name
+    products = VendorProduct.objects.filter(status='active', available=True)[:8]
     return {
         'vendor_products': products,
         'has_vendor_products': products.exists(),
@@ -284,7 +431,6 @@ def paystack_webhook(request):
             
             if event == 'charge.success':
                 reference = payload['data']['reference']
-                # Update order status
                 try:
                     order = VendorOrder.objects.get(paystack_reference=reference)
                     order.payment_status = 'captured'
