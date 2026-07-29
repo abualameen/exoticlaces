@@ -150,7 +150,7 @@ class VendorProduct(models.Model):
 
 
 class VendorProductVariant(models.Model):
-    """Product variants for vendor products (like main app)"""
+    """Product variants for vendor products like main abb (like main app)"""
     product = models.ForeignKey(VendorProduct, related_name='variants', on_delete=models.CASCADE)
     color_name = models.CharField(max_length=50)
     color_code = models.CharField(max_length=20, blank=True)
