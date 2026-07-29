@@ -7,6 +7,7 @@
 {% block content %}
 <div class="container py-5">
     <div class="row mt-5">
+
         <!-- Main Image -->
         <div class="col-md-6 text-center">
             <img id="mainImage" src="{% if product.image %}{{ product.image.url }}{% endif %}" class="img-fluid" style="max-height:500px;">
@@ -21,7 +22,33 @@
             </h5>
             <p class="mt-3">{{ product.description }}</p>
 
-            <!-- Product Specifications -->
+            <!-- Color Variants -->
+            {% if product.variants.exists %}
+            <div class="mt-4">
+                <strong>Available Colors:</strong>
+                <div class="d-flex flex-wrap mt-2">
+                    <form id="variantForm">
+                        {% for variant in product.variants.all %}
+                        <label class="variant-thumb mr-2 mb-2" style="cursor:pointer;">
+                            <input 
+                                type="radio" 
+                                name="variant_id" 
+                                value="{{ variant.id }}" 
+                                data-stock="{{ variant.stock }}"
+                                style="display:none;" 
+                                {% if variant.is_default %}checked{% endif %}
+                                onchange="changeImage('{{ variant.image.url }}'); checkVariantStock(this)"
+                            >
+                            <img src="{{ variant.image.url }}" style="width:60px;height:60px;object-fit:cover;border:2px solid #ddd;border-radius:6px;">
+                            <div style="font-size:11px;text-align:center;">{{ variant.color_name }}</div>
+                        </label>
+                        {% endfor %}
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Product Specifications (moved below variants) -->
             <div class="table-responsive mt-3">
                 <table class="table table-bordered table-sm">
                     <tbody>
@@ -61,28 +88,25 @@
                 </table>
             </div>
 
-            <!-- Add to Cart -->
+            <!-- Stock + Add to Cart -->
             <div class="mt-4">
-                {% if product.stock <= 0 %}
-                    <p><b>Out of Stock</b></p>
+                {% if product.variants.exists %}
+                    <button id="addToCartBtn" class="btn btn-secondary">Add to Cart</button>
+                    <p id="stockStatus" style="margin-top:10px;font-weight:bold;"></p>
                 {% else %}
-                    <form method="post" action="{% url 'vendor_products:add_to_cart' product.id %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="quantity">Quantityy:</label>
-                            <input type="number" name="quantity" id="quantity" 
-                                   class="form-control" value="1" min="1" max="{{ product.stock }}" style="width: 100px; display: inline-block;">
-                        </div>
-                        <div class="form-group">
-                            <label for="shipping_address">Shipping Address:</label>
-                            <textarea name="shipping_address" id="shipping_address" 
-                                      class="form-control" rows="2" 
-                                      placeholder="Enter your full shipping address" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-secondary">
-                            <i class="fas fa-shopping-cart"></i> Add to Cart
-                        </button>
-                    </form>
+                    {% if product.stock <= 0 %}
+                        <p><b>Out of Stock</b></p>
+                    {% else %}
+                        <form method="post" action="{% url 'vendor_products:add_to_cart' product.id %}" style="display: inline-block;">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1">
+                            <input type="hidden" name="shipping_address" value="Address will be provided during checkout">
+                            <button type="submit" class="btn btn-secondary">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </form>
+                        <p id="stockStatus" style="margin-top:10px;font-weight:bold;color:green;">In Stock</p>
+                    {% endif %}
                 {% endif %}
             </div>
 
@@ -94,7 +118,7 @@
                     <iframe 
                         class="embed-responsive-item"
                         src="https://www.youtube.com/embed/{{ product.youtube_video_id }}" 
-                        title="{{ product.name }}"
+                        title="{{ product.name }} - Partner Product"
                         frameborder="0"
                         referrerpolicy="strict-origin-when-cross-origin"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -114,7 +138,65 @@
     </div>
 </div>
 
+<!-- JS - Same as main product detail -->
+<script>
+function changeImage(imageUrl){
+    document.getElementById('mainImage').src = imageUrl;
+}
+
+// Handle Add to Cart for variants
+document.addEventListener("DOMContentLoaded", function() {
+    const btn = document.getElementById('addToCartBtn');
+    if(btn){
+        btn.addEventListener('click', function(){
+            const selectedVariant = document.querySelector('input[name="variant_id"]:checked');
+            if(selectedVariant){
+                const variantId = selectedVariant.value;
+                const productId = "{{ product.id }}";
+                // Redirect to add to cart with variant
+                window.location.href = `/vendor-products/add-to-cart/${productId}/?variant=${variantId}`;
+            } else {
+                alert("Please select a color variant.");
+            }
+        });
+    }
+});
+
+function checkVariantStock(radio) {
+    const stock = parseInt(radio.dataset.stock);
+    const btn = document.getElementById("addToCartBtn");
+    const status = document.getElementById("stockStatus");
+
+    if (stock <= 0) {
+        btn.disabled = true;
+        btn.innerText = "Out of Stock";
+        status.innerText = "This variant is out of stock";
+        status.style.color = "red";
+    } else {
+        btn.disabled = false;
+        btn.innerText = "Add to Cart";
+        status.innerText = "In Stock";
+        status.style.color = "green";
+    }
+}
+
+// Auto-check default variant on load
+window.addEventListener("DOMContentLoaded", function () {
+    const checked = document.querySelector('input[name="variant_id"]:checked');
+    if (checked) {
+        checkVariantStock(checked);
+    }
+});
+</script>
+
 <style>
+    .variant-thumb:hover img {
+        border-color: #8B4513 !important;
+    }
+    .variant-thumb input:checked + img {
+        border-color: #8B4513 !important;
+        box-shadow: 0 0 0 2px #8B4513;
+    }
     .embed-responsive {
         position: relative;
         display: block;
