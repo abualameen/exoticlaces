@@ -28,7 +28,7 @@
                         {{ product.get_delivery_range }}
                     </span>
                     <a href="{% url 'vendor_products:product_detail' product.id %}">
-                        <img src="{{ product.main_image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy">
+                        <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy">
                     </a>
                 </div>
                 <div class="product-info">
