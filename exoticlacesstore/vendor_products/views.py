@@ -65,6 +65,7 @@ def get_or_create_cart(request):
         cart, created = VendorCart.objects.get_or_create(session_key=request.session.session_key, user=None)
         return cart
 
+from .models import VendorProduct, VendorOrder, VendorCart, VendorCartItem, VendorProductVariant  # ✅ Add VendorProductVariant
 
 def add_to_cart(request, product_id):
     """Add vendor product to vendor cart (guest allowed)"""
@@ -76,27 +77,30 @@ def add_to_cart(request, product_id):
     if variant_id:
         variant = get_object_or_404(VendorProductVariant, id=variant_id)
     
-    # Check stock (use variant stock if present)
-    if variant:
-        if variant.stock <= 0:
-            messages.error(request, "This variant is out of stock.")
-            return redirect('vendor_products:product_detail', product_id=product.id)
-    else:
-        if product.stock <= 0:
-            messages.error(request, "This product is currently out of stock.")
-            return redirect('vendor_products:product_detail', product_id=product.id)
-    
+    # Handle POST request (from form submission)
     if request.method == 'POST':
         quantity = int(request.POST.get('quantity', 1))
         shipping_address = request.POST.get('shipping_address', '').strip()
         
-        if not shipping_address and not variant:
-            # For non-variant products, you might want to collect shipping address later
-            shipping_address = "Address will be provided during checkout"
-        
-        if quantity > (variant.stock if variant else product.stock):
-            messages.error(request, f"Only {variant.stock if variant else product.stock} items available.")
+        if not shipping_address:
+            messages.error(request, "Please provide your shipping address.")
             return redirect('vendor_products:product_detail', product_id=product.id)
+        
+        # Check stock
+        if variant:
+            if variant.stock <= 0:
+                messages.error(request, "This variant is out of stock.")
+                return redirect('vendor_products:product_detail', product_id=product.id)
+            if quantity > variant.stock:
+                messages.error(request, f"Only {variant.stock} items available for this variant.")
+                return redirect('vendor_products:product_detail', product_id=product.id)
+        else:
+            if product.stock <= 0:
+                messages.error(request, "This product is currently out of stock.")
+                return redirect('vendor_products:product_detail', product_id=product.id)
+            if quantity > product.stock:
+                messages.error(request, f"Only {product.stock} items available.")
+                return redirect('vendor_products:product_detail', product_id=product.id)
         
         # Get or create cart using helper
         cart = get_or_create_cart(request)
@@ -120,6 +124,43 @@ def add_to_cart(request, product_id):
             messages.success(request, f"{product.name} added to your cart!")
         
         return redirect('vendor_products:cart_detail')
+    
+    # Handle GET request (from variant selection)
+    elif request.method == 'GET':
+        # If variant is selected, add to cart with default quantity
+        if variant:
+            if variant.stock <= 0:
+                messages.error(request, "This variant is out of stock.")
+                return redirect('vendor_products:product_detail', product_id=product.id)
+            
+            quantity = 1
+            shipping_address = "Address will be provided during checkout"
+            
+            # Get or create cart using helper
+            cart = get_or_create_cart(request)
+            
+            # Check if item already in cart
+            cart_item = VendorCartItem.objects.filter(cart=cart, product=product, variant=variant).first()
+            
+            if cart_item:
+                cart_item.quantity += quantity
+                cart_item.save()
+                messages.success(request, f"Updated {product.name} quantity in your cart.")
+            else:
+                VendorCartItem.objects.create(
+                    cart=cart,
+                    product=product,
+                    variant=variant,
+                    quantity=quantity,
+                    shipping_address=shipping_address
+                )
+                messages.success(request, f"{product.name} added to your cart!")
+            
+            return redirect('vendor_products:cart_detail')
+        else:
+            # No variant selected, redirect to product detail
+            messages.warning(request, "Please select a color variant.")
+            return redirect('vendor_products:product_detail', product_id=product.id)
     
     return redirect('vendor_products:product_detail', product_id=product.id)
 

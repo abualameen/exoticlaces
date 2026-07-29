@@ -267,12 +267,20 @@ class VendorCartItem(models.Model):
     """Items in vendor cart"""
     cart = models.ForeignKey(VendorCart, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(VendorProduct, on_delete=models.CASCADE)
+    variant = models.ForeignKey(VendorProductVariant, on_delete=models.SET_NULL, null=True, blank=True)
     quantity = models.IntegerField(default=1)
     shipping_address = models.TextField()
     added_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
+        if self.variant:
+            return f"{self.product.name} - {self.variant.color_name} x {self.quantity}"
         return f"{self.product.name} x {self.quantity}"
     
     def get_subtotal(self):
         return self.product.price * self.quantity
+    
+    def image_url(self):
+        if self.variant and self.variant.image:
+            return self.variant.image.url
+        return self.product.image.url
