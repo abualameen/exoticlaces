@@ -70,27 +70,39 @@ def add_to_cart(request, product_id):
     """Add vendor product to vendor cart (guest allowed)"""
     product = get_object_or_404(VendorProduct, id=product_id, status='active')
     
-    if product.stock <= 0:
-        messages.error(request, "This product is currently out of stock.")
-        return redirect('vendor_products:product_detail', product_id=product.id)
+    # Get variant from query params if present
+    variant_id = request.GET.get('variant')
+    variant = None
+    if variant_id:
+        variant = get_object_or_404(VendorProductVariant, id=variant_id)
+    
+    # Check stock (use variant stock if present)
+    if variant:
+        if variant.stock <= 0:
+            messages.error(request, "This variant is out of stock.")
+            return redirect('vendor_products:product_detail', product_id=product.id)
+    else:
+        if product.stock <= 0:
+            messages.error(request, "This product is currently out of stock.")
+            return redirect('vendor_products:product_detail', product_id=product.id)
     
     if request.method == 'POST':
         quantity = int(request.POST.get('quantity', 1))
         shipping_address = request.POST.get('shipping_address', '').strip()
         
-        if not shipping_address:
-            messages.error(request, "Please provide your shipping address.")
-            return redirect('vendor_products:product_detail', product_id=product.id)
+        if not shipping_address and not variant:
+            # For non-variant products, you might want to collect shipping address later
+            shipping_address = "Address will be provided during checkout"
         
-        if quantity > product.stock:
-            messages.error(request, f"Only {product.stock} items available.")
+        if quantity > (variant.stock if variant else product.stock):
+            messages.error(request, f"Only {variant.stock if variant else product.stock} items available.")
             return redirect('vendor_products:product_detail', product_id=product.id)
         
         # Get or create cart using helper
         cart = get_or_create_cart(request)
         
         # Check if item already in cart
-        cart_item = VendorCartItem.objects.filter(cart=cart, product=product).first()
+        cart_item = VendorCartItem.objects.filter(cart=cart, product=product, variant=variant).first()
         
         if cart_item:
             cart_item.quantity += quantity
@@ -101,6 +113,7 @@ def add_to_cart(request, product_id):
             VendorCartItem.objects.create(
                 cart=cart,
                 product=product,
+                variant=variant,
                 quantity=quantity,
                 shipping_address=shipping_address
             )
