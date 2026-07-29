@@ -69,7 +69,7 @@
                     <form method="post" action="{% url 'vendor_products:add_to_cart' product.id %}">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label for="quantity">Quantity:</label>
+                            <label for="quantity">Quantityy:</label>
                             <input type="number" name="quantity" id="quantity" 
                                    class="form-control" value="1" min="1" max="{{ product.stock }}" style="width: 100px; display: inline-block;">
                         </div>
