@@ -7,7 +7,11 @@ echo "=========================================="
 echo "Starting Exotic Laces Store..."
 echo "=========================================="
 
-# Run migrations
+# ✅ Create migrations for any model changes
+echo "Creating migrations if needed..."
+python manage.py makemigrations --noinput || echo "No new migrations needed"
+
+# ✅ Run database migrations
 echo "Running database migrations..."
 python manage.py migrate --noinput
 
