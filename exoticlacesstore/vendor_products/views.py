@@ -44,9 +44,30 @@ def vendor_product_detail(request, product_id):
     return render(request, 'vendor_products/product_detail.html', context)
 
 
-@login_required
+def get_or_create_cart(request):
+    """Get or create a vendor cart for user or session"""
+    if request.user.is_authenticated:
+        cart, created = VendorCart.objects.get_or_create(user=request.user, session_key=None)
+        # If there's a session cart, merge it
+        if request.session.session_key:
+            session_cart = VendorCart.objects.filter(session_key=request.session.session_key, user=None).first()
+            if session_cart:
+                # Move items from session cart to user cart
+                for item in session_cart.items.all():
+                    item.cart = cart
+                    item.save()
+                session_cart.delete()
+        return cart
+    else:
+        # Guest user - use session
+        if not request.session.session_key:
+            request.session.create()
+        cart, created = VendorCart.objects.get_or_create(session_key=request.session.session_key, user=None)
+        return cart
+
+
 def add_to_cart(request, product_id):
-    """Add vendor product to vendor cart"""
+    """Add vendor product to vendor cart (guest allowed)"""
     product = get_object_or_404(VendorProduct, id=product_id, status='active')
     
     if product.stock <= 0:
@@ -65,20 +86,18 @@ def add_to_cart(request, product_id):
             messages.error(request, f"Only {product.stock} items available.")
             return redirect('vendor_products:product_detail', product_id=product.id)
         
-        # Get or create vendor cart
-        cart, created = VendorCart.objects.get_or_create(user=request.user)
+        # Get or create cart using helper
+        cart = get_or_create_cart(request)
         
         # Check if item already in cart
         cart_item = VendorCartItem.objects.filter(cart=cart, product=product).first()
         
         if cart_item:
-            # Update existing item
             cart_item.quantity += quantity
             cart_item.shipping_address = shipping_address
             cart_item.save()
             messages.success(request, f"Updated {product.name} quantity in your cart.")
         else:
-            # Add new item
             VendorCartItem.objects.create(
                 cart=cart,
                 product=product,
@@ -92,14 +111,9 @@ def add_to_cart(request, product_id):
     return redirect('vendor_products:product_detail', product_id=product.id)
 
 
-@login_required
 def cart_detail(request):
-    """Display vendor cart"""
-    cart = VendorCart.objects.filter(user=request.user).first()
-    
-    if not cart:
-        cart = VendorCart.objects.create(user=request.user)
-    
+    """Display vendor cart (guest allowed)"""
+    cart = get_or_create_cart(request)
     cart_items = cart.items.all()
     total = cart.get_total()
     
@@ -112,19 +126,33 @@ def cart_detail(request):
     return render(request, 'vendor_products/cart_detail.html', context)
 
 
-@login_required
 def remove_from_cart(request, item_id):
-    """Remove item from vendor cart"""
-    cart_item = get_object_or_404(VendorCartItem, id=item_id, cart__user=request.user)
+    """Remove item from vendor cart (guest allowed)"""
+    cart = get_or_create_cart(request)
+    cart_item = get_object_or_404(VendorCartItem, id=item_id, cart=cart)
     cart_item.delete()
     messages.success(request, "Item removed from cart.")
     return redirect('vendor_products:cart_detail')
 
 
-@login_required
 def update_cart_item(request, item_id):
-    """Update quantity of cart item"""
-    cart_item = get_object_or_404(VendorCartItem, id=item_id, cart__user=request.user)
+    """Update quantity of cart item (guest allowed)"""
+    cart = get_or_create_cart(request)
+    cart_item = get_object_or_404(VendorCartItem, id=item_id, cart=cart)
+    
+    # Check if quantity is passed via GET (for +/- buttons)
+    if request.method == 'GET':
+        quantity = request.GET.get('quantity')
+        if quantity:
+            quantity = int(quantity)
+            if quantity <= 0:
+                cart_item.delete()
+                messages.success(request, "Item removed from cart.")
+            else:
+                cart_item.quantity = quantity
+                cart_item.save()
+                messages.success(request, "Cart updated.")
+        return redirect('vendor_products:cart_detail')
     
     if request.method == 'POST':
         quantity = int(request.POST.get('quantity', 1))
@@ -140,10 +168,9 @@ def update_cart_item(request, item_id):
     return redirect('vendor_products:cart_detail')
 
 
-@login_required
 def checkout(request):
-    """Checkout vendor cart - Wa'ad model with Paystack preauthorization"""
-    cart = VendorCart.objects.filter(user=request.user).first()
+    """Checkout vendor cart - Wa'ad model with Paystack preauthorization (guest allowed)"""
+    cart = get_or_create_cart(request)
     
     if not cart or not cart.items.exists():
         messages.error(request, "Your cart is empty.")
@@ -153,13 +180,55 @@ def checkout(request):
         cart_items = cart.items.all()
         total = cart.get_total()
         
+        # Get customer info from POST
+        email = request.POST.get('email')
+        first_name = request.POST.get('first_name', '')
+        last_name = request.POST.get('last_name', '')
+        phonenumber = request.POST.get('phonenumber', '')
+        country = request.POST.get('country', '')
+        state = request.POST.get('state', '')
+        shipping_method = request.POST.get('shipping_method', 'seller')
+        
+        if not email:
+            messages.error(request, "Please provide your email address.")
+            return redirect('vendor_products:cart_detail')
+        
+        # Get shipping address from first item
+        shipping_address = cart_items.first().shipping_address
+        
+        # Create or get customer
+        customer = None
+        if request.user.is_authenticated:
+            customer = Customer.objects.filter(user=request.user).first()
+            if not customer:
+                customer = Customer.objects.create(
+                    user=request.user,
+                    email=email,
+                    firstName=first_name,
+                    lastName=last_name,
+                    phonenumber=phonenumber
+                )
+        else:
+            # For guest, try to find existing customer by email
+            customer = Customer.objects.filter(email=email).first()
+            if not customer:
+                customer = Customer.objects.create(
+                    email=email,
+                    firstName=first_name,
+                    lastName=last_name,
+                    phonenumber=phonenumber
+                )
+        
         # Create a single order for all items
         order = VendorOrder.objects.create(
-            customer=request.user,
-            product=cart_items.first().product,  # Primary product
+            customer=request.user if request.user.is_authenticated else None,
+            product=cart_items.first().product,
             quantity=sum(item.quantity for item in cart_items),
             total_amount=total,
-            shipping_address=cart_items.first().shipping_address,
+            shipping_address=shipping_address,
+            country=country,
+            state=state,
+            shipping_method=shipping_method,
             status='pending',
             payment_status='authorized'
         )
@@ -168,7 +237,7 @@ def checkout(request):
         try:
             paystack_data = initialize_paystack_hold(
                 amount=total,
-                email=request.user.email,
+                email=email,
                 reference=f"VENDOR-{order.id}-{int(timezone.now().timestamp())}",
                 order_id=order.id
             )
@@ -195,70 +264,6 @@ def checkout(request):
             return redirect('vendor_products:cart_detail')
     
     return redirect('vendor_products:cart_detail')
-
-
-@login_required
-def place_order_request(request, product_id):
-    """
-    Wa'ad (Promise to Purchase) - Customer places order request
-    Payment is AUTHORIZED (hold) not captured
-    (Legacy - kept for compatibility)
-    """
-    product = get_object_or_404(VendorProduct, id=product_id, status='active')
-    
-    if product.stock <= 0 or not product.available:
-        messages.error(request, "This product is currently out of stock.")
-        return redirect('vendor_products:product_detail', product_id=product.id)
-    
-    if request.method == 'POST':
-        quantity = int(request.POST.get('quantity', 1))
-        shipping_address = request.POST.get('shipping_address')
-        
-        if not shipping_address:
-            messages.error(request, "Please provide your shipping address.")
-            return redirect('vendor_products:product_detail', product_id=product.id)
-        
-        # Calculate total
-        total_amount = product.price * quantity
-        
-        # Create order request
-        order = VendorOrder.objects.create(
-            customer=request.user,
-            product=product,
-            quantity=quantity,
-            total_amount=total_amount,
-            shipping_address=shipping_address,
-            status='pending',
-            payment_status='authorized'
-        )
-        
-        # Initialize Paystack Preauthorization (Hold)
-        try:
-            paystack_data = initialize_paystack_hold(
-                amount=total_amount,
-                email=request.user.email,
-                reference=f"VENDOR-{order.id}-{int(timezone.now().timestamp())}",
-                order_id=order.id
-            )
-            
-            if paystack_data.get('status'):
-                order.paystack_reference = paystack_data['data']['reference']
-                order.paystack_access_code = paystack_data['data']['access_code']
-                order.payment_intent_id = paystack_data['data']['reference']
-                order.save()
-                
-                return redirect(paystack_data['data']['authorization_url'])
-            else:
-                messages.error(request, "Payment initialization failed. Please try again.")
-                order.delete()
-                return redirect('vendor_products:product_detail', product_id=product.id)
-                
-        except Exception as e:
-            messages.error(request, f"An error occurred: {str(e)}")
-            order.delete()
-            return redirect('vendor_products:product_detail', product_id=product.id)
-    
-    return redirect('vendor_products:product_detail', product_id=product.id)
 
 
 def initialize_paystack_hold(amount, email, reference, order_id):

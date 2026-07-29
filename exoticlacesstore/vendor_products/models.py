@@ -236,13 +236,19 @@ class VendorOrder(models.Model):
 
 
 class VendorCart(models.Model):
-    """Cart for vendor products (separate from main cart)"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='vendor_carts')
+    """Cart for vendor products (supports guests)"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='vendor_carts')
+    session_key = models.CharField(max_length=40, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        unique_together = ('user', 'session_key')  # One cart per user or session
+    
     def __str__(self):
-        return f"Vendor Cart - {self.user.username}"
+        if self.user:
+            return f"Vendor Cart - {self.user.username}"
+        return f"Vendor Cart - Session {self.session_key}"
     
     def get_total(self):
         total = 0
