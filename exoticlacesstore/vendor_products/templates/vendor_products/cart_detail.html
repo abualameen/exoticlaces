@@ -113,11 +113,7 @@
                     <td class="text-left">
                         <strong>Subtotal:</strong> 
                         <span id="product_total_display">
-                            {% if currency == "NGN" %}
-                                {{ total|money:currency }}
-                            {% else %}
-                                {{ total_fx|money:currency }}
-                            {% endif %}
+                            {{ total|money:currency }}
                         </span>
                     </td>
                 </tr>
@@ -130,11 +126,7 @@
                         </span>
                         <span id="shipping_cost_display">
                             {% if has_shipping %}
-                                {% if currency == "NGN" %}
-                                    {{ shipping_cost_ngn|money:currency }}
-                                {% else %}
-                                    {{ shipping_cost_fx|money:currency }}
-                                {% endif %}
+                                {{ shipping_cost_ngn|money:currency }}
                             {% endif %}
                         </span>
                     </td>
@@ -145,11 +137,7 @@
                     <td>
                         <strong id="grand_total_display">
                             {% if has_shipping %}
-                                {% if currency == "NGN" %}
-                                    {{ grand_total_ngn|money:currency }}
-                                {% else %}
-                                    {{ grand_total_fx|money:currency }}
-                                {% endif %}
+                                {{ grand_total_ngn|money:currency }}
                             {% endif %}
                         </strong>
                     </td>
