@@ -170,15 +170,43 @@ def add_to_cart(request, product_id, variant_id=None):
 
 def cart_detail(request):
     """Display vendor cart (guest allowed)"""
+    from decimal import Decimal
+    from payments.services.exchange import get_exchange_rate
+    
     cart = get_or_create_cart(request)
     cart_items = cart.items.all()
     total = cart.get_total()
     
+    # ✅ Get shipping from session (like main cart)
+    shipping_data = request.session.get("shipping", {})
+    shipping_cost_ngn = Decimal(str(shipping_data.get("amount_ngn", 0)))
+    shipping_label = shipping_data.get("label")
+    shipping_method = shipping_data.get("method")
+    
+    # ✅ Calculate grand total with shipping
+    grand_total_ngn = total + shipping_cost_ngn
+    
+    # ✅ FX conversion
+    active_currency = request.session.get("currency", "NGN")
+    fx_rate, rate_source = get_exchange_rate(active_currency)
+    
+    total_fx = round(total * Decimal(str(fx_rate)), 2)
+    shipping_fx = round(shipping_cost_ngn * Decimal(str(fx_rate)), 2)
+    grand_total_fx = round(grand_total_ngn * Decimal(str(fx_rate)), 2)
+    
     context = {
         'cart_items': cart_items,
         'total': total,
-        'currency': request.session.get("currency", "NGN"),
+        'total_fx': total_fx,
+        'shipping_cost_ngn': shipping_cost_ngn,
+        'shipping_cost_fx': shipping_fx,
+        'shipping_label': shipping_label,
+        'shipping_method': shipping_method,
+        'grand_total_ngn': grand_total_ngn,
+        'grand_total_fx': grand_total_fx,
+        'currency': active_currency,
         'total_items': cart.get_total_items(),
+        'fx_rate': fx_rate,
     }
     return render(request, 'vendor_products/cart_detail.html', context)
 

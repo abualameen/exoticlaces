@@ -82,9 +82,11 @@
     </div>
 
     <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
-        <!-- ✅ Hidden data element for shipping -->
-        <div id="shipping-data" 
-             data-total-ngn="{{ total|default:'0' }}"
+        <!-- ✅ Hidden data element for totals -->
+        <div id="cart-data" 
+             data-total-ngn="{{ total }}" 
+             data-total-fx="{{ total_fx }}"
+             data-currency="{{ currency }}"
              style="display:none;">
         </div>
 
@@ -105,21 +107,41 @@
                 </tr>
                 <tr>
                     <td class="text-left">
-                        <strong>Subtotal:</strong> <span id="product_total_display">{{ total|money:currency }}</span>
+                        <strong>Subtotal:</strong> 
+                        <span id="product_total_display">
+                            {% if currency == "NGN" %}
+                                {{ total|money:currency }}
+                            {% else %}
+                                {{ total_fx|money:currency }}
+                            {% endif %}
+                        </span>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <strong>Shipping:</strong> <span id="shipping_label_ui"></span>
-                        <span id="shipping_costng_ui" style="display:none"></span>
-                        <span id="shipping_costfx_ui" style="display:none"></span>
+                        <strong>Shipping:</strong> 
+                        <span id="shipping_label_ui">
+                            {% if shipping_label %}{{ shipping_label }}{% else %}Not selected{% endif %}
+                        </span>
+                        <span id="shipping_cost_display" style="display:{% if shipping_cost_ngn > 0 %}inline{% else %}none{% endif %};">
+                            {% if currency == "NGN" %}
+                                {{ shipping_cost_ngn|money:currency }}
+                            {% else %}
+                                {{ shipping_cost_fx|money:currency }}
+                            {% endif %}
+                        </span>
                     </td>
                 </tr>
                 <tr>
                     <td><strong>Grand Total</strong></td>
                     <td>
-                        <strong id="grand_totalng_ui" style="display:none"></strong>
-                        <strong id="grand_totalfx_ui" style="display:none"></strong>
+                        <strong id="grand_total_display">
+                            {% if currency == "NGN" %}
+                                {{ grand_total_ngn|money:currency }}
+                            {% else %}
+                                {{ grand_total_fx|money:currency }}
+                            {% endif %}
+                        </strong>
                     </td>
                 </tr>
             </tbody>
@@ -229,36 +251,62 @@
 
 <!-- JavaScript -->
 <script>
-    // Get total from data attribute
-    function getCartTotal() {
-        const shippingData = document.getElementById('shipping-data');
-        if (shippingData) {
-            return parseFloat(shippingData.dataset.totalNgn) || 0;
+    // Get cart data
+    function getCartData() {
+        const cartData = document.getElementById('cart-data');
+        if (cartData) {
+            return {
+                totalNgn: parseFloat(cartData.dataset.totalNgn) || 0,
+                totalFx: parseFloat(cartData.dataset.totalFx) || 0,
+                currency: cartData.dataset.currency || 'NGN'
+            };
         }
-        return 0;
+        return { totalNgn: 0, totalFx: 0, currency: 'NGN' };
     }
 
-    // Update grand total
-    function updateGrandTotal() {
-        const productTotalEl = document.getElementById('product_total_display');
-        const productTotalText = productTotalEl?.innerText || '0';
-        const productTotal = parseFloat(productTotalText.replace(/[₦,]/g, '')) || 0;
+    // Format currency
+    function formatCurrency(amount, currency) {
+        const symbols = {
+            'NGN': '₦',
+            'USD': '$',
+            'GHS': '₵',
+            'XOF': 'CFA ',
+            'EUR': '€'
+        };
+        const symbol = symbols[currency] || '₦';
+        return symbol + amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Update totals
+    function updateTotals(shippingCost, shippingLabel, currency) {
+        const cartData = getCartData();
+        const total = currency === 'NGN' ? cartData.totalNgn : cartData.totalFx;
+        const grandTotal = total + shippingCost;
         
-        const shippingEl = document.getElementById('shipping_costng_ui');
-        const shippingText = shippingEl?.innerText || '0';
-        const shippingCost = parseFloat(shippingText.replace(/[₦,]/g, '')) || 0;
+        const productDisplay = document.getElementById('product_total_display');
+        const shippingDisplay = document.getElementById('shipping_cost_display');
+        const grandDisplay = document.getElementById('grand_total_display');
+        const labelDisplay = document.getElementById('shipping_label_ui');
         
-        const grandTotal = productTotal + shippingCost;
+        if (productDisplay) {
+            productDisplay.innerText = formatCurrency(total, currency);
+        }
         
-        const grandTotalEl = document.getElementById('grand_totalng_ui');
-        if (grandTotalEl) {
-            const currency = "{{ currency }}";
-            const symbol = currency === 'NGN' ? '₦' : 
-                          currency === 'USD' ? '$' : 
-                          currency === 'GHS' ? '₵' : 
-                          currency === 'XOF' ? 'CFA' : '';
-            grandTotalEl.innerText = `${symbol}${grandTotal.toLocaleString()}`;
-            grandTotalEl.style.display = 'inline';
+        if (shippingDisplay) {
+            if (shippingCost > 0) {
+                shippingDisplay.style.display = 'inline';
+                shippingDisplay.innerText = formatCurrency(shippingCost, currency);
+            } else {
+                shippingDisplay.style.display = 'none';
+            }
+        }
+        
+        if (labelDisplay && shippingLabel) {
+            labelDisplay.innerText = shippingLabel;
+        }
+        
+        if (grandDisplay) {
+            grandDisplay.innerText = formatCurrency(grandTotal, currency);
         }
     }
 
@@ -303,34 +351,15 @@
         .then(res => res.json())
         .then(data => {
             console.log('Shipping data:', data);
-            const currency = "{{ currency }}";
-            const shippingNGN = parseFloat(data.shipping.amount_ngn);
-            const shippingFX = parseFloat(data.shipping.amount_fx);
-            const cartTotalNGN = getCartTotal();
+            const cartData = getCartData();
+            const shippingCost = parseFloat(data.shipping.amount_ngn) || 0;
+            const shippingLabel = data.shipping.label || 'Seller Shipping';
+            const currency = cartData.currency;
             
-            const grandTotalNGN = cartTotalNGN + shippingNGN;
-
-            function format(amount) {
-                if(currency === "NGN") return "₦" + amount.toLocaleString();
-                if(currency === "GHS") return "₵" + amount.toLocaleString();
-                if(currency === "USD") return "$" + amount.toLocaleString();
-                return amount.toLocaleString();
-            }
-
-            document.getElementById("shipping_label_ui").innerText = data.shipping.label;
+            // Update totals with shipping
+            updateTotals(shippingCost, shippingLabel, currency);
             
-            if(currency === "NGN"){
-                document.getElementById("shipping_costng_ui").style.display = "inline";
-                document.getElementById("shipping_costng_ui").innerText = format(shippingNGN);
-                document.getElementById("grand_totalng_ui").style.display = "inline";
-                document.getElementById("grand_totalng_ui").innerText = format(grandTotalNGN);
-            } else {
-                document.getElementById("shipping_costfx_ui").style.display = "inline";
-                document.getElementById("shipping_costfx_ui").innerText = format(shippingFX);
-                document.getElementById("grand_totalfx_ui").style.display = "inline";
-                document.getElementById("grand_totalfx_ui").innerText = format(cartTotalNGN + shippingFX);
-            }
-            
+            // Enable pay button
             document.getElementById("payBtn").disabled = false;
             document.getElementById("payBtn").classList.remove("btn-secondary");
             document.getElementById("payBtn").classList.add("btn-success");
@@ -400,11 +429,14 @@
         form.submit();
     });
 
-    // Call updateGrandTotal on page load if shipping is already selected
+    // Initialize totals on page load
     document.addEventListener('DOMContentLoaded', function() {
-        const shippingEl = document.getElementById('shipping_costng_ui');
-        if (shippingEl && shippingEl.style.display !== 'none') {
-            updateGrandTotal();
+        const shippingCost = parseFloat("{{ shipping_cost_ngn }}") || 0;
+        const shippingLabel = "{{ shipping_label|default:'' }}";
+        const currency = "{{ currency }}";
+        
+        if (shippingCost > 0) {
+            updateTotals(shippingCost, shippingLabel, currency);
         }
     });
 </script>
