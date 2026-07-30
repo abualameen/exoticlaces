@@ -248,7 +248,6 @@ def add_to_cart(request, product_id, variant_id=None):
 #     }
 #     return render(request, 'vendor_products/cart_detail.html', context)
 
-
 def cart_detail(request):
     """Display vendor cart (guest allowed)"""
     from decimal import Decimal
@@ -286,11 +285,12 @@ def cart_detail(request):
         else:
             # ✅ Currency matches, use shipping data
             shipping_cost_ngn = Decimal(str(shipping_data.get("amount_ngn", 0)))
+            shipping_cost_fx = Decimal(str(shipping_data.get("amount_fx", 0)))
             shipping_label = shipping_data.get("label")
             shipping_method = shipping_data.get("method")
             has_shipping = shipping_cost_ngn > 0
     
-    # ✅ Calculate grand total with shipping (in NGN)
+    # ✅ Calculate grand total with shipping
     grand_total_ngn = total + shipping_cost_ngn
     
     # ✅ FX conversion for display
@@ -299,13 +299,11 @@ def cart_detail(request):
     if active_currency != "NGN":
         fx_rate, rate_source = get_exchange_rate(active_currency)
         total_fx = round(total * Decimal(str(fx_rate)), 2)
-        # ✅ Convert shipping cost to FX
-        shipping_cost_fx = round(shipping_cost_ngn * Decimal(str(fx_rate)), 2)
-        # ✅ Convert grand total to FX
+        shipping_fx = round(shipping_cost_ngn * Decimal(str(fx_rate)), 2)
         grand_total_fx = round(grand_total_ngn * Decimal(str(fx_rate)), 2)
     else:
         total_fx = total
-        shipping_cost_fx = shipping_cost_ngn
+        shipping_fx = shipping_cost_ngn
         grand_total_fx = grand_total_ngn
     
     context = {
@@ -313,7 +311,7 @@ def cart_detail(request):
         'total': total,
         'total_fx': total_fx,
         'shipping_cost_ngn': shipping_cost_ngn,
-        'shipping_cost_fx': shipping_cost_fx,
+        'shipping_cost_fx': shipping_fx,
         'shipping_label': shipping_label,
         'shipping_method': shipping_method,
         'grand_total_ngn': grand_total_ngn,
@@ -323,7 +321,6 @@ def cart_detail(request):
         'has_shipping': has_shipping,
     }
     return render(request, 'vendor_products/cart_detail.html', context)
-
 
 
 
