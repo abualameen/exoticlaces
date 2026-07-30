@@ -90,6 +90,8 @@
              data-shipping-ngn="{{ shipping_cost_ngn|default:0 }}"
              data-shipping-fx="{{ shipping_cost_fx|default:0 }}"
              data-shipping-label="{{ shipping_label|default:'' }}"
+             data-grand-total-ngn="{{ grand_total_ngn|default:0 }}"
+             data-grand-total-fx="{{ grand_total_fx|default:0 }}"
              data-has-shipping="{{ has_shipping|yesno:'true,false' }}"
              style="display:none;">
         </div>
@@ -113,7 +115,11 @@
                     <td class="text-left">
                         <strong>Subtotal:</strong> 
                         <span id="product_total_display">
-                            {{ total|money:currency }}
+                            {% if currency == "NGN" %}
+                                {{ total|money:currency }}
+                            {% else %}
+                                {{ total_fx|money:currency }}
+                            {% endif %}
                         </span>
                     </td>
                 </tr>
@@ -126,7 +132,11 @@
                         </span>
                         <span id="shipping_cost_display">
                             {% if has_shipping %}
-                                {{ shipping_cost_ngn|money:currency }}
+                                {% if currency == "NGN" %}
+                                    {{ shipping_cost_ngn|money:currency }}
+                                {% else %}
+                                    {{ shipping_cost_fx|money:currency }}
+                                {% endif %}
                             {% endif %}
                         </span>
                     </td>
@@ -137,7 +147,11 @@
                     <td>
                         <strong id="grand_total_display">
                             {% if has_shipping %}
-                                {{ grand_total_ngn|money:currency }}
+                                {% if currency == "NGN" %}
+                                    {{ grand_total_ngn|money:currency }}
+                                {% else %}
+                                    {{ grand_total_fx|money:currency }}
+                                {% endif %}
                             {% endif %}
                         </strong>
                     </td>
@@ -260,10 +274,17 @@
                 shippingNgn: parseFloat(cartData.dataset.shippingNgn) || 0,
                 shippingFx: parseFloat(cartData.dataset.shippingFx) || 0,
                 shippingLabel: cartData.dataset.shippingLabel || '',
+                grandTotalNgn: parseFloat(cartData.dataset.grandTotalNgn) || 0,
+                grandTotalFx: parseFloat(cartData.dataset.grandTotalFx) || 0,
                 hasShipping: cartData.dataset.hasShipping === 'true'
             };
         }
-        return { totalNgn: 0, totalFx: 0, currency: 'NGN', shippingNgn: 0, shippingFx: 0, shippingLabel: '', hasShipping: false };
+        return { 
+            totalNgn: 0, totalFx: 0, currency: 'NGN', 
+            shippingNgn: 0, shippingFx: 0, shippingLabel: '', 
+            grandTotalNgn: 0, grandTotalFx: 0,
+            hasShipping: false 
+        };
     }
 
     // Format currency
@@ -388,9 +409,15 @@
             console.log('Shipping data:', data);
             if (data.shipping) {
                 const cartData = getCartData();
-                const shippingCost = parseFloat(data.shipping.amount_ngn) || 0;
+                // Get shipping cost in NGN (base currency)
+                const shippingCostNgn = parseFloat(data.shipping.amount_ngn) || 0;
+                // Get the converted shipping cost in the active currency
+                const shippingCostFx = parseFloat(data.shipping.amount_fx) || 0;
                 const shippingLabel = data.shipping.label || 'Seller Shipping';
                 const currency = cartData.currency;
+                
+                // Use the appropriate shipping cost based on currency
+                const shippingCost = currency === 'NGN' ? shippingCostNgn : shippingCostFx;
                 
                 // Update totals with shipping
                 updateTotalsWithShipping(shippingCost, shippingLabel, currency);
@@ -469,7 +496,8 @@
         
         // If shipping exists, show it; otherwise hide
         if (cartData.hasShipping && cartData.shippingNgn > 0) {
-            updateTotalsWithShipping(cartData.shippingNgn, cartData.shippingLabel, cartData.currency);
+            const shippingCost = cartData.currency === 'NGN' ? cartData.shippingNgn : cartData.shippingFx;
+            updateTotalsWithShipping(shippingCost, cartData.shippingLabel, cartData.currency);
         } else {
             resetTotals();
         }
