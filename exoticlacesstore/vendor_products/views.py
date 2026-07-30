@@ -184,6 +184,9 @@ def cart_detail(request):
     shipping_label = shipping_data.get("label")
     shipping_method = shipping_data.get("method")
     
+    print(f"📦 Shipping data from session: {shipping_data}")
+    print(f"📦 Shipping cost: {shipping_cost_ngn}")
+    
     # ✅ Calculate grand total with shipping
     grand_total_ngn = total + shipping_cost_ngn
     
