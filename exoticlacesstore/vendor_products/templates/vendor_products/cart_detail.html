@@ -82,7 +82,7 @@
     </div>
 
     <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
-        <!-- ✅ Hidden data element for totals -->
+        <!-- ✅ Hidden data element for totals - updated with current values -->
         <div id="cart-data" 
              data-total-ngn="{{ total }}" 
              data-total-fx="{{ total_fx|default:0 }}"
@@ -121,10 +121,10 @@
                         </span>
                     </td>
                 </tr>
+                <!-- ✅ Shipping row - only shows when shipping is selected -->
                 <tr id="shipping-row" style="display:{% if has_shipping %}table-row{% else %}none{% endif %};">
                     <td><strong>Shipping:</strong></td>
                     <td>
-                         
                         <span id="shipping_label_ui">
                             {% if shipping_label %}{{ shipping_label }}{% endif %}
                         </span>
@@ -139,6 +139,7 @@
                         </span>
                     </td>
                 </tr>
+                <!-- ✅ Grand Total row - only shows when shipping is selected -->
                 <tr id="grand-total-row" style="display:{% if has_shipping %}table-row{% else %}none{% endif %};">
                     <td><strong>Grand Total</strong></td>
                     <td>
@@ -260,7 +261,7 @@
 
 <!-- JavaScript -->
 <script>
-    // Get cart data
+    // Get cart data from data attribute
     function getCartData() {
         const cartData = document.getElementById('cart-data');
         if (cartData) {
@@ -290,7 +291,17 @@
         return symbol + amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // Update totals after shipping is selected
+    // Update the subtotal display
+    function updateSubtotal() {
+        const cartData = getCartData();
+        const display = document.getElementById('product_total_display');
+        if (display) {
+            const total = cartData.currency === 'NGN' ? cartData.totalNgn : cartData.totalFx;
+            display.innerText = formatCurrency(total, cartData.currency);
+        }
+    }
+
+    // Update totals after shipping is selected or cart changes
     function updateTotalsWithShipping(shippingCost, shippingLabel, currency) {
         const cartData = getCartData();
         const total = currency === 'NGN' ? cartData.totalNgn : cartData.totalFx;
@@ -330,6 +341,24 @@
         document.getElementById("payBtn").disabled = false;
         document.getElementById("payBtn").classList.remove("btn-secondary");
         document.getElementById("payBtn").classList.add("btn-success");
+    }
+
+    // Reset totals (hide shipping and grand total)
+    function resetTotals() {
+        const shippingRow = document.getElementById('shipping-row');
+        if (shippingRow) {
+            shippingRow.style.display = 'none';
+        }
+        
+        const grandRow = document.getElementById('grand-total-row');
+        if (grandRow) {
+            grandRow.style.display = 'none';
+        }
+        
+        // Disable pay button
+        document.getElementById("payBtn").disabled = true;
+        document.getElementById("payBtn").classList.remove("btn-success");
+        document.getElementById("payBtn").classList.add("btn-secondary");
     }
 
     function handleShippingSelection(select) {
@@ -450,11 +479,28 @@
         form.submit();
     });
 
-    // Initialize totals on page load if shipping already exists
+    // ✅ Initialization - show shipping if it exists, otherwise hide
     document.addEventListener('DOMContentLoaded', function() {
         const cartData = getCartData();
+        
+        // Update subtotal
+        updateSubtotal();
+        
+        // If shipping exists, show it
         if (cartData.hasShipping && cartData.shippingNgn > 0) {
             updateTotalsWithShipping(cartData.shippingNgn, cartData.shippingLabel, cartData.currency);
+        } else {
+            resetTotals();
+        }
+    });
+
+    // ✅ Handle page reload / refresh - ensure shipping shows if set
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            const cartData = getCartData();
+            if (cartData.hasShipping && cartData.shippingNgn > 0) {
+                updateTotalsWithShipping(cartData.shippingNgn, cartData.shippingLabel, cartData.currency);
+            }
         }
     });
 </script>
