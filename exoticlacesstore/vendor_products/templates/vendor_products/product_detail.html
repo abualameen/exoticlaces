@@ -8,9 +8,11 @@
 <div class="container py-5">
     <div class="row mt-5">
 
-        <!-- Main Image -->
+        <!-- Main Image - Show default variant image if exists -->
         <div class="col-md-6 text-center">
-            <img id="mainImage" src="{% if product.image %}{{ product.image.url }}{% endif %}" class="img-fluid" style="max-height:500px;">
+            {% with default_variant=product.variants.first %}
+                <img id="mainImage" src="{% if default_variant and default_variant.image %}{{ default_variant.image.url }}{% else %}{% if product.image %}{{ product.image.url }}{% endif %}{% endif %}" class="img-fluid" style="max-height:500px;">
+            {% endwith %}
         </div>
 
         <!-- Product Info + Video -->
@@ -35,8 +37,9 @@
                                 name="variant_id" 
                                 value="{{ variant.id }}" 
                                 data-stock="{{ variant.stock }}"
+                                data-image="{{ variant.image.url }}"
                                 style="display:none;" 
-                                {% if variant.is_default %}checked{% endif %}
+                                {% if forloop.first %}checked{% endif %}
                                 onchange="changeImage('{{ variant.image.url }}'); checkVariantStock(this)"
                             >
                             <img src="{{ variant.image.url }}" style="width:60px;height:60px;object-fit:cover;border:2px solid #ddd;border-radius:6px;">
@@ -48,7 +51,7 @@
             </div>
             {% endif %}
 
-            <!-- Product Specifications (moved below variants) -->
+            <!-- Product Specifications -->
             <div class="table-responsive mt-3">
                 <table class="table table-bordered table-sm">
                     <tbody>
@@ -138,7 +141,7 @@
     </div>
 </div>
 
-<!-- JS - Same as main product detail -->
+<!-- JS -->
 <script>
 function changeImage(imageUrl){
     document.getElementById('mainImage').src = imageUrl;
@@ -153,7 +156,6 @@ document.addEventListener("DOMContentLoaded", function() {
             if(selectedVariant){
                 const variantId = selectedVariant.value;
                 const productId = "{{ product.id }}";
-                // Redirect to add to cart with variant
                 window.location.href = `/vendor-products/add-to-cart/${productId}/?variant=${variantId}`;
             } else {
                 alert("Please select a color variant.");
@@ -180,11 +182,16 @@ function checkVariantStock(radio) {
     }
 }
 
-// Auto-check default variant on load
+// Auto-check default variant on load and set initial image
 window.addEventListener("DOMContentLoaded", function () {
-    const checked = document.querySelector('input[name="variant_id"]:checked');
-    if (checked) {
-        checkVariantStock(checked);
+    const firstVariant = document.querySelector('input[name="variant_id"]');
+    if (firstVariant && firstVariant.checked) {
+        checkVariantStock(firstVariant);
+        // Set initial image from first variant
+        const imageUrl = firstVariant.dataset.image;
+        if (imageUrl) {
+            document.getElementById('mainImage').src = imageUrl;
+        }
     }
 });
 </script>

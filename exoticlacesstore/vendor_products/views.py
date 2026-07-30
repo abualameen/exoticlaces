@@ -250,47 +250,32 @@ def checkout(request):
         # Get shipping address from first item
         shipping_address = cart_items.first().shipping_address
         
-        # Create or get customer
-        customer = None
-        if request.user.is_authenticated:
-            customer = Customer.objects.filter(user=request.user).first()
-            if not customer:
-                customer = Customer.objects.create(
-                    user=request.user,
-                    email=email,
-                    firstName=first_name,
-                    lastName=last_name,
-                    phonenumber=phonenumber
-                )
-        else:
-            # For guest, try to find existing customer by email
-            customer = Customer.objects.filter(email=email).first()
-            if not customer:
-                customer = Customer.objects.create(
-                    email=email,
-                    firstName=first_name,
-                    lastName=last_name,
-                    phonenumber=phonenumber
-                )
+        # Get shipping cost from session if available
+        shipping_data = request.session.get('shipping', {})
+        shipping_cost = Decimal(str(shipping_data.get('amount_ngn', 0)))
         
-        # Create a single order for all items
+        # Create order - allow null customer for guests
         order = VendorOrder.objects.create(
             customer=request.user if request.user.is_authenticated else None,
+            customer_email=email if not request.user.is_authenticated else None,
+            customer_name=f"{first_name} {last_name}".strip() if not request.user.is_authenticated else None,
             product=cart_items.first().product,
+            variant=cart_items.first().variant,
             quantity=sum(item.quantity for item in cart_items),
-            total_amount=total,
+            total_amount=total + shipping_cost,
             shipping_address=shipping_address,
             country=country,
             state=state,
             shipping_method=shipping_method,
+            shipping_cost=shipping_cost,
             status='pending',
             payment_status='authorized'
         )
         
-        # Initialize Paystack Preauthorization
+        # Initialize Paystack Preauthorization (Wa'ad model - hold funds)
         try:
             paystack_data = initialize_paystack_hold(
-                amount=total,
+                amount=total + shipping_cost,
                 email=email,
                 reference=f"VENDOR-{order.id}-{int(timezone.now().timestamp())}",
                 order_id=order.id
@@ -318,7 +303,6 @@ def checkout(request):
             return redirect('vendor_products:cart_detail')
     
     return redirect('vendor_products:cart_detail')
-
 
 def initialize_paystack_hold(amount, email, reference, order_id):
     """Initialize Paystack Preauthorization (hold funds)"""

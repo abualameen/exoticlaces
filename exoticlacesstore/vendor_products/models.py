@@ -183,8 +183,17 @@ class VendorOrder(models.Model):
         ('failed', 'Failed'),
     ]
     
-    # Customer information
-    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='vendor_orders')
+    # Customer information - allow null for guest users
+    customer = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='vendor_orders',
+        null=True,  # ✅ Allow null for guest orders
+        blank=True
+    )
+    customer_email = models.EmailField(max_length=254, blank=True, null=True)  # ✅ Store email for guests
+    customer_name = models.CharField(max_length=255, blank=True, null=True)  # ✅ Store name for guests
+    
     product = models.ForeignKey(VendorProduct, on_delete=models.CASCADE, related_name='orders')
     variant = models.ForeignKey(VendorProductVariant, on_delete=models.SET_NULL, null=True, blank=True)
     
@@ -220,7 +229,9 @@ class VendorOrder(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"Order #{self.id} - {self.customer.username} - {self.product.name}"
+        if self.customer:
+            return f"Order #{self.id} - {self.customer.username} - {self.product.name}"
+        return f"Order #{self.id} - Guest - {self.product.name}"
     
     def can_capture_payment(self):
         """Check if payment can be captured (item secured)"""
@@ -231,7 +242,6 @@ class VendorOrder(models.Model):
     
     class Meta:
         ordering = ['-created_at']
-
 
 
 

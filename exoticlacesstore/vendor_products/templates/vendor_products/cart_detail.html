@@ -37,10 +37,17 @@
             <tr>
                 <td>
                     <a href="{% url 'vendor_products:product_detail' item.product.id %}">
-                        <img src="{{ item.product.image.url }}" width="100" height="100" alt="">
+                        {% if item.variant and item.variant.image %}
+                            <img src="{{ item.variant.image.url }}" width="100" height="100" alt="">
+                        {% else %}
+                            <img src="{{ item.product.image.url }}" width="100" height="100" alt="">
+                        {% endif %}
                     </a>
                     <br>
                     {{ item.product.name }}
+                    {% if item.variant %}
+                        <br><small><strong>Color:</strong> {{ item.variant.color_name }}</small>
+                    {% endif %}
                     <br>
                     <small>By: {{ item.product.vendor.business_name }}</small>
                     <br>
@@ -181,6 +188,15 @@
             </div>
         </div>
 
+        <!-- Islamic Wa'ad Model Notice -->
+        <div class="alert alert-info mt-3">
+            <i class="fas fa-info-circle"></i>
+            <strong>Islamic Wa'ad (Promise to Purchase) Model:</strong>
+            <p class="mb-0 small">Your payment will be authorized (held) until we confirm availability. 
+            No charges will be made to your card until we secure your items. 
+            This complies with Islamic Shariah principles.</p>
+        </div>
+
         <!-- Terms and Conditions -->
         <div class="form-group mb-3 p-3 bg-light rounded border">
             <div class="custom-control custom-checkbox">
@@ -194,7 +210,7 @@
         </div>
 
         <button id="payBtn" class="btn btn-lg btn-block btn-secondary" disabled>
-            Pay Securely with Paystack
+            <i class="fas fa-lock"></i> Authorize Payment (Paystack)
         </button>
 
         <a href="{% url 'vendor_products:product_list' %}" 
