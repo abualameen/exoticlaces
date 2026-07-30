@@ -8,7 +8,7 @@
 <div class="container py-5">
     <div class="row mt-5">
 
-        <!-- Main Image - Show default variant image if exists -->
+        <!-- Main Image -->
         <div class="col-md-6 text-center">
             {% with default_variant=product.variants.first %}
                 <img id="mainImage" src="{% if default_variant and default_variant.image %}{{ default_variant.image.url }}{% else %}{% if product.image %}{{ product.image.url }}{% endif %}{% endif %}" class="img-fluid" style="max-height:500px;">
@@ -37,7 +37,6 @@
                                 name="variant_id" 
                                 value="{{ variant.id }}" 
                                 data-stock="{{ variant.stock }}"
-                                data-image="{{ variant.image.url }}"
                                 style="display:none;" 
                                 {% if forloop.first %}checked{% endif %}
                                 onchange="changeImage('{{ variant.image.url }}'); checkVariantStock(this)"
@@ -141,13 +140,13 @@
     </div>
 </div>
 
-<!-- JS -->
+<!-- JS - Matches main product -->
 <script>
 function changeImage(imageUrl){
     document.getElementById('mainImage').src = imageUrl;
 }
 
-// Handle Add to Cart for variants
+// Handle Add to Cart for variants - same as main product
 document.addEventListener("DOMContentLoaded", function() {
     const btn = document.getElementById('addToCartBtn');
     if(btn){
@@ -156,6 +155,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if(selectedVariant){
                 const variantId = selectedVariant.value;
                 const productId = "{{ product.id }}";
+                // ✅ Pass variant via URL like main product
                 window.location.href = `/vendor-products/add-to-cart/${productId}/?variant=${variantId}`;
             } else {
                 alert("Please select a color variant.");
@@ -182,16 +182,11 @@ function checkVariantStock(radio) {
     }
 }
 
-// Auto-check default variant on load and set initial image
+// Auto-check default variant on load
 window.addEventListener("DOMContentLoaded", function () {
-    const firstVariant = document.querySelector('input[name="variant_id"]');
-    if (firstVariant && firstVariant.checked) {
-        checkVariantStock(firstVariant);
-        // Set initial image from first variant
-        const imageUrl = firstVariant.dataset.image;
-        if (imageUrl) {
-            document.getElementById('mainImage').src = imageUrl;
-        }
+    const checked = document.querySelector('input[name="variant_id"]:checked');
+    if (checked) {
+        checkVariantStock(checked);
     }
 });
 </script>

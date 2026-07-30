@@ -286,11 +286,19 @@
                 document.getElementById("grand_totalng_ui").innerText = format(grandTotalNGN);
             } else {
                 // FX support if needed
+                document.getElementById("shipping_costfx_ui").style.display = "inline";
+                document.getElementById("shipping_costfx_ui").innerText = format(shippingFX);
+                document.getElementById("grand_totalfx_ui").style.display = "inline";
+                document.getElementById("grand_totalfx_ui").innerText = format(cartTotalNGN + shippingFX);
             }
             
             document.getElementById("payBtn").disabled = false;
             document.getElementById("payBtn").classList.remove("btn-secondary");
             document.getElementById("payBtn").classList.add("btn-success");
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while calculating shipping. Please try again.');
         });
     }
 
