@@ -93,6 +93,7 @@ TEMPLATES = [
                 'lacesstore.context_processors.facebook_pixel',
                 'lacesstore.context_processors.sale_context',  # Add this
                 'vendor_products.views.vendor_products_home_context',  # Add this
+                'vendor_products.context_processors.vendor_cart_count',
             ],
         },
     },
