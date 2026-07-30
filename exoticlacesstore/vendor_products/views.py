@@ -248,6 +248,7 @@ def add_to_cart(request, product_id, variant_id=None):
 #     }
 #     return render(request, 'vendor_products/cart_detail.html', context)
 
+
 def cart_detail(request):
     """Display vendor cart (guest allowed)"""
     from decimal import Decimal
@@ -285,33 +286,45 @@ def cart_detail(request):
         else:
             # ✅ Currency matches, use shipping data
             shipping_cost_ngn = Decimal(str(shipping_data.get("amount_ngn", 0)))
-            shipping_cost_fx = Decimal(str(shipping_data.get("amount_fx", 0)))
             shipping_label = shipping_data.get("label")
             shipping_method = shipping_data.get("method")
             has_shipping = shipping_cost_ngn > 0
     
-    # ✅ Calculate grand total with shipping
-    grand_total_ngn = total + shipping_cost_ngn
-    
-    # ✅ FX conversion for display
+    # ✅ Get active currency and exchange rate
     active_currency = request.session.get("currency", "NGN")
     
+    # ✅ Convert shipping to FX if needed (like main cart)
+    if has_shipping and active_currency != "NGN":
+        fx_rate, rate_source = get_exchange_rate(active_currency)
+        shipping_cost_fx = round(shipping_cost_ngn * Decimal(str(fx_rate)), 2)
+    else:
+        shipping_cost_fx = shipping_cost_ngn
+    
+    # ✅ Convert total to FX for display
     if active_currency != "NGN":
         fx_rate, rate_source = get_exchange_rate(active_currency)
         total_fx = round(total * Decimal(str(fx_rate)), 2)
-        shipping_fx = round(shipping_cost_ngn * Decimal(str(fx_rate)), 2)
-        grand_total_fx = round(grand_total_ngn * Decimal(str(fx_rate)), 2)
     else:
         total_fx = total
-        shipping_fx = shipping_cost_ngn
+    
+    # ✅ Calculate grand total in NGN (for truth)
+    grand_total_ngn = total + shipping_cost_ngn
+    
+    # ✅ Calculate grand total in FX (for display)
+    if active_currency != "NGN":
+        grand_total_fx = round(grand_total_ngn * Decimal(str(fx_rate)), 2)
+    else:
         grand_total_fx = grand_total_ngn
+    
+    print(f"📊 Vendor Cart: total_ngn={total}, shipping_ngn={shipping_cost_ngn}, grand_ngn={grand_total_ngn}")
+    print(f"📊 Vendor Cart: currency={active_currency}, total_fx={total_fx}, shipping_fx={shipping_cost_fx}, grand_fx={grand_total_fx}")
     
     context = {
         'cart_items': cart_items,
         'total': total,
         'total_fx': total_fx,
         'shipping_cost_ngn': shipping_cost_ngn,
-        'shipping_cost_fx': shipping_fx,
+        'shipping_cost_fx': shipping_cost_fx,
         'shipping_label': shipping_label,
         'shipping_method': shipping_method,
         'grand_total_ngn': grand_total_ngn,
@@ -321,6 +334,7 @@ def cart_detail(request):
         'has_shipping': has_shipping,
     }
     return render(request, 'vendor_products/cart_detail.html', context)
+
 
 
 
