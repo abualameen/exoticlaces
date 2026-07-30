@@ -184,6 +184,70 @@ def add_to_cart(request, product_id, variant_id=None):
         return redirect('vendor_products:product_detail', product_id=product.id)
 
 
+# def cart_detail(request):
+#     """Display vendor cart (guest allowed)"""
+#     from decimal import Decimal
+#     from payments.services.exchange import get_exchange_rate
+    
+#     cart = get_or_create_cart(request)
+#     cart_items = cart.items.all()
+#     total = cart.get_total()
+    
+#     # ✅ Clear shipping if cart is empty
+#     if not cart_items:
+#         clear_vendor_shipping_session(request)
+    
+#     # ✅ Get shipping from session (same as main cart)
+#     shipping_data = request.session.get("shipping", {})
+#     shipping_cost_ngn = Decimal(str(shipping_data.get("amount_ngn", 0)))
+#     shipping_cost_fx = Decimal(str(shipping_data.get("amount_fx", 0)))
+#     shipping_label = shipping_data.get("label")
+#     shipping_method = shipping_data.get("method")
+#     is_vendor_shipping = shipping_data.get("is_vendor", False)
+    
+#     # ✅ Only use shipping if it's from vendor cart
+#     if not is_vendor_shipping:
+#         shipping_cost_ngn = Decimal("0.00")
+#         shipping_cost_fx = Decimal("0.00")
+#         shipping_label = None
+#         shipping_method = None
+    
+#     print(f"📦 Shipping data from session: {shipping_data}")
+#     print(f"📦 Shipping cost: {shipping_cost_ngn}")
+    
+#     # ✅ Calculate grand total with shipping
+#     grand_total_ngn = total + shipping_cost_ngn
+    
+#     # ✅ FX conversion for display
+#     active_currency = request.session.get("currency", "NGN")
+    
+#     # If shipping is in NGN but currency is different, convert
+#     if active_currency != "NGN":
+#         fx_rate, rate_source = get_exchange_rate(active_currency)
+#         total_fx = round(total * Decimal(str(fx_rate)), 2)
+#         shipping_fx = round(shipping_cost_ngn * Decimal(str(fx_rate)), 2)
+#         grand_total_fx = round(grand_total_ngn * Decimal(str(fx_rate)), 2)
+#     else:
+#         total_fx = total
+#         shipping_fx = shipping_cost_ngn
+#         grand_total_fx = grand_total_ngn
+    
+#     context = {
+#         'cart_items': cart_items,
+#         'total': total,
+#         'total_fx': total_fx,
+#         'shipping_cost_ngn': shipping_cost_ngn,
+#         'shipping_cost_fx': shipping_fx,
+#         'shipping_label': shipping_label,
+#         'shipping_method': shipping_method,
+#         'grand_total_ngn': grand_total_ngn,
+#         'grand_total_fx': grand_total_fx,
+#         'currency': active_currency,
+#         'total_items': cart.get_total_items(),
+#         'has_shipping': shipping_cost_ngn > 0 and is_vendor_shipping,
+#     }
+#     return render(request, 'vendor_products/cart_detail.html', context)
+
 def cart_detail(request):
     """Display vendor cart (guest allowed)"""
     from decimal import Decimal
@@ -195,25 +259,36 @@ def cart_detail(request):
     
     # ✅ Clear shipping if cart is empty
     if not cart_items:
-        clear_vendor_shipping_session(request)
+        if "shipping" in request.session:
+            del request.session["shipping"]
     
-    # ✅ Get shipping from session (same as main cart)
+    # ✅ Get shipping from session
     shipping_data = request.session.get("shipping", {})
-    shipping_cost_ngn = Decimal(str(shipping_data.get("amount_ngn", 0)))
-    shipping_cost_fx = Decimal(str(shipping_data.get("amount_fx", 0)))
-    shipping_label = shipping_data.get("label")
-    shipping_method = shipping_data.get("method")
-    is_vendor_shipping = shipping_data.get("is_vendor", False)
+    shipping_cost_ngn = Decimal("0.00")
+    shipping_cost_fx = Decimal("0.00")
+    shipping_label = None
+    shipping_method = None
+    has_shipping = False
     
-    # ✅ Only use shipping if it's from vendor cart
-    if not is_vendor_shipping:
-        shipping_cost_ngn = Decimal("0.00")
-        shipping_cost_fx = Decimal("0.00")
-        shipping_label = None
-        shipping_method = None
-    
-    print(f"📦 Shipping data from session: {shipping_data}")
-    print(f"📦 Shipping cost: {shipping_cost_ngn}")
+    # ✅ Check if shipping exists and is from vendor cart
+    if shipping_data and shipping_data.get("is_vendor", False):
+        # ✅ Check if currency has changed since shipping was calculated
+        shipping_currency = shipping_data.get("currency", "NGN")
+        active_currency = request.session.get("currency", "NGN")
+        
+        if shipping_currency != active_currency:
+            # ✅ Currency changed - clear shipping session
+            if "shipping" in request.session:
+                del request.session["shipping"]
+            print(f"✅ Vendor shipping cleared - currency changed from {shipping_currency} to {active_currency}")
+            shipping_data = {}
+        else:
+            # ✅ Currency matches, use shipping data
+            shipping_cost_ngn = Decimal(str(shipping_data.get("amount_ngn", 0)))
+            shipping_cost_fx = Decimal(str(shipping_data.get("amount_fx", 0)))
+            shipping_label = shipping_data.get("label")
+            shipping_method = shipping_data.get("method")
+            has_shipping = shipping_cost_ngn > 0
     
     # ✅ Calculate grand total with shipping
     grand_total_ngn = total + shipping_cost_ngn
@@ -221,7 +296,6 @@ def cart_detail(request):
     # ✅ FX conversion for display
     active_currency = request.session.get("currency", "NGN")
     
-    # If shipping is in NGN but currency is different, convert
     if active_currency != "NGN":
         fx_rate, rate_source = get_exchange_rate(active_currency)
         total_fx = round(total * Decimal(str(fx_rate)), 2)
@@ -244,9 +318,10 @@ def cart_detail(request):
         'grand_total_fx': grand_total_fx,
         'currency': active_currency,
         'total_items': cart.get_total_items(),
-        'has_shipping': shipping_cost_ngn > 0 and is_vendor_shipping,
+        'has_shipping': has_shipping,
     }
     return render(request, 'vendor_products/cart_detail.html', context)
+
 
 
 def remove_from_cart(request, item_id):
