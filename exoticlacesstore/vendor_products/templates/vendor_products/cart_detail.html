@@ -37,8 +37,13 @@
             <tr>
                 <td>
                     <a href="{% url 'vendor_products:product_detail' item.product.id %}">
-                        {% if item.variant and item.variant.image %}
-                            <img src="{{ item.variant.image.url }}" width="100" height="100" alt="">
+                        {# ✅ Show variant image if available, otherwise show product image #}
+                        {% if item.variant %}
+                            {% if item.variant.image %}
+                                <img src="{{ item.variant.image.url }}" width="100" height="100" alt="">
+                            {% else %}
+                                <img src="{{ item.product.image.url }}" width="100" height="100" alt="">
+                            {% endif %}
                         {% else %}
                             <img src="{{ item.product.image.url }}" width="100" height="100" alt="">
                         {% endif %}
@@ -285,7 +290,6 @@
                 document.getElementById("grand_totalng_ui").style.display = "inline";
                 document.getElementById("grand_totalng_ui").innerText = format(grandTotalNGN);
             } else {
-                // FX support if needed
                 document.getElementById("shipping_costfx_ui").style.display = "inline";
                 document.getElementById("shipping_costfx_ui").innerText = format(shippingFX);
                 document.getElementById("grand_totalfx_ui").style.display = "inline";
@@ -334,7 +338,6 @@
             return;
         }
 
-        // Create form and submit to checkout
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = "{% url 'vendor_products:checkout' %}";
