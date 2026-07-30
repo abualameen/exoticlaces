@@ -147,6 +147,7 @@ function changeImage(imageUrl){
 }
 
 // Handle Add to Cart for variants - same as main product
+// Handle Add to Cart for variants - matches main product
 document.addEventListener("DOMContentLoaded", function() {
     const btn = document.getElementById('addToCartBtn');
     if(btn){
@@ -155,8 +156,8 @@ document.addEventListener("DOMContentLoaded", function() {
             if(selectedVariant){
                 const variantId = selectedVariant.value;
                 const productId = "{{ product.id }}";
-                // ✅ Pass variant via URL like main product
-                window.location.href = `/vendor-products/add-to-cart/${productId}/?variant=${variantId}`;
+                // ✅ Use URL pattern with variant ID in path (like main product)
+                window.location.href = `/vendor-products/add-to-cart/${productId}/${variantId}/`;
             } else {
                 alert("Please select a color variant.");
             }

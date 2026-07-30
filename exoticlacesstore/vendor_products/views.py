@@ -67,16 +67,19 @@ def get_or_create_cart(request):
 
 from .models import VendorProduct, VendorOrder, VendorCart, VendorCartItem, VendorProductVariant  # ✅ Add VendorProductVariant
 
-def add_to_cart(request, product_id):
+def add_to_cart(request, product_id, variant_id=None):
     """Add vendor product to vendor cart (guest allowed)"""
     product = get_object_or_404(VendorProduct, id=product_id, status='active')
     
-    # Get variant from query params if present (for GET requests from variant selection)
-    variant_id = request.GET.get('variant')
+    # Get variant from URL parameter (like main product)
     variant = None
     if variant_id:
-        from .models import VendorProductVariant
         variant = get_object_or_404(VendorProductVariant, id=variant_id)
+    else:
+        # Check if variant is passed via query param (for backward compatibility)
+        variant_id = request.GET.get('variant')
+        if variant_id:
+            variant = get_object_or_404(VendorProductVariant, id=variant_id)
     
     # Handle POST request (from form submission)
     if request.method == 'POST':
@@ -126,8 +129,7 @@ def add_to_cart(request, product_id):
         
         return redirect('vendor_products:cart_detail')
     
-    # Handle GET request (from variant selection button click)
-    # This mimics how the main product works
+    # Handle GET request (from variant selection button click) - like main product
     if variant:
         # Check stock
         if variant.stock <= 0:
@@ -144,18 +146,18 @@ def add_to_cart(request, product_id):
         cart_item = VendorCartItem.objects.filter(cart=cart, product=product, variant=variant).first()
         
         if cart_item:
-            cart_item.quantity += quantity
+            cart_item.quantity += 1
             cart_item.save()
-            messages.success(request, f"Updated {product.name} quantity in your cart.")
+            messages.success(request, f"Added another {product.name} ({variant.color_name}) to your cart.")
         else:
             VendorCartItem.objects.create(
                 cart=cart,
                 product=product,
                 variant=variant,
-                quantity=quantity,
+                quantity=1,
                 shipping_address=shipping_address
             )
-            messages.success(request, f"{product.name} added to your cart!")
+            messages.success(request, f"{product.name} ({variant.color_name}) added to your cart!")
         
         return redirect('vendor_products:cart_detail')
     else:
