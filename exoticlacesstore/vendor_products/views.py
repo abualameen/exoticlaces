@@ -80,6 +80,8 @@ def add_to_cart(request, product_id, variant_id=None):
         variant_id = request.GET.get('variant')
         if variant_id:
             variant = get_object_or_404(VendorProductVariant, id=variant_id)
+
+
     
     # Handle POST request (from form submission)
     if request.method == 'POST':

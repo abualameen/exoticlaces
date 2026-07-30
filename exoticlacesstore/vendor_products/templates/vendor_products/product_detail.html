@@ -10,6 +10,7 @@
 
         <!-- Main Image -->
         <div class="col-md-6 text-center">
+            {# ✅ Use the first variant image as default if variants exist #}
             {% with default_variant=product.variants.first %}
                 <img id="mainImage" src="{% if default_variant and default_variant.image %}{{ default_variant.image.url }}{% else %}{% if product.image %}{{ product.image.url }}{% endif %}{% endif %}" class="img-fluid" style="max-height:500px;">
             {% endwith %}
@@ -29,23 +30,22 @@
             <div class="mt-4">
                 <strong>Available Colors:</strong>
                 <div class="d-flex flex-wrap mt-2">
-                    <form id="variantForm">
-                        {% for variant in product.variants.all %}
-                        <label class="variant-thumb mr-2 mb-2" style="cursor:pointer;">
-                            <input 
-                                type="radio" 
-                                name="variant_id" 
-                                value="{{ variant.id }}" 
-                                data-stock="{{ variant.stock }}"
-                                style="display:none;" 
-                                {% if forloop.first %}checked{% endif %}
-                                onchange="changeImage('{{ variant.image.url }}'); checkVariantStock(this)"
-                            >
-                            <img src="{{ variant.image.url }}" style="width:60px;height:60px;object-fit:cover;border:2px solid #ddd;border-radius:6px;">
-                            <div style="font-size:11px;text-align:center;">{{ variant.color_name }}</div>
-                        </label>
-                        {% endfor %}
-                    </form>
+                    {% for variant in product.variants.all %}
+                    <label class="variant-thumb mr-2 mb-2" style="cursor:pointer;">
+                        <input 
+                            type="radio" 
+                            name="variant_id" 
+                            value="{{ variant.id }}" 
+                            data-stock="{{ variant.stock }}"
+                            data-image="{{ variant.image.url }}"
+                            style="display:none;" 
+                            {% if forloop.first %}checked{% endif %}
+                            onchange="changeImage('{{ variant.image.url }}'); checkVariantStock(this)"
+                        >
+                        <img src="{{ variant.image.url }}" style="width:60px;height:60px;object-fit:cover;border:2px solid #ddd;border-radius:6px;">
+                        <div style="font-size:11px;text-align:center;">{{ variant.color_name }}</div>
+                    </label>
+                    {% endfor %}
                 </div>
             </div>
             {% endif %}
@@ -146,8 +146,7 @@ function changeImage(imageUrl){
     document.getElementById('mainImage').src = imageUrl;
 }
 
-// Handle Add to Cart for variants - same as main product
-// Handle Add to Cart for variants - matches main product
+// Handle Add to Cart for variants
 document.addEventListener("DOMContentLoaded", function() {
     const btn = document.getElementById('addToCartBtn');
     if(btn){
@@ -156,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if(selectedVariant){
                 const variantId = selectedVariant.value;
                 const productId = "{{ product.id }}";
-                // ✅ Use URL pattern with variant ID in path (like main product)
+                // ✅ Use the URL pattern with variant ID in path (like main product)
                 window.location.href = `/vendor-products/add-to-cart/${productId}/${variantId}/`;
             } else {
                 alert("Please select a color variant.");
@@ -183,11 +182,16 @@ function checkVariantStock(radio) {
     }
 }
 
-// Auto-check default variant on load
+// Auto-check default variant on load and set initial image
 window.addEventListener("DOMContentLoaded", function () {
     const checked = document.querySelector('input[name="variant_id"]:checked');
     if (checked) {
         checkVariantStock(checked);
+        // Set initial image from the checked variant
+        const imageUrl = checked.dataset.image;
+        if (imageUrl) {
+            document.getElementById('mainImage').src = imageUrl;
+        }
     }
 });
 </script>
