@@ -87,6 +87,10 @@
              data-total-ngn="{{ total }}" 
              data-total-fx="{{ total_fx|default:0 }}"
              data-currency="{{ currency }}"
+             data-shipping-ngn="{{ shipping_cost_ngn|default:0 }}"
+             data-shipping-fx="{{ shipping_cost_fx|default:0 }}"
+             data-shipping-label="{{ shipping_label|default:'' }}"
+             data-has-shipping="{{ has_shipping|yesno:'true,false' }}"
              style="display:none;">
         </div>
 
@@ -109,21 +113,43 @@
                     <td class="text-left">
                         <strong>Subtotal:</strong> 
                         <span id="product_total_display">
-                            {{ total|money:currency }}
+                            {% if currency == "NGN" %}
+                                {{ total|money:currency }}
+                            {% else %}
+                                {{ total_fx|money:currency }}
+                            {% endif %}
                         </span>
                     </td>
                 </tr>
-                <tr id="shipping-row" style="display:none;">
+                <tr id="shipping-row" style="display:{% if has_shipping %}table-row{% else %}none{% endif %};">
                     <td>
                         <strong>Shipping:</strong> 
-                        <span id="shipping_label_ui"></span>
-                        <span id="shipping_cost_display"></span>
+                        <span id="shipping_label_ui">
+                            {% if shipping_label %}{{ shipping_label }}{% endif %}
+                        </span>
+                        <span id="shipping_cost_display">
+                            {% if has_shipping %}
+                                {% if currency == "NGN" %}
+                                    {{ shipping_cost_ngn|money:currency }}
+                                {% else %}
+                                    {{ shipping_cost_fx|money:currency }}
+                                {% endif %}
+                            {% endif %}
+                        </span>
                     </td>
                 </tr>
-                <tr id="grand-total-row" style="display:none;">
+                <tr id="grand-total-row" style="display:{% if has_shipping %}table-row{% else %}none{% endif %};">
                     <td><strong>Grand Total</strong></td>
                     <td>
-                        <strong id="grand_total_display"></strong>
+                        <strong id="grand_total_display">
+                            {% if has_shipping %}
+                                {% if currency == "NGN" %}
+                                    {{ grand_total_ngn|money:currency }}
+                                {% else %}
+                                    {{ grand_total_fx|money:currency }}
+                                {% endif %}
+                            {% endif %}
+                        </strong>
                     </td>
                 </tr>
             </tbody>
@@ -240,10 +266,14 @@
             return {
                 totalNgn: parseFloat(cartData.dataset.totalNgn) || 0,
                 totalFx: parseFloat(cartData.dataset.totalFx) || 0,
-                currency: cartData.dataset.currency || 'NGN'
+                currency: cartData.dataset.currency || 'NGN',
+                shippingNgn: parseFloat(cartData.dataset.shippingNgn) || 0,
+                shippingFx: parseFloat(cartData.dataset.shippingFx) || 0,
+                shippingLabel: cartData.dataset.shippingLabel || '',
+                hasShipping: cartData.dataset.hasShipping === 'true'
             };
         }
-        return { totalNgn: 0, totalFx: 0, currency: 'NGN' };
+        return { totalNgn: 0, totalFx: 0, currency: 'NGN', shippingNgn: 0, shippingFx: 0, shippingLabel: '', hasShipping: false };
     }
 
     // Format currency
@@ -342,13 +372,17 @@
         .then(res => res.json())
         .then(data => {
             console.log('Shipping data:', data);
-            const cartData = getCartData();
-            const shippingCost = parseFloat(data.shipping.amount_ngn) || 0;
-            const shippingLabel = data.shipping.label || 'Seller Shipping';
-            const currency = cartData.currency;
-            
-            // Update totals with shipping
-            updateTotalsWithShipping(shippingCost, shippingLabel, currency);
+            if (data.shipping) {
+                const cartData = getCartData();
+                const shippingCost = parseFloat(data.shipping.amount_ngn) || 0;
+                const shippingLabel = data.shipping.label || 'Seller Shipping';
+                const currency = cartData.currency;
+                
+                // Update totals with shipping
+                updateTotalsWithShipping(shippingCost, shippingLabel, currency);
+            } else {
+                alert('Error calculating shipping. Please try again.');
+            }
         })
         .catch(error => {
             console.error('Error:', error);
@@ -413,6 +447,14 @@
         
         document.body.appendChild(form);
         form.submit();
+    });
+
+    // Initialize totals on page load if shipping already exists
+    document.addEventListener('DOMContentLoaded', function() {
+        const cartData = getCartData();
+        if (cartData.hasShipping && cartData.shippingNgn > 0) {
+            updateTotalsWithShipping(cartData.shippingNgn, cartData.shippingLabel, cartData.currency);
+        }
     });
 </script>
 {% endif %}

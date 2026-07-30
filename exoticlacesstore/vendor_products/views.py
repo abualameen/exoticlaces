@@ -177,22 +177,29 @@ def cart_detail(request):
     cart_items = cart.items.all()
     total = cart.get_total()
     
-    # ✅ Get shipping from session (like main cart)
+    # ✅ Get shipping from session (same as main cart)
     shipping_data = request.session.get("shipping", {})
     shipping_cost_ngn = Decimal(str(shipping_data.get("amount_ngn", 0)))
+    shipping_cost_fx = Decimal(str(shipping_data.get("amount_fx", 0)))
     shipping_label = shipping_data.get("label")
     shipping_method = shipping_data.get("method")
     
     # ✅ Calculate grand total with shipping
     grand_total_ngn = total + shipping_cost_ngn
     
-    # ✅ FX conversion
+    # ✅ FX conversion for display
     active_currency = request.session.get("currency", "NGN")
-    fx_rate, rate_source = get_exchange_rate(active_currency)
     
-    total_fx = round(total * Decimal(str(fx_rate)), 2)
-    shipping_fx = round(shipping_cost_ngn * Decimal(str(fx_rate)), 2)
-    grand_total_fx = round(grand_total_ngn * Decimal(str(fx_rate)), 2)
+    # If shipping is in NGN but currency is different, convert
+    if active_currency != "NGN":
+        fx_rate, rate_source = get_exchange_rate(active_currency)
+        total_fx = round(total * Decimal(str(fx_rate)), 2)
+        shipping_fx = round(shipping_cost_ngn * Decimal(str(fx_rate)), 2)
+        grand_total_fx = round(grand_total_ngn * Decimal(str(fx_rate)), 2)
+    else:
+        total_fx = total
+        shipping_fx = shipping_cost_ngn
+        grand_total_fx = grand_total_ngn
     
     context = {
         'cart_items': cart_items,
@@ -206,7 +213,7 @@ def cart_detail(request):
         'grand_total_fx': grand_total_fx,
         'currency': active_currency,
         'total_items': cart.get_total_items(),
-        'fx_rate': fx_rate,
+        'has_shipping': shipping_cost_ngn > 0,
     }
     return render(request, 'vendor_products/cart_detail.html', context)
 
