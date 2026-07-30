@@ -85,7 +85,7 @@
         <!-- ✅ Hidden data element for totals -->
         <div id="cart-data" 
              data-total-ngn="{{ total }}" 
-             data-total-fx="{{ total_fx }}"
+             data-total-fx="{{ total_fx|default:0 }}"
              data-currency="{{ currency }}"
              style="display:none;">
         </div>
@@ -109,39 +109,21 @@
                     <td class="text-left">
                         <strong>Subtotal:</strong> 
                         <span id="product_total_display">
-                            {% if currency == "NGN" %}
-                                {{ total|money:currency }}
-                            {% else %}
-                                {{ total_fx|money:currency }}
-                            {% endif %}
+                            {{ total|money:currency }}
                         </span>
                     </td>
                 </tr>
-                <tr>
+                <tr id="shipping-row" style="display:none;">
                     <td>
                         <strong>Shipping:</strong> 
-                        <span id="shipping_label_ui">
-                            {% if shipping_label %}{{ shipping_label }}{% else %}Not selected{% endif %}
-                        </span>
-                        <span id="shipping_cost_display" style="display:{% if shipping_cost_ngn > 0 %}inline{% else %}none{% endif %};">
-                            {% if currency == "NGN" %}
-                                {{ shipping_cost_ngn|money:currency }}
-                            {% else %}
-                                {{ shipping_cost_fx|money:currency }}
-                            {% endif %}
-                        </span>
+                        <span id="shipping_label_ui"></span>
+                        <span id="shipping_cost_display"></span>
                     </td>
                 </tr>
-                <tr>
+                <tr id="grand-total-row" style="display:none;">
                     <td><strong>Grand Total</strong></td>
                     <td>
-                        <strong id="grand_total_display">
-                            {% if currency == "NGN" %}
-                                {{ grand_total_ngn|money:currency }}
-                            {% else %}
-                                {{ grand_total_fx|money:currency }}
-                            {% endif %}
-                        </strong>
+                        <strong id="grand_total_display"></strong>
                     </td>
                 </tr>
             </tbody>
@@ -277,37 +259,46 @@
         return symbol + amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // Update totals
-    function updateTotals(shippingCost, shippingLabel, currency) {
+    // Update totals after shipping is selected
+    function updateTotalsWithShipping(shippingCost, shippingLabel, currency) {
         const cartData = getCartData();
         const total = currency === 'NGN' ? cartData.totalNgn : cartData.totalFx;
         const grandTotal = total + shippingCost;
         
-        const productDisplay = document.getElementById('product_total_display');
-        const shippingDisplay = document.getElementById('shipping_cost_display');
-        const grandDisplay = document.getElementById('grand_total_display');
+        // Show shipping row
+        const shippingRow = document.getElementById('shipping-row');
+        if (shippingRow) {
+            shippingRow.style.display = 'table-row';
+        }
+        
+        // Show grand total row
+        const grandRow = document.getElementById('grand-total-row');
+        if (grandRow) {
+            grandRow.style.display = 'table-row';
+        }
+        
+        // Update shipping label and cost
         const labelDisplay = document.getElementById('shipping_label_ui');
-        
-        if (productDisplay) {
-            productDisplay.innerText = formatCurrency(total, currency);
-        }
-        
-        if (shippingDisplay) {
-            if (shippingCost > 0) {
-                shippingDisplay.style.display = 'inline';
-                shippingDisplay.innerText = formatCurrency(shippingCost, currency);
-            } else {
-                shippingDisplay.style.display = 'none';
-            }
-        }
+        const costDisplay = document.getElementById('shipping_cost_display');
         
         if (labelDisplay && shippingLabel) {
-            labelDisplay.innerText = shippingLabel;
+            labelDisplay.innerText = shippingLabel + ': ';
         }
         
+        if (costDisplay) {
+            costDisplay.innerText = formatCurrency(shippingCost, currency);
+        }
+        
+        // Update grand total
+        const grandDisplay = document.getElementById('grand_total_display');
         if (grandDisplay) {
             grandDisplay.innerText = formatCurrency(grandTotal, currency);
         }
+        
+        // Enable pay button
+        document.getElementById("payBtn").disabled = false;
+        document.getElementById("payBtn").classList.remove("btn-secondary");
+        document.getElementById("payBtn").classList.add("btn-success");
     }
 
     function handleShippingSelection(select) {
@@ -357,12 +348,7 @@
             const currency = cartData.currency;
             
             // Update totals with shipping
-            updateTotals(shippingCost, shippingLabel, currency);
-            
-            // Enable pay button
-            document.getElementById("payBtn").disabled = false;
-            document.getElementById("payBtn").classList.remove("btn-secondary");
-            document.getElementById("payBtn").classList.add("btn-success");
+            updateTotalsWithShipping(shippingCost, shippingLabel, currency);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -427,17 +413,6 @@
         
         document.body.appendChild(form);
         form.submit();
-    });
-
-    // Initialize totals on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        const shippingCost = parseFloat("{{ shipping_cost_ngn }}") || 0;
-        const shippingLabel = "{{ shipping_label|default:'' }}";
-        const currency = "{{ currency }}";
-        
-        if (shippingCost > 0) {
-            updateTotals(shippingCost, shippingLabel, currency);
-        }
     });
 </script>
 {% endif %}
