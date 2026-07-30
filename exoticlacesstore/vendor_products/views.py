@@ -65,23 +65,33 @@ def get_or_create_cart(request):
         cart, created = VendorCart.objects.get_or_create(session_key=request.session.session_key, user=None)
         return cart
 
+def clear_vendor_shipping_session(request):
+    """Clear shipping session for vendor cart"""
+    if "shipping" in request.session:
+        # Only clear if it's a vendor cart session
+        if request.session.get("shipping", {}).get("is_vendor", False):
+            del request.session["shipping"]
+            print("✅ Vendor shipping session cleared")
+
+
+
 from .models import VendorProduct, VendorOrder, VendorCart, VendorCartItem, VendorProductVariant  # ✅ Add VendorProductVariant
 
 def add_to_cart(request, product_id, variant_id=None):
     """Add vendor product to vendor cart (guest allowed)"""
+    from .models import VendorProductVariant
+    
     product = get_object_or_404(VendorProduct, id=product_id, status='active')
     
-    # Get variant from URL parameter (like main product)
+    # Get variant from URL parameter
     variant = None
     if variant_id:
         variant = get_object_or_404(VendorProductVariant, id=variant_id)
     else:
-        # Check if variant is passed via query param (for backward compatibility)
+        # Check if variant is passed via query param
         variant_id = request.GET.get('variant')
         if variant_id:
             variant = get_object_or_404(VendorProductVariant, id=variant_id)
-
-
     
     # Handle POST request (from form submission)
     if request.method == 'POST':
@@ -108,6 +118,9 @@ def add_to_cart(request, product_id, variant_id=None):
                 messages.error(request, f"Only {product.stock} items available.")
                 return redirect('vendor_products:product_detail', product_id=product.id)
         
+        # ✅ Clear shipping session when adding items
+        clear_vendor_shipping_session(request)
+        
         # Get or create cart using helper
         cart = get_or_create_cart(request)
         
@@ -131,12 +144,15 @@ def add_to_cart(request, product_id, variant_id=None):
         
         return redirect('vendor_products:cart_detail')
     
-    # Handle GET request (from variant selection button click) - like main product
+    # Handle GET request (from variant selection button click)
     if variant:
         # Check stock
         if variant.stock <= 0:
             messages.error(request, "This variant is out of stock.")
             return redirect('vendor_products:product_detail', product_id=product.id)
+        
+        # ✅ Clear shipping session when adding items
+        clear_vendor_shipping_session(request)
         
         quantity = 1
         shipping_address = "Address will be provided during checkout"
@@ -177,12 +193,24 @@ def cart_detail(request):
     cart_items = cart.items.all()
     total = cart.get_total()
     
+    # ✅ Clear shipping if cart is empty
+    if not cart_items:
+        clear_vendor_shipping_session(request)
+    
     # ✅ Get shipping from session (same as main cart)
     shipping_data = request.session.get("shipping", {})
     shipping_cost_ngn = Decimal(str(shipping_data.get("amount_ngn", 0)))
     shipping_cost_fx = Decimal(str(shipping_data.get("amount_fx", 0)))
     shipping_label = shipping_data.get("label")
     shipping_method = shipping_data.get("method")
+    is_vendor_shipping = shipping_data.get("is_vendor", False)
+    
+    # ✅ Only use shipping if it's from vendor cart
+    if not is_vendor_shipping:
+        shipping_cost_ngn = Decimal("0.00")
+        shipping_cost_fx = Decimal("0.00")
+        shipping_label = None
+        shipping_method = None
     
     print(f"📦 Shipping data from session: {shipping_data}")
     print(f"📦 Shipping cost: {shipping_cost_ngn}")
@@ -216,7 +244,7 @@ def cart_detail(request):
         'grand_total_fx': grand_total_fx,
         'currency': active_currency,
         'total_items': cart.get_total_items(),
-        'has_shipping': shipping_cost_ngn > 0,
+        'has_shipping': shipping_cost_ngn > 0 and is_vendor_shipping,
     }
     return render(request, 'vendor_products/cart_detail.html', context)
 
@@ -226,6 +254,10 @@ def remove_from_cart(request, item_id):
     cart = get_or_create_cart(request)
     cart_item = get_object_or_404(VendorCartItem, id=item_id, cart=cart)
     cart_item.delete()
+    
+    # ✅ Clear shipping session when removing items
+    clear_vendor_shipping_session(request)
+    
     messages.success(request, "Item removed from cart.")
     return redirect('vendor_products:cart_detail')
 
@@ -247,6 +279,10 @@ def update_cart_item(request, item_id):
                 cart_item.quantity = quantity
                 cart_item.save()
                 messages.success(request, "Cart updated.")
+                
+            # ✅ Clear shipping session when updating items
+            clear_vendor_shipping_session(request)
+            
         return redirect('vendor_products:cart_detail')
     
     if request.method == 'POST':
@@ -259,6 +295,9 @@ def update_cart_item(request, item_id):
             cart_item.quantity = quantity
             cart_item.save()
             messages.success(request, "Cart updated.")
+        
+        # ✅ Clear shipping session when updating items
+        clear_vendor_shipping_session(request)
     
     return redirect('vendor_products:cart_detail')
 

@@ -133,7 +133,7 @@ def set_shipping(request):
         "amount_fx": shipping_cost_fx,
         "label": rate_data["label"],
         "currency": active_currency,
-        "is_vendor": is_vendor_cart,
+        "is_vendor": True, 
     }
 
     # 🔹 6. RETURN CONSISTENT STRUCTURE
