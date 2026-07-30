@@ -37,13 +37,8 @@
             <tr>
                 <td>
                     <a href="{% url 'vendor_products:product_detail' item.product.id %}">
-                        {# ✅ Show variant image if available, otherwise show product image #}
-                        {% if item.variant %}
-                            {% if item.variant.image %}
-                                <img src="{{ item.variant.image.url }}" width="100" height="100" alt="">
-                            {% else %}
-                                <img src="{{ item.product.image.url }}" width="100" height="100" alt="">
-                            {% endif %}
+                        {% if item.variant and item.variant.image %}
+                            <img src="{{ item.variant.image.url }}" width="100" height="100" alt="">
                         {% else %}
                             <img src="{{ item.product.image.url }}" width="100" height="100" alt="">
                         {% endif %}
@@ -87,6 +82,12 @@
     </div>
 
     <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
+        <!-- ✅ Hidden data element for shipping -->
+        <div id="shipping-data" 
+             data-total-ngn="{{ total|default:'0' }}"
+             style="display:none;">
+        </div>
+
         <table class="table cart_table">
             <thead class="cart_thead">
                 <tr>
@@ -228,6 +229,39 @@
 
 <!-- JavaScript -->
 <script>
+    // Get total from data attribute
+    function getCartTotal() {
+        const shippingData = document.getElementById('shipping-data');
+        if (shippingData) {
+            return parseFloat(shippingData.dataset.totalNgn) || 0;
+        }
+        return 0;
+    }
+
+    // Update grand total
+    function updateGrandTotal() {
+        const productTotalEl = document.getElementById('product_total_display');
+        const productTotalText = productTotalEl?.innerText || '0';
+        const productTotal = parseFloat(productTotalText.replace(/[₦,]/g, '')) || 0;
+        
+        const shippingEl = document.getElementById('shipping_costng_ui');
+        const shippingText = shippingEl?.innerText || '0';
+        const shippingCost = parseFloat(shippingText.replace(/[₦,]/g, '')) || 0;
+        
+        const grandTotal = productTotal + shippingCost;
+        
+        const grandTotalEl = document.getElementById('grand_totalng_ui');
+        if (grandTotalEl) {
+            const currency = "{{ currency }}";
+            const symbol = currency === 'NGN' ? '₦' : 
+                          currency === 'USD' ? '$' : 
+                          currency === 'GHS' ? '₵' : 
+                          currency === 'XOF' ? 'CFA' : '';
+            grandTotalEl.innerText = `${symbol}${grandTotal.toLocaleString()}`;
+            grandTotalEl.style.display = 'inline';
+        }
+    }
+
     function handleShippingSelection(select) {
         if (select.value === 'dhl') {
             alert('DHL Express shipping is coming soon! Please select "Seller Shipping" for now.');
@@ -268,10 +302,11 @@
         })
         .then(res => res.json())
         .then(data => {
+            console.log('Shipping data:', data);
             const currency = "{{ currency }}";
             const shippingNGN = parseFloat(data.shipping.amount_ngn);
             const shippingFX = parseFloat(data.shipping.amount_fx);
-            const cartTotalNGN = parseFloat("{{ total }}");
+            const cartTotalNGN = getCartTotal();
             
             const grandTotalNGN = cartTotalNGN + shippingNGN;
 
@@ -363,6 +398,14 @@
         
         document.body.appendChild(form);
         form.submit();
+    });
+
+    // Call updateGrandTotal on page load if shipping is already selected
+    document.addEventListener('DOMContentLoaded', function() {
+        const shippingEl = document.getElementById('shipping_costng_ui');
+        if (shippingEl && shippingEl.style.display !== 'none') {
+            updateGrandTotal();
+        }
     });
 </script>
 {% endif %}
