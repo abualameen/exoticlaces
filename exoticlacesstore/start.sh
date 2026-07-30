@@ -7,13 +7,8 @@ echo "=========================================="
 echo "Starting Exotic Laces Store..."
 echo "=========================================="
 
-# ✅ Create migrations for any model changes
-echo "Creating migrations if needed..."
-python manage.py makemigrations --noinput || echo "No new migrations needed"
-
-# ✅ Run database migrations
-echo "Running database migrations..."
-python manage.py migrate --noinput
+# ⚠️ SKIP MIGRATIONS - Database is already set up
+echo "Skipping migrations (database already configured)..."
 
 # Collect static files
 echo "Collecting static files..."
