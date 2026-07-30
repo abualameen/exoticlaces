@@ -89,6 +89,7 @@
              data-shipping-ngn="{{ shipping_cost_ngn|default:0 }}"
              data-shipping-label="{{ shipping_label|default:'' }}"
              data-has-shipping="{{ has_shipping|yesno:'true,false' }}"
+             data-fx-rate="{{ fx_rate|default:1 }}"
              style="display:none;">
         </div>
 
@@ -256,14 +257,15 @@
                 currency: cartData.dataset.currency || 'NGN',
                 shippingNgn: parseFloat(cartData.dataset.shippingNgn) || 0,
                 shippingLabel: cartData.dataset.shippingLabel || '',
-                hasShipping: cartData.dataset.hasShipping === 'true'
+                hasShipping: cartData.dataset.hasShipping === 'true',
+                fxRate: parseFloat(cartData.dataset.fxRate) || 1
             };
         }
-        return { totalNgn: 0, currency: 'NGN', shippingNgn: 0, shippingLabel: '', hasShipping: false };
+        return { totalNgn: 0, currency: 'NGN', shippingNgn: 0, shippingLabel: '', hasShipping: false, fxRate: 1 };
     }
 
-    // Format currency
-    function formatCurrency(amount, currency) {
+    // Format currency with conversion
+    function formatCurrency(amountNgn, currency, fxRate) {
         const symbols = {
             'NGN': '₦',
             'USD': '$',
@@ -272,7 +274,9 @@
             'EUR': '€'
         };
         const symbol = symbols[currency] || '₦';
-        return symbol + amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        // Convert NGN to selected currency
+        const convertedAmount = currency === 'NGN' ? amountNgn : amountNgn * fxRate;
+        return symbol + convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     // Reset totals (hide shipping and grand total)
@@ -297,10 +301,10 @@
     }
 
     // Update totals after shipping is selected
-    function updateTotalsWithShipping(shippingCostNgn, shippingLabel, currency) {
+    function updateTotalsWithShipping(shippingCostNgn, shippingLabel, currency, fxRate) {
         const cartData = getCartData();
-        // The money filter will handle currency conversion in the template
-        // We just need to update the displayed values
+        const totalNgn = cartData.totalNgn;
+        const grandTotalNgn = totalNgn + shippingCostNgn;
         
         // Show shipping row
         const shippingRow = document.getElementById('shipping-row');
@@ -314,7 +318,7 @@
             grandRow.style.display = 'table-row';
         }
         
-        // Update shipping label and cost
+        // Update shipping label and cost (convert to selected currency)
         const labelDisplay = document.getElementById('shipping_label_ui');
         const costDisplay = document.getElementById('shipping_cost_display');
         
@@ -323,15 +327,13 @@
         }
         
         if (costDisplay) {
-            // Format shipping cost
-            costDisplay.innerText = formatCurrency(shippingCostNgn, currency);
+            costDisplay.innerText = formatCurrency(shippingCostNgn, currency, fxRate);
         }
         
-        // Update grand total
+        // Update grand total (convert to selected currency)
         const grandDisplay = document.getElementById('grand_total_display');
         if (grandDisplay) {
-            const total = cartData.totalNgn + shippingCostNgn;
-            grandDisplay.innerText = formatCurrency(total, currency);
+            grandDisplay.innerText = formatCurrency(grandTotalNgn, currency, fxRate);
         }
         
         // Enable pay button
@@ -389,9 +391,10 @@
                 const shippingCost = parseFloat(data.shipping.amount_ngn) || 0;
                 const shippingLabel = data.shipping.label || 'Seller Shipping';
                 const currency = cartData.currency;
+                const fxRate = cartData.fxRate;
                 
-                // Update totals with shipping (pass NGN amount)
-                updateTotalsWithShipping(shippingCost, shippingLabel, currency);
+                // Update totals with shipping (pass NGN amount, currency, and fx rate)
+                updateTotalsWithShipping(shippingCost, shippingLabel, currency, fxRate);
             } else {
                 alert('Error calculating shipping. Please try again.');
             }
@@ -467,7 +470,7 @@
         
         // If shipping exists, show it; otherwise hide
         if (cartData.hasShipping && cartData.shippingNgn > 0) {
-            updateTotalsWithShipping(cartData.shippingNgn, cartData.shippingLabel, cartData.currency);
+            updateTotalsWithShipping(cartData.shippingNgn, cartData.shippingLabel, cartData.currency, cartData.fxRate);
         } else {
             resetTotals();
         }
