@@ -43,7 +43,7 @@
                 <li class="nav-item"><a class="nav-link text-light text-uppercase font-weight-bold px-3" href="{% url 'signin' %}">Sign In <i class="fas fa-sign-in-alt"></i></a></li>
             {% endif %}
             
-            <!-- ✅ MAIN PRODUCT CART -->
+            <!-- ✅ MAIN PRODUCT CART - Yellow/Warning badge -->
             {% if item_count > 0 %}
             <li class="nav-item">
                 <a class="nav-link text-light text-uppercase font-weight-bold px-3" href="{% url 'cart_detail' %}">
@@ -52,11 +52,11 @@
             </li>
             {% endif %}
             
-            <!-- ✅ VENDOR PRODUCT CART -->
+            <!-- ✅ VENDOR PRODUCT CART - Same cart icon but Blue/Info badge -->
             {% if vendor_cart_count > 0 %}
             <li class="nav-item">
                 <a class="nav-link text-light text-uppercase font-weight-bold px-3" href="{% url 'vendor_products:cart_detail' %}">
-                    <i class="fas fa-handshake"></i> <span class="badge badge-info">{{vendor_cart_count}}</span>
+                    <i class="fas fa-shopping-cart"></i> <span class="badge badge-info">{{vendor_cart_count}}</span>
                 </a>
             </li>
             {% endif %}
