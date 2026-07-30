@@ -256,7 +256,7 @@ def cart_detail(request):
     
     cart = get_or_create_cart(request)
     cart_items = cart.items.all()
-    total = cart.get_total()
+    total = cart.get_total()  # This is in NGN
     
     # ✅ Clear shipping if cart is empty
     if not cart_items:
@@ -266,7 +266,6 @@ def cart_detail(request):
     # ✅ Get shipping from session
     shipping_data = request.session.get("shipping", {})
     shipping_cost_ngn = Decimal("0.00")
-    shipping_cost_fx = Decimal("0.00")
     shipping_label = None
     shipping_method = None
     has_shipping = False
@@ -290,48 +289,29 @@ def cart_detail(request):
             shipping_method = shipping_data.get("method")
             has_shipping = shipping_cost_ngn > 0
     
-    # ✅ Get active currency and exchange rate
-    active_currency = request.session.get("currency", "NGN")
-    
-    # ✅ Convert shipping to FX if needed (like main cart)
-    if has_shipping and active_currency != "NGN":
-        fx_rate, rate_source = get_exchange_rate(active_currency)
-        shipping_cost_fx = round(shipping_cost_ngn * Decimal(str(fx_rate)), 2)
-    else:
-        shipping_cost_fx = shipping_cost_ngn
-    
-    # ✅ Convert total to FX for display
-    if active_currency != "NGN":
-        fx_rate, rate_source = get_exchange_rate(active_currency)
-        total_fx = round(total * Decimal(str(fx_rate)), 2)
-    else:
-        total_fx = total
-    
-    # ✅ Calculate grand total in NGN (for truth)
+    # ✅ Calculate grand total with shipping (in NGN)
     grand_total_ngn = total + shipping_cost_ngn
     
-    # ✅ Calculate grand total in FX (for display)
-    if active_currency != "NGN":
-        grand_total_fx = round(grand_total_ngn * Decimal(str(fx_rate)), 2)
-    else:
-        grand_total_fx = grand_total_ngn
+    # ✅ Get active currency for display
+    active_currency = request.session.get("currency", "NGN")
     
-    print(f"📊 Vendor Cart: total_ngn={total}, shipping_ngn={shipping_cost_ngn}, grand_ngn={grand_total_ngn}")
-    print(f"📊 Vendor Cart: currency={active_currency}, total_fx={total_fx}, shipping_fx={shipping_cost_fx}, grand_fx={grand_total_fx}")
+    # ✅ Get exchange rate (for reference, the money filter will use this)
+    fx_rate = 1
+    if active_currency != "NGN":
+        fx_rate, rate_source = get_exchange_rate(active_currency)
     
     context = {
         'cart_items': cart_items,
-        'total': total,
-        'total_fx': total_fx,
-        'shipping_cost_ngn': shipping_cost_ngn,
-        'shipping_cost_fx': shipping_cost_fx,
+        'total_ngn': total,  # ✅ Pass NGN amount (the money filter will convert)
+        'total': total,      # ✅ Keep for backward compatibility
+        'shipping_cost_ngn': shipping_cost_ngn,  # ✅ Pass NGN amount
         'shipping_label': shipping_label,
         'shipping_method': shipping_method,
-        'grand_total_ngn': grand_total_ngn,
-        'grand_total_fx': grand_total_fx,
+        'grand_total_ngn': grand_total_ngn,  # ✅ Pass NGN amount
         'currency': active_currency,
         'total_items': cart.get_total_items(),
         'has_shipping': has_shipping,
+        'fx_rate': fx_rate,
     }
     return render(request, 'vendor_products/cart_detail.html', context)
 
