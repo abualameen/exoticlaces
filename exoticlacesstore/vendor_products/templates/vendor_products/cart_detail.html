@@ -475,6 +475,41 @@
             resetTotals();
         }
     });
+
+    // ✅ On page load, check if we should clear shipping
+    document.addEventListener('DOMContentLoaded', function() {
+        const cartData = getCartData();
+        
+        // Check if this is a page refresh (not a navigation)
+        if (performance.navigation.type === 1) {
+            // Page was refreshed - clear shipping via AJAX
+            fetch("/vendor-products/clear-shipping/", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    resetTotals();
+                    // Reload the page to show cleared state
+                    location.reload();
+                }
+            });
+        } else {
+            // If shipping exists, show it; otherwise hide
+            if (cartData.hasShipping && cartData.shippingNgn > 0) {
+                updateTotalsWithShipping(cartData.shippingNgn, cartData.shippingLabel, cartData.currency, cartData.fxRate);
+            } else {
+                resetTotals();
+            }
+        }
+    });
+
+
+
 </script>
 {% endif %}
 {% endblock %}

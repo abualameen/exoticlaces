@@ -637,3 +637,19 @@ def paystack_webhook(request):
             return JsonResponse({'status': 'error'}, status=400)
     
     return JsonResponse({'status': 'failed'}, status=405)
+
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def clear_shipping(request):
+    """Clear shipping session for vendor cart"""
+    if request.method == "POST":
+        if "shipping" in request.session:
+            if request.session["shipping"].get("is_vendor", False):
+                del request.session["shipping"]
+                return JsonResponse({"success": True, "message": "Shipping cleared"})
+        return JsonResponse({"success": False, "message": "No shipping to clear"})
+    return JsonResponse({"success": False, "message": "Invalid method"}, status=405)

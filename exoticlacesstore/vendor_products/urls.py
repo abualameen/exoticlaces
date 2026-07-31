@@ -25,6 +25,8 @@ urlpatterns = [
     # Admin actions
     path('capture-payment/<int:order_id>/', views.capture_payment, name='capture_payment'),
     path('cancel-order/<int:order_id>/', views.cancel_order_hold, name='cancel_order'),
+
+    path('clear-shipping/', views.clear_shipping, name='clear_shipping'),
     
     # Webhook
     path('webhook/paystack/', views.paystack_webhook, name='paystack_webhook'),
