@@ -27,7 +27,6 @@ def web3_payment_detail(request, payment_id):
     if status == 'confirmed':
         service.confirm_payment(payment)
         messages.success(request, "✅ Payment confirmed! Your order is being processed.")
-        # ✅ Redirect to existing thankyou page
         return redirect('thanks_page', order_id=payment.order.id)
     
     # Generate QR code
@@ -98,6 +97,39 @@ def create_web3_payment(request, order_id):
 
 
 @csrf_exempt
+@require_http_methods(["POST"])
+def web3_webhook(request):
+    """Webhook for blockchain events"""
+    try:
+        data = json.loads(request.body)
+        tx_hash = data.get('tx_hash')
+        payment_address = data.get('payment_address')
+        
+        if not tx_hash or not payment_address:
+            return JsonResponse({'error': 'Missing parameters'}, status=400)
+        
+        payment = Web3Payment.objects.filter(payment_address=payment_address).first()
+        if not payment:
+            return JsonResponse({'error': 'Payment not found'}, status=404)
+        
+        service = Web3PaymentService()
+        status = service.check_payment_status(payment)
+        
+        if status == 'confirmed':
+            service.confirm_payment(payment)
+        
+        return JsonResponse({
+            'success': True,
+            'status': payment.status,
+            'payment_id': payment.id,
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
 def web3_payment_verify(request):
     """Verify Web3 payment and confirm it"""
     if request.method == 'GET':
@@ -115,7 +147,6 @@ def web3_payment_verify(request):
         if status == 'confirmed':
             service.confirm_payment(payment)
             messages.success(request, "✅ Payment confirmed! Your order is being processed.")
-            # ✅ Redirect to existing thankyou page
             return redirect('thanks_page', order_id=payment.order.id)
         elif status == 'expired':
             messages.error(request, "Payment expired. Please try again.")
@@ -142,3 +173,11 @@ def web3_payment_status(request, payment_id):
         'payment_id': payment.id,
         'order_id': payment.order.id if payment.order else None,
     })
+
+
+def web3_available_tokens(request):
+    """Get available tokens for payment"""
+    tokens = Web3Token.objects.filter(is_active=True).values(
+        'id', 'symbol', 'name', 'network__name'
+    )
+    return JsonResponse({'tokens': list(tokens)})
