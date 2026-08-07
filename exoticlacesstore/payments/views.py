@@ -16,7 +16,13 @@ from lacesstore.views import sendEmail
 from shipping.engine import create_provider_shipment
 from shipping.models import Shipment, ShippingMethod
 from lacesstore.facebook_capi import send_facebook_event
-
+# Add this import at the top of payments/views.py
+from web3_payment.models import Web3Token, Web3Network, Web3Payment
+from web3_payment.services import Web3PaymentService, Web3PriceService
+from django.urls import reverse
+import uuid
+from decimal import Decimal
+from django.utils import timezone
 
 # from shipping.models import CartShipping
 
@@ -411,3 +417,137 @@ def paystack_webhook(request):
             # Optionally reconcile stock or notify admin
 
     return HttpResponse(status=200)
+
+
+
+# Add this import at the top of payments/views.py
+from web3_payment.models import Web3Token, Web3Network, Web3Payment
+from web3_payment.services import Web3PaymentService, Web3PriceService
+from django.urls import reverse
+import uuid
+from decimal import Decimal
+from django.utils import timezone
+
+# Add this function to payments/views.py
+def init_web3_payment(request):
+    """Initialize Web3 payment for an order"""
+    if request.method != "POST":
+        return JsonResponse({"status": False, "message": "Invalid request"}, status=400)
+
+    # Require shipping selection
+    shipping = request.session.get("shipping")
+    if not shipping:
+        return JsonResponse({
+            "status": False,
+            "message": "Select shipping method first"
+        }, status=400)
+
+    # Get user info
+    email = request.POST.get('email')
+    phonenumber = request.POST.get('phonenumber')
+    firstName = request.POST.get('firstName')
+    lastName = request.POST.get('lastName')
+    country = request.POST.get('country')
+    state = request.POST.get('state')
+
+    if not email:
+        return JsonResponse({"status": False, "message": "Email required"}, status=400)
+
+    # Force use of logged-in user's email
+    if request.user.is_authenticated:
+        email = request.user.email
+        firstName = request.user.first_name or firstName
+        lastName = request.user.last_name or lastName
+
+    # Save checkout data to session
+    request.session['checkout_data'] = {
+        'email': email,
+        'phonenumber': phonenumber,
+        'firstName': firstName,
+        'lastName': lastName,
+        'country': country,
+        'state': state,
+    }
+
+    # Calculate totals (same as Paystack)
+    from lacesstore.models import Cart, CartItem, FlashSale, Voucher
+    cart = Cart.objects.get(cart_id=_cart_id(request))
+    cart_items = CartItem.objects.filter(cart=cart, active=True)
+
+    cart_total = Decimal('0.00')
+    flash_sale_discount = Decimal('0.00')
+    now = timezone.now()
+
+    for item in cart_items:
+        cart_total += Decimal(item.product.price * item.quantity)
+        
+        flash_sale = FlashSale.objects.filter(
+            product=item.product,
+            is_active=True,
+            start_time__lte=now,
+            end_time__gte=now
+        ).first()
+        if flash_sale:
+            discount_amount = item.product.price * (flash_sale.discount_percentage / 100)
+            flash_sale_discount += discount_amount * item.quantity
+
+    # Apply voucher discount
+    voucher_discount = Decimal('0.00')
+    voucher_code = request.session.get('voucher_code')
+    if voucher_code:
+        try:
+            voucher = Voucher.objects.get(code=voucher_code, active=True)
+            voucher_discount = voucher.apply_discount(cart_total)
+        except Voucher.DoesNotExist:
+            request.session.pop('voucher_code', None)
+            request.session.pop('voucher_discount', None)
+
+    shipping_cost = Decimal(shipping.get("amount_ngn", 0))
+    grand_total = cart_total - voucher_discount - flash_sale_discount + shipping_cost
+
+    # Get default token and network
+    token = Web3Token.objects.filter(is_active=True).first()
+    network = token.network if token else Web3Network.objects.filter(is_active=True).first()
+
+    if not token or not network:
+        return JsonResponse({
+            "status": False, 
+            "message": "Web3 payment is currently unavailable"
+        }, status=400)
+
+    # Create Web3 payment
+    service = Web3PaymentService()
+    
+    # Convert NGN to USD (approximate rate: 1 USD = 1500 NGN)
+    # In production, use a real exchange rate API
+    usd_amount = float(grand_total) / 1500
+    crypto_amount = usd_amount  # 1 USDC = 1 USD
+
+    payment = Web3Payment.objects.create(
+        order=None,  # Will be created after confirmation
+        user=request.user if request.user.is_authenticated else None,
+        token=token,
+        network=network,
+        amount=crypto_amount,
+        usd_amount=usd_amount,
+        to_address=service.generate_payment_address(network.chain_id),
+        payment_address=service.generate_payment_address(network.chain_id),
+        status='pending',
+        expires_at=timezone.now() + timezone.timedelta(hours=1),
+        required_confirmations=network.confirmations_required,
+        ip_address=request.META.get('REMOTE_ADDR'),
+        user_agent=request.META.get('HTTP_USER_AGENT', ''),
+    )
+
+    # Generate payment URI
+    payment.payment_uri = service.create_payment_uri(payment)
+    payment.save()
+
+    # Store payment info in session
+    request.session['web3_payment_id'] = payment.id
+
+    return JsonResponse({
+        "status": True,
+        "web3_payment_url": reverse('web3_payment:detail', args=[payment.id]),
+        "payment_id": payment.id,
+    })

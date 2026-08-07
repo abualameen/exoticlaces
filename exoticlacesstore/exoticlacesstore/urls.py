@@ -62,6 +62,7 @@ urlpatterns = [
     path('auctions/', include('kwantacious.urls')),
     # Add this to your urlpatterns
     path('vendor-products/', include('vendor_products.urls')),
+    path('web3-payment/', include('web3_payment.urls')),
     
     
 

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'django_facebook_capi',
     'django_recaptcha',
+    'web3_payment',
 ]
 
 MIDDLEWARE = [
@@ -355,3 +356,23 @@ CSRF_FAILURE_VIEW = 'lacesstore.views.csrf_failure'
 
 RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY', default='')
 RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', default='')
+
+
+
+
+# Web3 Payment Settings
+WEB3_PAYMENT = {
+    'DEFAULT_NETWORK': 'polygon',
+    'DEFAULT_TOKEN': 'USDC',
+    'PAYMENT_EXPIRY_MINUTES': 60,
+    'CONFIRMATIONS_REQUIRED': 12,
+    'ENABLE_TESTNET': False,
+}
+
+# Celery for background tasks
+CELERY_BEAT_SCHEDULE = {
+    'monitor-web3-payments': {
+        'task': 'web3_payment.tasks.monitor_payments',
+        'schedule': 60.0,  # Every minute
+    },
+}

@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Web3 Payment - Exotic Laces{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-gradient-primary text-white py-3">
+                    <h4 class="mb-0 text-center">
+                        <i class="fab fa-ethereum"></i> Web3 Payment
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Payment Status -->
+                    <div class="alert 
+                        {% if is_expired %}alert-danger
+                        {% elif status == 'confirmed' %}alert-success
+                        {% elif status == 'confirming' %}alert-warning
+                        {% else %}alert-info{% endif %}">
+                        <h5 class="mb-0 text-center">
+                            <i class="fas 
+                                {% if is_expired %}fa-times-circle
+                                {% elif status == 'confirmed' %}fa-check-circle
+                                {% elif status == 'confirming' %}fa-clock
+                                {% else %}fa-spinner fa-spin{% endif %} fa-2x">
+                            </i>
+                            <div class="mt-2">
+                                {% if is_expired %}
+                                    Payment Expired
+                                {% elif status == 'confirmed' %}
+                                    Payment Confirmed! ✅
+                                {% elif status == 'confirming' %}
+                                    Payment Received - Confirming...
+                                {% else %}
+                                    Awaiting Payment
+                                {% endif %}
+                            </div>
+                        </h5>
+                    </div>
+
+                    <!-- Payment Details -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 bg-light">
+                                <small class="text-muted">Order ID</small>
+                                <h6>{% if payment.order %}#{{ payment.order.id }}{% else %}Pending{% endif %}</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 bg-light">
+                                <small class="text-muted">Amount</small>
+                                <h6>{{ payment.amount|floatformat:2 }} {{ payment.token.symbol }}</h6>
+                                <small class="text-muted">~ ${{ payment.usd_amount|floatformat:2 }} USD</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <div class="border rounded p-3 bg-light">
+                                <small class="text-muted">Network</small>
+                                <h6>{{ payment.network.name }}</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <div class="border rounded p-3 bg-light">
+                                <small class="text-muted">Status</small>
+                                <h6><span class="badge 
+                                    {% if is_expired %}badge-danger
+                                    {% elif status == 'confirmed' %}badge-success
+                                    {% elif status == 'confirming' %}badge-warning
+                                    {% else %}badge-info{% endif %}">
+                                    {{ status|title }}
+                                </span></h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Address -->
+                    <div class="mb-4">
+                        <label class="font-weight-bold">Payment Address</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control font-monospace" value="{{ payment.payment_address }}" id="payment-address" readonly>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-primary" onclick="copyAddress()">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- QR Code -->
+                    {% if not is_expired and status != 'confirmed' %}
+                    <div class="text-center mb-4 py-4 bg-light rounded">
+                        <h5>Scan to Pay</h5>
+                        <img src="{{ qr_code }}" alt="Payment QR Code" class="img-fluid" style="max-width: 250px;">
+                        <p class="text-muted small mt-2">
+                            <i class="fas fa-info-circle"></i> 
+                            Scan with your crypto wallet or copy the address above
+                        </p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Payment Instructions -->
+                    <div class="alert alert-secondary">
+                        <h6><i class="fas fa-info-circle"></i> Instructions</h6>
+                        <ul class="mb-0 small">
+                            <li>Send exactly <strong>{{ payment.amount|floatformat:2 }} {{ payment.token.symbol }}</strong> to the address above</li>
+                            <li>Use the <strong>{{ payment.network.name }}</strong> network</li>
+                            <li>Payment must be completed within <strong>1 hour</strong></li>
+                            <li>Once confirmed, your order will be processed automatically</li>
+                        </ul>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-3">
+                        {% if status == 'confirmed' %}
+                            <a href="{% url 'order_detail' payment.order.id %}" class="btn btn-success btn-block">
+                                <i class="fas fa-check"></i> View Order
+                            </a>
+                        {% elif is_expired %}
+                            <a href="{% url 'web3_payment:create' payment.order.id %}" class="btn btn-warning btn-block">
+                                <i class="fas fa-sync"></i> Create New Payment
+                            </a>
+                        {% else %}
+                            <button id="check-status-btn" class="btn btn-primary btn-block" onclick="checkStatus()">
+                                <i class="fas fa-sync"></i> Check Payment Status
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+}
+.font-monospace {
+    font-family: 'Courier New', monospace;
+}
+</style>
+
+<script>
+function copyAddress() {
+    const addressInput = document.getElementById('payment-address');
+    addressInput.select();
+    document.execCommand('copy');
+    
+    // Show feedback
+    const btn = event.target.closest('button');
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+    setTimeout(() => {
+        btn.innerHTML = originalHtml;
+    }, 2000);
+}
+
+function checkStatus() {
+    const btn = document.getElementById('check-status-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+    
+    fetch("{% url 'web3_payment:status' payment.id %}")
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'confirmed' || data.status === 'expired') {
+                window.location.reload();
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sync"></i> Check Payment Status';
+                alert('Payment not yet confirmed. Please wait...');
+            }
+        })
+        .catch(error => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sync"></i> Check Payment Status';
+            alert('Error checking status. Please try again.');
+        });
+}
+
+// Auto-check status every 30 seconds
+let autoCheckInterval;
+if ('{{ status }}' !== 'confirmed' && '{{ status }}' !== 'expired') {
+    autoCheckInterval = setInterval(() => {
+        fetch("{% url 'web3_payment:status' payment.id %}")
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'confirmed' || data.status === 'expired') {
+                    clearInterval(autoCheckInterval);
+                    window.location.reload();
+                }
+            });
+    }, 30000);
+}
+</script>
+{% endblock %}

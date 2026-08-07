@@ -1,0 +1,1 @@
+default_app_config = 'web3_payment.apps.Web3PaymentConfig'
