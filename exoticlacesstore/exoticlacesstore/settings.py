@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'django_facebook_capi',
     'django_recaptcha',
-    'web3_payment',
+    #'web3_payment',
 ]
 
 MIDDLEWARE = [
@@ -375,4 +375,14 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'web3_payment.tasks.monitor_payments',
         'schedule': 60.0,  # Every minute
     },
+}
+
+
+
+# settings.py
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
 }
