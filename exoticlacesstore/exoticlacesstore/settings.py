@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'django_facebook_capi',
     'django_recaptcha',
-    #'web3_payment',
+    'web3_payment',
 ]
 
 MIDDLEWARE = [
@@ -368,6 +368,9 @@ WEB3_PAYMENT = {
     'CONFIRMATIONS_REQUIRED': 12,
     'ENABLE_TESTNET': False,
 }
+
+# ✅ Feature flag to enable/disable Web3 payments
+WEB3_ENABLED = True
 
 # Celery for background tasks
 CELERY_BEAT_SCHEDULE = {

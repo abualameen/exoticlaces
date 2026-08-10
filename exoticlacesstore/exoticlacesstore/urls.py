@@ -62,7 +62,7 @@ urlpatterns = [
     path('auctions/', include('kwantacious.urls')),
     # Add this to your urlpatterns
     path('vendor-products/', include('vendor_products.urls')),
-    path('web3-payment/', include('web3_payment.urls')),
+    # path('web3-payment/', include('web3_payment.urls')),
     
     
 
@@ -70,6 +70,12 @@ urlpatterns = [
 
     
 ]#+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# ✅ Only include Web3 URLs if enabled
+if settings.WEB3_ENABLED:
+    urlpatterns += [
+        path('web3-payment/', include('web3_payment.urls')),
+    ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
