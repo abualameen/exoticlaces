@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %} 
 Cart
+
 {% endblock %}
 
 {% block content %}
@@ -185,50 +186,39 @@ Cart
             </tbody>
         </table>
 
-        <!-- ✅ PAYMENT METHOD SELECTION -->
-        <div class="payment-methods mb-4">
-            <h5 class="text-left mb-3"><i class="fas fa-credit-card"></i> Select Payment Method</h5>
-            <div class="row">
-                <!-- Paystack Option -->
-                <div class="col-md-6 mb-2">
-                    <div class="payment-option card p-3" onclick="selectPayment('paystack')" id="paystack-option">
-                        <div class="d-flex align-items-center">
-                            <input type="radio" name="payment_method" id="paystack_radio" value="paystack" checked>
-                            <label for="paystack_radio" class="ml-2 mb-0 cursor-pointer">
-                                <i class="fas fa-credit-card text-primary"></i>
-                                <strong>Paystack</strong>
-                                <small class="d-block text-muted">Card, Bank Transfer, USSD</small>
-                            </label>
-                        </div>
-                        <div class="payment-icons mt-2">
-                            <i class="fab fa-cc-visa text-primary"></i>
-                            <i class="fab fa-cc-mastercard text-danger"></i>
-                            <span class="font-weight-bold text-dark">VERVE</span>
-                            <i class="fas fa-university text-success"></i>
-                        </div>
+        <!-- Trust Seals -->
+        <div class="trust-seals mb-4 text-center">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-12">
+                    <p class="text-muted small mb-2">
+                        <i class="fas fa-lock text-success"></i> 
+                        Your payment is secure and encrypted via Paystack
+                    </p>
+                    <div class="payment-icons">
+                        <i class="fab fa-cc-visa fa-3x mx-2 text-primary"></i>
+                        <i class="fab fa-cc-mastercard fa-3x mx-2 text-danger"></i>
+                        <i class="fas fa-credit-card fa-3x mx-2 text-info" style="color: #1a1a8a;"></i>
+                        <span class="font-weight-bold text-dark mx-1" style="font-size: 1.5rem;">VERVE</span>
+                        <i class="fab fa-cc-amex fa-3x mx-2 text-primary"></i>
+                        <i class="fas fa-university fa-3x mx-2 text-success"></i>
+                        <span class="font-weight-bold text-dark mx-1" style="font-size: 1.2rem;">Paystack</span>
+                    </div>
+                    <div class="mt-3">
+                        <span class="badge badge-success mr-2">
+                            <i class="fas fa-check-circle"></i> SSL Secure
+                        </span>
+                        <span class="badge badge-info mr-2">
+                            <i class="fas fa-shield-alt"></i> 100% Protected
+                        </span>
+                        <span class="badge badge-primary mr-2">
+                            <i class="fas fa-university"></i> Bank Transfer
+                        </span>
+                        <span class="badge badge-warning">
+                            <i class="fas fa-clock"></i> Instant Checkout
+                        </span>
                     </div>
                 </div>
-                
-                <!-- Web3 / Crypto Option -->
-                <!-- <div class="col-md-6 mb-2">
-                    <div class="payment-option card p-3" onclick="selectPayment('web3')" id="web3-option">
-                        <div class="d-flex align-items-center">
-                            <input type="radio" name="payment_method" id="web3_radio" value="web3">
-                            <label for="web3_radio" class="ml-2 mb-0 cursor-pointer">
-                                <i class="fab fa-bitcoin text-warning"></i>
-                                <strong>Web3 / Crypto</strong>
-                                <small class="d-block text-muted">Bitcoin, Ethereum, USDC</small>
-                            </label>
-                        </div>
-                        <div class="payment-icons mt-2">
-                            <i class="fab fa-bitcoin text-warning"></i>
-                            <i class="fab fa-ethereum text-secondary"></i>
-                            <i class="fas fa-coins text-success"></i>
-                            <i class="fas fa-link text-info"></i>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
+            </div>
         </div>
 
         <div class="mx-auto" id="checkout-form">
@@ -381,9 +371,8 @@ Cart
             </div>
         </div>
 
-        <!-- ✅ Dynamic Payment Button -->
         <button id="payBtn" class="btn btn-lg btn-block btn-secondary" disabled>
-            <span id="payBtnText">Pay Securely with Paystack</span>
+            Pay Securely with Paystack
         </button>
 
         <a href="{% url 'home' %}" 
@@ -394,51 +383,6 @@ Cart
 
         <!-- ============ ALL SCRIPTS ============ -->
         
-        <!-- Payment Method Selection -->
-        <script>
-            let selectedPayment = 'paystack';
-
-            function selectPayment(method) {
-                selectedPayment = method;
-                
-                // Update radio buttons
-                document.getElementById('paystack_radio').checked = (method === 'paystack');
-                document.getElementById('web3_radio').checked = (method === 'web3');
-                
-                // Update UI styling
-                document.getElementById('paystack-option').classList.remove('selected');
-                document.getElementById('web3-option').classList.remove('selected');
-                document.getElementById(method + '-option').classList.add('selected');
-                
-                // Update button text
-                const payBtn = document.getElementById('payBtn');
-                const payBtnText = document.getElementById('payBtnText');
-                
-                if (method === 'web3') {
-                    payBtnText.innerHTML = '<i class="fab fa-bitcoin"></i> Pay with Crypto (Web3)';
-                    payBtn.classList.remove('btn-secondary');
-                    payBtn.classList.add('btn-warning');
-                } else {
-                    payBtnText.innerHTML = '<i class="fas fa-credit-card"></i> Pay Securely with Paystack';
-                    payBtn.classList.remove('btn-warning');
-                    payBtn.classList.add('btn-secondary');
-                }
-                
-                // Check if terms are checked to enable button
-                const termsCheckbox = document.getElementById('termsCheckbox');
-                if (termsCheckbox.checked) {
-                    payBtn.disabled = false;
-                    payBtn.classList.remove('btn-secondary');
-                    payBtn.classList.add('btn-success');
-                }
-            }
-
-            // Initialize payment selection
-            document.addEventListener('DOMContentLoaded', function() {
-                selectPayment('paystack');
-            });
-        </script>
-
         <!-- Voucher Validation Script -->
         <script>
             document.getElementById('voucher-input')?.addEventListener('input', function() {
@@ -823,14 +767,9 @@ Cart
                     }
 
                     document.getElementById("shipping_label_ui").innerText = data.shipping.label;
-                    
-                    // Enable pay button if terms are checked
-                    const termsCheckbox = document.getElementById('termsCheckbox');
-                    if (termsCheckbox.checked) {
-                        document.getElementById("payBtn").disabled = false;
-                        document.getElementById("payBtn").classList.remove("btn-secondary");
-                        document.getElementById("payBtn").classList.add("btn-success");
-                    }
+                    document.getElementById("payBtn").disabled = false;
+                    document.getElementById("payBtn").classList.remove("btn-secondary");
+                    document.getElementById("payBtn").classList.add("btn-success");
                 });
             }
         </script>
@@ -859,122 +798,44 @@ Cart
                 }
                 termsCheckbox.classList.remove("is-invalid");
 
-                // Get selected payment method
-                const paymentMethod = selectedPayment;
-                const email = document.getElementById("email-address").value;
-                const phonenumber = document.getElementById("phone-number").value;
-                const firstName = document.getElementById("first-name").value;
-                const lastName = document.getElementById("last-name").value;
-                const country = document.getElementById("country").value;
-                const state = document.getElementById("state").value;
+                let email = document.getElementById("email-address").value;
+                let currency = "{{ ACTIVE_CURRENCY }}";
+                let phonenumber = document.getElementById("phone-number").value;
+                let firstName = document.getElementById("first-name").value;
+                let lastName = document.getElementById("last-name").value;
+                let country = document.getElementById("country").value;
+                let state = document.getElementById("state").value;
 
                 if(!email){
                     alert("Please enter your email");
                     return;
                 }
 
-                // ✅ Route to different payment processors based on selection
-                if (paymentMethod === 'web3') {
-                    // ✅ Web3 Payment - Redirect to Web3 payment page
-                    fetch("{% url 'init_web3_payment' %}", {
-                        method: "POST",
-                        headers: {
-                            "X-CSRFToken": "{{ csrf_token }}",
-                            "Content-Type": "application/x-www-form-urlencoded"
-                        },
-                        body: new URLSearchParams({
-                            email: email,
-                            phonenumber: phonenumber,
-                            firstName: firstName,
-                            lastName: lastName,
-                            country: country,
-                            state: state
-                        })
+                fetch("{% url 'init_payment' %}", {
+                    method: "POST",
+                    headers:{
+                        "X-CSRFToken": "{{ csrf_token }}",
+                        "Content-Type":"application/x-www-form-urlencoded"
+                    },
+                    body: new URLSearchParams({
+                        email: email,
+                        phonenumber: phonenumber,
+                        firstName: firstName,
+                        lastName: lastName,
+                        country: country,
+                        state: state
                     })
-                    .then(res => res.json())
-                    .then(data => {
-                        if(!data.status){
-                            alert(data.message || "Web3 payment init failed");
-                            return;
-                        }
-                        window.location.href = data.web3_payment_url;
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('An error occurred. Please try again.');
-                    });
-                } else {
-                    // ✅ Paystack Payment (Existing)
-                    fetch("{% url 'init_payment' %}", {
-                        method: "POST",
-                        headers:{
-                            "X-CSRFToken": "{{ csrf_token }}",
-                            "Content-Type":"application/x-www-form-urlencoded"
-                        },
-                        body: new URLSearchParams({
-                            email: email,
-                            phonenumber: phonenumber,
-                            firstName: firstName,
-                            lastName: lastName,
-                            country: country,
-                            state: state
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if(!data.status){
-                            alert(data.message || "Payment init failed");
-                            return;
-                        }
-                        window.location.href = data.paystack_url;
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('An error occurred. Please try again.');
-                    });
-                }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(!data.status){
+                        alert(data.message || "Payment init failed");
+                        return;
+                    }
+                    window.location.href = data.paystack_url;
+                });
             });
         </script>
-
-        <style>
-            .payment-option {
-                cursor: pointer;
-                border: 2px solid #e9ecef;
-                transition: all 0.3s ease;
-                background: white;
-            }
-            
-            .payment-option:hover {
-                border-color: #6c5ce7;
-                box-shadow: 0 2px 10px rgba(108, 92, 231, 0.1);
-            }
-            
-            .payment-option.selected {
-                border-color: #6c5ce7;
-                background: #f8f7ff;
-                box-shadow: 0 4px 15px rgba(108, 92, 231, 0.2);
-            }
-            
-            .payment-option input[type="radio"] {
-                margin-right: 8px;
-            }
-            
-            .payment-option label {
-                cursor: pointer;
-            }
-            
-            .payment-icons {
-                font-size: 1.2rem;
-            }
-            
-            .payment-icons i, .payment-icons span {
-                margin-right: 8px;
-            }
-            
-            .cursor-pointer {
-                cursor: pointer;
-            }
-        </style>
 
     </div>
 </div>
