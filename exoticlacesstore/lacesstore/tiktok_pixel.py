@@ -9,7 +9,7 @@ class TikTokPixel:
     """TikTok Pixel Event Tracking"""
     
     def __init__(self):
-        # ✅ Get pixel ID from settings with fallback
+        # ✅ Use getattr with fallback to handle missing settings gracefully
         self.pixel_id = getattr(settings, 'TIKTOK_PIXEL_ID', '')
         self.enabled = getattr(settings, 'TIKTOK_PIXEL_ENABLED', False)
         self.access_token = getattr(settings, 'TIKTOK_ACCESS_TOKEN', '')
@@ -19,6 +19,8 @@ class TikTokPixel:
         # ✅ Log if pixel is not configured
         if not self.pixel_id:
             print("⚠️ TikTok Pixel: TIKTOK_PIXEL_ID not configured in settings")
+        else:
+            print(f"✅ TikTok Pixel configured: {self.pixel_id}")
     
     def track_event(self, request, event_name, event_data=None, user_data=None):
         """Track a TikTok Pixel event"""
@@ -50,9 +52,6 @@ class TikTokPixel:
         
         # Send event via API (Server-side tracking)
         self._send_event(event)
-        
-        # Also push to client-side
-        self._push_client_event(event_name, event_data, user_data)
     
     def _send_event(self, event):
         """Send event to TikTok Business API (Server-side)"""
@@ -78,11 +77,6 @@ class TikTokPixel:
         except Exception as e:
             print(f"❌ TikTok Pixel exception: {e}")
     
-    def _push_client_event(self, event_name, event_data, user_data):
-        """Push event to client-side JavaScript"""
-        # This is handled by the template's JavaScript
-        pass
-    
     def _hash(self, value):
         """Hash user data for TikTok"""
         import hashlib
@@ -101,14 +95,23 @@ class TikTokPixel:
             ip = request.META.get('REMOTE_ADDR')
         return ip
 
-# Singleton instance
-try:
-    tiktok_pixel = TikTokPixel()
-except Exception as e:
-    print(f"⚠️ TikTok Pixel initialization error: {e}")
-    tiktok_pixel = None
+# ✅ Only create instance if settings are available
+def get_tiktok_pixel():
+    """Lazy initialization of TikTok Pixel"""
+    try:
+        return TikTokPixel()
+    except Exception as e:
+        print(f"⚠️ TikTok Pixel initialization error: {e}")
+        return None
+
+# ✅ Use lazy initialization
+_tiktok_pixel = None
 
 def track_tiktok_event(request, event_name, event_data=None, user_data=None):
     """Helper function to track TikTok events"""
-    if tiktok_pixel:
-        tiktok_pixel.track_event(request, event_name, event_data, user_data)
+    global _tiktok_pixel
+    if _tiktok_pixel is None:
+        _tiktok_pixel = get_tiktok_pixel()
+    
+    if _tiktok_pixel:
+        _tiktok_pixel.track_event(request, event_name, event_data, user_data)

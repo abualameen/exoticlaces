@@ -95,6 +95,7 @@ TEMPLATES = [
                 'lacesstore.context_processors.sale_context',  # Add this
                 'vendor_products.views.vendor_products_home_context',  # Add this
                 'vendor_products.context_processors.vendor_cart_count',
+                'lacesstore.context_processors.tiktok_pixel',  # ✅ Add this
             ],
         },
     },
@@ -370,7 +371,7 @@ WEB3_PAYMENT = {
 }
 
 # ✅ Feature flag to enable/disable Web3 payments
-WEB3_ENABLED = True
+WEB3_ENABLED = False
 
 # Celery for background tasks
 CELERY_BEAT_SCHEDULE = {
@@ -389,3 +390,19 @@ CACHES = {
         'LOCATION': 'unique-snowflake',
     }
 }
+
+
+
+# ============================================================================
+# TIKTOK PIXEL
+# ============================================================================
+
+# ============================================================================
+# TIKTOK PIXEL
+# ============================================================================
+
+
+TIKTOK_PIXEL_ID = config('TIKTOK_PIXEL_ID', default='')
+TIKTOK_PIXEL_ENABLED = config('TIKTOK_PIXEL_ENABLED', default=False, cast=bool)
+TIKTOK_ACCESS_TOKEN = config('TIKTOK_ACCESS_TOKEN', default='')
+TIKTOK_TEST_EVENT_CODE = config('TIKTOK_TEST_EVENT_CODE', default='')
