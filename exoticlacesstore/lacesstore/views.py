@@ -46,6 +46,7 @@ from .models import Cart, CartItem, FlashSale, Voucher
 
 from .utils import is_disposable_email, is_suspicious_username
 
+from .tiktok_pixel import track_tiktok_event
 
 
 
@@ -284,8 +285,7 @@ def add_cart(request, product_id, variant_id=None):
         cart_item.save()
     clear_shipping_session(request)
 
-    # ✅ Facebook CAPI - Add to Cart Event (Works for ALL users)
-    # ✅ Always send, even for guests
+    # ✅ Facebook CAPI - Add to Cart Event
     import uuid
     event_id = str(uuid.uuid4())
     
@@ -299,8 +299,25 @@ def add_cart(request, product_id, variant_id=None):
             'value': str(product.price),
             'currency': 'NGN'
         },
-        event_id=event_id  # ✅ Pass event_id
+        event_id=event_id
     )
+
+    # ✅ TikTok AddToCart Event
+    track_tiktok_event(
+        request,
+        'AddToCart',
+        {
+            'content_id': str(product.id),
+            'content_name': product.name,
+            'content_type': 'product',
+            'price': str(product.price),
+            'currency': 'NGN',
+            'quantity': 1,
+        },  # ✅ Fixed: Added closing parenthesis for the dict
+        {
+            'email': request.user.email if request.user.is_authenticated else None,
+        }
+    )  # ✅ Fixed: Added closing parenthesis for the function call
 
     return redirect('cart_detail')
 

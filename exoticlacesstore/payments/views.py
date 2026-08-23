@@ -23,6 +23,7 @@ from django.urls import reverse
 import uuid
 from decimal import Decimal
 from django.utils import timezone
+from .tiktok_pixel import track_tiktok_event  # ✅ Add this import
 
 # from shipping.models import CartShipping
 
@@ -196,7 +197,6 @@ def verify_payment(request):
 
     checkout_data = request.session.get('checkout_data', {})
     
-
     email = checkout_data.get('email')
     phonenumber = checkout_data.get('phonenumber')
     firstName = checkout_data.get('firstName')
@@ -217,18 +217,13 @@ def verify_payment(request):
         return JsonResponse({"status": False, "message": "Transaction failed or not verified"})
 
     # Retrieve cart
-    # cart = get_cart(request)
-    # cart_items = CartItem.objects.filter(cart=cart, active=True)
     try:
         cart = get_cart(request)
         cart_items = CartItem.objects.filter(cart=cart, active=True)
     except Cart.DoesNotExist:
-        # If cart doesn't exist, check if this is a duplicate callback
         reference = request.GET.get('reference')
         if Transaction.objects.filter(reference=reference, status='success').exists():
-            # Already processed, redirect to home
             return redirect('home')
-        # Otherwise, create an empty cart
         cart = Cart.objects.create(cart_id=_cart_id(request))
         cart_items = []
 
@@ -238,7 +233,6 @@ def verify_payment(request):
         total += item.product.price * item.quantity
 
     # Update Transaction
-    # transaction = get_object_or_404(Transaction, reference=reference)
     transaction = Transaction.objects.filter(reference=reference).first()
 
     if not transaction:
@@ -252,26 +246,19 @@ def verify_payment(request):
     transaction.save()
 
     # Create Order
-    # Get shipping data with fallback
     shipping = request.session.get("shipping", {})
-    shipping_method = shipping.get("method")  # ✅ Use .get() instead of direct access
+    shipping_method = shipping.get("method")
     
-    # ✅ If shipping method is missing, handle it gracefully
     if not shipping_method:
-        # Use a default shipping method or redirect
         shipping_method = 'seller'
         print("⚠️ Shipping method not found in session, using default: seller")
 
-
-
-    
     shipping_amount = shipping.get("amount_ngn", 0)
     print("SESSION SHIPPING:", request.session.get("shipping"))
 
     customer = None
     
     if request.user.is_authenticated:
-        # Try to get existing customer, or create one
         customer, created = Customer.objects.get_or_create(
             user=request.user,
             defaults={
@@ -282,7 +269,6 @@ def verify_payment(request):
             }
         )
     else:
-        # Guest user - create customer by email
         customer, created = Customer.objects.get_or_create(
             email=email,
             defaults={
@@ -292,43 +278,34 @@ def verify_payment(request):
             }
         )
 
-
     order = Order.objects.create(
-    customer=customer,
-    total=total,
-    emailAddress=email,
-    firstName=firstName,
-    lastName=lastName,
-    country=country,
-    state=state,
-    phonenumber=phonenumber,
-    shipping_method=shipping_method,
-    shipping_cost=shipping_amount,
-    grand_total=total + int(shipping_amount),
-    currency=request.session.get("currency", "NGN"),
+        customer=customer,
+        total=total,
+        emailAddress=email,
+        firstName=firstName,
+        lastName=lastName,
+        country=country,
+        state=state,
+        phonenumber=phonenumber,
+        shipping_method=shipping_method,
+        shipping_cost=shipping_amount,
+        grand_total=total + int(shipping_amount),
+        currency=request.session.get("currency", "NGN"),
     )
+
+    # ✅ Create order_items list for use later
+    order_items = []
     
-    # After successful order creation
-    
-    # try:
-    #     email_sent = sendEmail(order.id)
-
-    #     print("Customer notified via email")
-    # except IOError as e:
-    #     return e
-
-        
-
-
     # Save order items & reduce stock
     for item in cart_items:
-        OrderItem.objects.create(
+        order_item = OrderItem.objects.create(
             product=item.product.name,
             product_image=item.variant.image if item.variant else item.product.image,
             quantity=item.quantity,
             price=item.product.price,
             order=order
         )
+        order_items.append(order_item)  # ✅ Add to list
 
         if item.variant:
             variant = ProductVariant.objects.get(id=item.variant.id)
@@ -341,41 +318,56 @@ def verify_payment(request):
 
         item.delete()
 
-
     import uuid
     purchase_event_id = str(uuid.uuid4())
     
+    # ✅ Facebook Purchase Event
     send_facebook_event(
         request,
         'Purchase',
         {
-            'content_ids': [str(item.id) for item in order_items],
+            'content_ids': [str(item.product.id) for item in order_items],
             'content_type': 'product',
             'value': str(order.grand_total),
             'currency': 'NGN',
             'transaction_id': str(order.id)
         },
-        event_id=purchase_event_id  # ✅ Pass event_id
+        event_id=purchase_event_id
+    )
+    
+    # ✅ TikTok Purchase Event
+    track_tiktok_event(
+        request,
+        'Purchase',
+        {
+            'order_id': str(order.id),
+            'value': str(order.grand_total),
+            'currency': 'NGN',
+            'content_type': 'product',
+            'contents': [
+                {
+                    'content_id': str(item.product.id),
+                    'quantity': item.quantity,
+                    'price': str(item.price),
+                } for item in order_items
+            ],
+        },
+        {
+            'email': email,
+            'phone': phonenumber,
+        }
     )
 
-   ###########################################################################
-    
-    #After successful order creation
+    # After successful order creation
     email_sent = sendEmail(request, order.id)
     if email_sent:
         print("Customer notified via email")
     else:
         print("Failed to send email notification")
-    
-##################################################################################
 
-
-
-
-    
     shipping = request.session.get("shipping", {})
 
-    # 🔹 call provider (seller or dhl)
+    # Call provider (seller or dhl)
     shipment_data = create_provider_shipment(
         shipping_method,
         order
@@ -389,14 +381,11 @@ def verify_payment(request):
         cost=shipping.get("amount", 0),
         tracking_number=shipment_data.get("tracking_number"),
         status="CREATED",
-        provider_response=shipment_data   # ✅ now defined
+        provider_response=shipment_data
     )
-   
 
     if "shipping" in request.session:
         del request.session["shipping"]
-
-   
 
     return redirect('thanks_page', order_id=order.id)
 
@@ -420,13 +409,7 @@ def paystack_webhook(request):
 
 
 
-# Add this import at the top of payments/views.py
-from web3_payment.models import Web3Token, Web3Network, Web3Payment
-from web3_payment.services import Web3PaymentService, Web3PriceService
-from django.urls import reverse
-import uuid
-from decimal import Decimal
-from django.utils import timezone
+
 
 # Add this function to payments/views.py
 def init_web3_payment(request):

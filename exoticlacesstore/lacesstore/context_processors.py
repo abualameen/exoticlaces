@@ -3,7 +3,9 @@ from.views import _cart_id
 from django.utils import timezone
 from django.db import models  # ✅ Add this import
 
+# lacesstore/context_processors.py
 
+from django.conf import settings
 
 
 
@@ -92,4 +94,14 @@ def sale_context(request):
         'active_flash_sales': flash_sales,
         'available_vouchers': user_vouchers[:10],  # Limit to 10
         'has_active_sales': flash_sales.exists() or user_vouchers.exists(),
+    }
+
+
+
+
+
+def tiktok_pixel(request):
+    """Add TikTok Pixel ID to context"""
+    return {
+        'TIKTOK_PIXEL_ID': settings.TIKTOK_PIXEL_ID if getattr(settings, 'TIKTOK_PIXEL_ENABLED', True) else '',
     }
