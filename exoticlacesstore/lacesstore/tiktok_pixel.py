@@ -9,9 +9,16 @@ class TikTokPixel:
     """TikTok Pixel Event Tracking"""
     
     def __init__(self):
-        self.pixel_id = settings.TIKTOK_PIXEL_ID
-        self.enabled = getattr(settings, 'TIKTOK_PIXEL_ENABLED', True)
+        # ✅ Get pixel ID from settings with fallback
+        self.pixel_id = getattr(settings, 'TIKTOK_PIXEL_ID', '')
+        self.enabled = getattr(settings, 'TIKTOK_PIXEL_ENABLED', False)
+        self.access_token = getattr(settings, 'TIKTOK_ACCESS_TOKEN', '')
+        self.test_event_code = getattr(settings, 'TIKTOK_TEST_EVENT_CODE', '')
         self.api_base = "https://business-api.tiktok.com/open_api/v1.3/pixel/event"
+        
+        # ✅ Log if pixel is not configured
+        if not self.pixel_id:
+            print("⚠️ TikTok Pixel: TIKTOK_PIXEL_ID not configured in settings")
     
     def track_event(self, request, event_name, event_data=None, user_data=None):
         """Track a TikTok Pixel event"""
@@ -21,7 +28,7 @@ class TikTokPixel:
         # Get user data
         email = None
         phone = None
-        if request.user.is_authenticated:
+        if request and request.user.is_authenticated:
             email = request.user.email
             if hasattr(request.user, 'customer') and request.user.customer.phonenumber:
                 phone = request.user.customer.phonenumber
@@ -35,8 +42,8 @@ class TikTokPixel:
             "user_data": {
                 "em": [self._hash(email)] if email else [],
                 "ph": [self._hash(phone)] if phone else [],
-                "client_ip_address": self._get_client_ip(request),
-                "client_user_agent": request.META.get('HTTP_USER_AGENT', ''),
+                "client_ip_address": self._get_client_ip(request) if request else '',
+                "client_user_agent": request.META.get('HTTP_USER_AGENT', '') if request else '',
             },
             "event_data": event_data or {},
         }
@@ -49,15 +56,19 @@ class TikTokPixel:
     
     def _send_event(self, event):
         """Send event to TikTok Business API (Server-side)"""
+        if not self.access_token:
+            print(f"⚠️ TikTok Pixel: No access token, skipping server-side event: {event['event_name']}")
+            return
+        
         try:
             headers = {
                 "Content-Type": "application/json",
-                "Access-Token": settings.TIKTOK_ACCESS_TOKEN,
+                "Access-Token": self.access_token,
             }
             payload = {
                 "pixel_id": self.pixel_id,
                 "events": [event],
-                "test_event_code": getattr(settings, 'TIKTOK_TEST_EVENT_CODE', ''),
+                "test_event_code": self.test_event_code,
             }
             response = requests.post(self.api_base, headers=headers, json=payload)
             if response.status_code == 200:
@@ -69,7 +80,8 @@ class TikTokPixel:
     
     def _push_client_event(self, event_name, event_data, user_data):
         """Push event to client-side JavaScript"""
-        # This will be handled by the template's JavaScript
+        # This is handled by the template's JavaScript
+        pass
     
     def _hash(self, value):
         """Hash user data for TikTok"""
@@ -80,6 +92,8 @@ class TikTokPixel:
     
     def _get_client_ip(self, request):
         """Get client IP address"""
+        if not request:
+            return ""
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
         if x_forwarded_for:
             ip = x_forwarded_for.split(',')[0]
@@ -88,8 +102,13 @@ class TikTokPixel:
         return ip
 
 # Singleton instance
-tiktok_pixel = TikTokPixel()
+try:
+    tiktok_pixel = TikTokPixel()
+except Exception as e:
+    print(f"⚠️ TikTok Pixel initialization error: {e}")
+    tiktok_pixel = None
 
 def track_tiktok_event(request, event_name, event_data=None, user_data=None):
     """Helper function to track TikTok events"""
-    tiktok_pixel.track_event(request, event_name, event_data, user_data)
+    if tiktok_pixel:
+        tiktok_pixel.track_event(request, event_name, event_data, user_data)
