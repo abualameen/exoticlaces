@@ -23,7 +23,9 @@ from django.urls import reverse
 import uuid
 from decimal import Decimal
 from django.utils import timezone
-from .tiktok_pixel import track_tiktok_event  # ✅ Add this import
+# ✅ CORRECT - Add this
+from lacesstore.tiktok_pixel import track_tiktok_event
+
 
 # from shipping.models import CartShipping
 
