@@ -1,33 +1,49 @@
 # lacesstore/resend_backend.py
-import resend
+import requests
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.message import sanitize_address
 from django.conf import settings
+import json
 
 class ResendEmailBackend(BaseEmailBackend):
     """Email backend that uses Resend API instead of SMTP"""
     
-    def __init__(self, fail_silently=False, **kwargs):
+    def __init__(self, host=None, port=None, username=None, password=None,
+                 use_tls=None, fail_silently=False, use_ssl=None, timeout=None,
+                 ssl_keyfile=None, ssl_certfile=None, **kwargs):
         super().__init__(fail_silently=fail_silently, **kwargs)
         self.api_key = getattr(settings, 'RESEND_API_KEY', '')
+        self.api_url = "https://api.resend.com/emails"
+        self.from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', '')
         
-        # ✅ Initialize Resend client
-        if self.api_key:
-            resend.api_key = self.api_key
+        if not self.api_key:
+            print("⚠️ RESEND_API_KEY is not configured")
+        
+    def open(self):
+        """No-op for API backend (no connection needed)"""
+        return True
+        
+    def close(self):
+        """No-op for API backend"""
+        pass
         
     def send_messages(self, email_messages):
         """Send emails using Resend API"""
         if not self.api_key:
             if not self.fail_silently:
                 raise ValueError("RESEND_API_KEY is not configured")
+            print("❌ RESEND_API_KEY not configured - email not sent")
             return 0
             
         sent_count = 0
         for message in email_messages:
             try:
                 # ✅ Extract email parts
-                from_email = sanitize_address(message.from_email)
+                from_email = sanitize_address(message.from_email) or self.from_email
                 to_emails = [sanitize_address(addr) for addr in message.to]
+                
+                if not from_email:
+                    from_email = self.from_email
                 
                 # ✅ Prepare the email
                 email_data = {
@@ -42,7 +58,7 @@ class ResendEmailBackend(BaseEmailBackend):
                         if alt[1] == "text/html":
                             email_data["html"] = alt[0]
                             break
-                else:
+                elif message.body:
                     email_data["text"] = message.body
                 
                 # ✅ Add CC and BCC
@@ -56,17 +72,24 @@ class ResendEmailBackend(BaseEmailBackend):
                     email_data["reply_to"] = [sanitize_address(addr) for addr in message.reply_to]
                 
                 # ✅ Send via Resend API
-                response = resend.Emails.send(email_data)
+                headers = {
+                    "Authorization": f"Bearer {self.api_key}",
+                    "Content-Type": "application/json"
+                }
                 
-                if response and response.get('id'):
+                print(f"📧 Sending email via Resend API to: {to_emails}")
+                
+                response = requests.post(self.api_url, json=email_data, headers=headers, timeout=30)
+                
+                if response.status_code == 200:
                     sent_count += 1
-                    print(f"✅ Email sent successfully via Resend API (ID: {response['id']})")
+                    print(f"✅ Email sent successfully via Resend API")
                 else:
-                    print(f"❌ Resend API error: {response}")
+                    print(f"❌ Resend API error: {response.status_code} - {response.text}")
                     
             except Exception as e:
+                print(f"❌ Email send error: {e}")
                 if not self.fail_silently:
                     raise
-                print(f"❌ Email send error: {e}")
                 
         return sent_count
