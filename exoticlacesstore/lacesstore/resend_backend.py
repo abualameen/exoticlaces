@@ -13,7 +13,7 @@ class ResendEmailBackend(BaseEmailBackend):
         self.api_url = "https://api.resend.com/emails"
         self.from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', '')
         
-        print(f"✅ ResendEmailBackend initialized with API key: {self.api_key[:10]}...")
+        print(f"✅ ResendEmailBackend initialized")
         
     def open(self):
         """No-op for API backend"""
@@ -34,9 +34,9 @@ class ResendEmailBackend(BaseEmailBackend):
         sent_count = 0
         for message in email_messages:
             try:
-                # Extract email parts
-                from_email = sanitize_address(message.from_email) or self.from_email
-                to_emails = [sanitize_address(addr) for addr in message.to]
+                # ✅ Fix: Add encoding parameter to sanitize_address
+                from_email = sanitize_address(message.from_email, 'utf-8') or self.from_email
+                to_emails = [sanitize_address(addr, 'utf-8') for addr in message.to]
                 
                 if not from_email:
                     from_email = self.from_email
@@ -57,15 +57,15 @@ class ResendEmailBackend(BaseEmailBackend):
                 elif message.body:
                     email_data["text"] = message.body
                 
-                # Add CC and BCC
+                # Add CC and BCC with encoding fix
                 if message.cc:
-                    email_data["cc"] = [sanitize_address(addr) for addr in message.cc]
+                    email_data["cc"] = [sanitize_address(addr, 'utf-8') for addr in message.cc]
                 if message.bcc:
-                    email_data["bcc"] = [sanitize_address(addr) for addr in message.bcc]
+                    email_data["bcc"] = [sanitize_address(addr, 'utf-8') for addr in message.bcc]
                 
-                # Add reply-to
+                # Add reply-to with encoding fix
                 if message.reply_to:
-                    email_data["reply_to"] = [sanitize_address(addr) for addr in message.reply_to]
+                    email_data["reply_to"] = [sanitize_address(addr, 'utf-8') for addr in message.reply_to]
                 
                 # Send via Resend API
                 headers = {
