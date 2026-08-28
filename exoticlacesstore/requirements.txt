@@ -52,3 +52,6 @@ eth-typing==3.4.0
 eth-utils==2.2.0
 qrcode==7.4.2
 celery==5.3.4
+
+
+resend==2.0.0
