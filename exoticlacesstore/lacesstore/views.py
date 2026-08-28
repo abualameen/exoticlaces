@@ -809,25 +809,6 @@ def sendEmail(request, order_id):
 
 
 
-# def contactPage(request):
-#     if request.method == 'POST':
-#         form = ContactForm(request.POST)
-#         if form.is_valid():
-#             subject = form.cleaned_data.get('subject')
-#             user_email = form.cleaned_data.get('from_email')
-#             message = form.cleaned_data.get('message')
-#             name = form.cleaned_data.get('name')
-#             to = 'exoticlacesandmore@gmail.com'
-#             massage_format = "{0} has sent you a new message: \n\n{1}".format(name, message)
-#             msg = EmailMessage(subject, message, to=[to], from_email=settings.DEFAULT_FROM_EMAIL, reply_to=[user_email],)
-#             msg.send()
-#             return render(request, 'contact_success.html')
-#     else:
-#         form = ContactForm()
-#     return render(request, 'contact.html', {'form': form})
-
-
-
 def contactPage(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -837,35 +818,12 @@ def contactPage(request):
             message = form.cleaned_data.get('message')
             name = form.cleaned_data.get('name')
             to = 'exoticlacesandmore@gmail.com'
-            
-            # ✅ Build a proper email message
-            email_body = f"""
-            You have received a new message from your Exotic Laces website contact form:
-
-            Name: {name}
-            Email: {user_email}
-            Subject: {subject}
-
-            Message:
-            {message}
-            """
-            
-            # ✅ Create the email
-            msg = EmailMessage(
-                subject=f"Contact Form: {subject}",
-                body=email_body,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                to=[to],
-                reply_to=[user_email],
-            )
-            
-            # ✅ Send the email
+            massage_format = "{0} has sent you a new message: \n\n{1}".format(name, message)
+            msg = EmailMessage(subject, message, to=[to], from_email=settings.DEFAULT_FROM_EMAIL, reply_to=[user_email],)
             msg.send()
-            
             return render(request, 'contact_success.html')
     else:
         form = ContactForm()
-    
     return render(request, 'contact.html', {'form': form})
 
 

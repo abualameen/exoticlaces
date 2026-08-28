@@ -191,32 +191,20 @@ ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 PASSWORD_RESET_TIMEOUT = 14400
 
-# # ============================================================================
-# # EMAIL (Resend SMTP)
-# # ============================================================================
+# ============================================================================
+# EMAIL (Resend SMTP)
+# ============================================================================
 
-# #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_BACKEND = 'lacesstore.email_backend.RetryEmailBackend'
-# EMAIL_HOST = 'smtp.resend.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_SSL = False
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'resend'
-# EMAIL_HOST_PASSWORD = config('RESEND_API_KEY', default='')
-# DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@mail.exoticlaces.com')
-# EMAIL_TIMEOUT = 30
-
-# ✅ Use Resend API (not SMTP)
-EMAIL_BACKEND = 'lacesstore.resend_backend.ResendEmailBackend'
-
-
-
-# ✅ Resend API configuration
-RESEND_API_KEY = config('RESEND_API_KEY', default='')
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'lacesstore.email_backend.RetryEmailBackend'
+EMAIL_HOST = 'smtp.resend.com'
+EMAIL_PORT = 587
+EMAIL_USE_SSL = False
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'resend'
+EMAIL_HOST_PASSWORD = config('RESEND_API_KEY', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@mail.exoticlaces.com')
-# ✅ Optional: Set timeout for API calls
 EMAIL_TIMEOUT = 30
-
 
 # ============================================================================
 # STATIC & MEDIA FILES
