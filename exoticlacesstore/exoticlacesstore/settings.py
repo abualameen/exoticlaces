@@ -204,6 +204,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'resend'
 EMAIL_HOST_PASSWORD = config('RESEND_API_KEY', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@mail.exoticlaces.com')
+
+EMAIL_SUBJECT_PREFIX = ''
 EMAIL_TIMEOUT = 30
 
 # ============================================================================
