@@ -41,39 +41,65 @@ class ResendEmailBackend(BaseEmailBackend):
                 if not from_email:
                     from_email = self.from_email
                 
-                # Prepare the email
+                # ✅ Prepare the email
                 email_data = {
                     "from": from_email,
                     "to": to_emails,
                     "subject": message.subject,
                 }
                 
-                # Add HTML content if available
-                if message.alternatives:
+                # ✅ Get the message body (use the content directly)
+                # Django EmailMessage stores body in message.body
+                body = getattr(message, 'body', '')
+                
+                # ✅ Check if there's HTML content (try alternatives first, then fallback)
+                html_content = None
+                text_content = None
+                
+                # Try to get HTML content from alternatives
+                if hasattr(message, 'alternatives') and message.alternatives:
                     for alt in message.alternatives:
                         if alt[1] == "text/html":
-                            email_data["html"] = alt[0]
+                            html_content = alt[0]
                             break
-                elif message.body:
-                    email_data["text"] = message.body
                 
-                # Add CC and BCC with encoding fix
+                # Also try to get HTML from message.content_subtype
+                if not html_content and hasattr(message, 'content_subtype'):
+                    if message.content_subtype == 'html':
+                        html_content = body
+                    else:
+                        text_content = body
+                
+                # If we have HTML, use it; otherwise use text
+                if html_content:
+                    email_data["html"] = html_content
+                elif text_content:
+                    email_data["text"] = text_content
+                elif body:
+                    # Default to text
+                    email_data["text"] = body
+                else:
+                    # Empty body
+                    email_data["text"] = " "
+                
+                # ✅ Add CC and BCC with encoding fix
                 if message.cc:
                     email_data["cc"] = [sanitize_address(addr, 'utf-8') for addr in message.cc]
                 if message.bcc:
                     email_data["bcc"] = [sanitize_address(addr, 'utf-8') for addr in message.bcc]
                 
-                # Add reply-to with encoding fix
+                # ✅ Add reply-to with encoding fix
                 if message.reply_to:
                     email_data["reply_to"] = [sanitize_address(addr, 'utf-8') for addr in message.reply_to]
                 
-                # Send via Resend API
+                # ✅ Send via Resend API
                 headers = {
                     "Authorization": f"Bearer {self.api_key}",
                     "Content-Type": "application/json"
                 }
                 
                 print(f"📧 Sending email via Resend API to: {to_emails}")
+                print(f"📧 Subject: {message.subject}")
                 
                 response = requests.post(self.api_url, json=email_data, headers=headers, timeout=30)
                 
