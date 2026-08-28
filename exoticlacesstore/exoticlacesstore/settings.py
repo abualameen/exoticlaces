@@ -207,7 +207,9 @@ PASSWORD_RESET_TIMEOUT = 14400
 # EMAIL_TIMEOUT = 30
 
 # ✅ Use Resend API (not SMTP)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Keep this for Django's email interface
+EMAIL_BACKEND = 'lacesstore.resend_backend.ResendEmailBackend'
+
+
 
 # ✅ Resend API configuration
 RESEND_API_KEY = config('RESEND_API_KEY', default='')

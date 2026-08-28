@@ -3,24 +3,20 @@ import requests
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.message import sanitize_address
 from django.conf import settings
-import json
 
 class ResendEmailBackend(BaseEmailBackend):
     """Email backend that uses Resend API instead of SMTP"""
     
-    def __init__(self, host=None, port=None, username=None, password=None,
-                 use_tls=None, fail_silently=False, use_ssl=None, timeout=None,
-                 ssl_keyfile=None, ssl_certfile=None, **kwargs):
+    def __init__(self, fail_silently=False, **kwargs):
         super().__init__(fail_silently=fail_silently, **kwargs)
         self.api_key = getattr(settings, 'RESEND_API_KEY', '')
         self.api_url = "https://api.resend.com/emails"
         self.from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', '')
         
-        if not self.api_key:
-            print("⚠️ RESEND_API_KEY is not configured")
+        print(f"✅ ResendEmailBackend initialized with API key: {self.api_key[:10]}...")
         
     def open(self):
-        """No-op for API backend (no connection needed)"""
+        """No-op for API backend"""
         return True
         
     def close(self):
@@ -30,29 +26,29 @@ class ResendEmailBackend(BaseEmailBackend):
     def send_messages(self, email_messages):
         """Send emails using Resend API"""
         if not self.api_key:
+            print("❌ RESEND_API_KEY is not configured")
             if not self.fail_silently:
                 raise ValueError("RESEND_API_KEY is not configured")
-            print("❌ RESEND_API_KEY not configured - email not sent")
             return 0
             
         sent_count = 0
         for message in email_messages:
             try:
-                # ✅ Extract email parts
+                # Extract email parts
                 from_email = sanitize_address(message.from_email) or self.from_email
                 to_emails = [sanitize_address(addr) for addr in message.to]
                 
                 if not from_email:
                     from_email = self.from_email
                 
-                # ✅ Prepare the email
+                # Prepare the email
                 email_data = {
                     "from": from_email,
                     "to": to_emails,
                     "subject": message.subject,
                 }
                 
-                # ✅ Add HTML content if available
+                # Add HTML content if available
                 if message.alternatives:
                     for alt in message.alternatives:
                         if alt[1] == "text/html":
@@ -61,17 +57,17 @@ class ResendEmailBackend(BaseEmailBackend):
                 elif message.body:
                     email_data["text"] = message.body
                 
-                # ✅ Add CC and BCC
+                # Add CC and BCC
                 if message.cc:
                     email_data["cc"] = [sanitize_address(addr) for addr in message.cc]
                 if message.bcc:
                     email_data["bcc"] = [sanitize_address(addr) for addr in message.bcc]
                 
-                # ✅ Add reply-to
+                # Add reply-to
                 if message.reply_to:
                     email_data["reply_to"] = [sanitize_address(addr) for addr in message.reply_to]
                 
-                # ✅ Send via Resend API
+                # Send via Resend API
                 headers = {
                     "Authorization": f"Bearer {self.api_key}",
                     "Content-Type": "application/json"
