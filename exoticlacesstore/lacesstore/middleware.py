@@ -4,7 +4,7 @@ from django.utils.deprecation import MiddlewareMixin
 from django.utils import timezone
 from .models import Visitor, DailyVisitorStats
 
-# ✅ COMPREHENSIVE BOT PATTERNS - Add obbidian and similar tools
+# ✅ COMPREHENSIVE BOT PATTERNS - MORE AGGRESSIVE
 BOT_PATTERNS = [
     # ===== SEARCH ENGINES =====
     r'googlebot', r'bingbot', r'slurp', r'duckduckbot',
@@ -28,10 +28,12 @@ BOT_PATTERNS = [
     r'obbidian', r'nutch', r'heritrix', r'scrape', r'scraping',
     r'TLM-Audit-Scanner', r'pathscan', r'scanner', r'scan',
     
-    # ===== CHROME BOTS (FAKE) =====
-    r'Chrome/91\.',           # Blocks ALL Chrome 91.x versions
-    r'Chrome/120\.',          # Blocks ALL Chrome 120.x versions
-    r'Chrome/[0-9][0-9]\.0\.[0-9]+\.[0-9]+ Safari/537\.36',  # Blocks old Chrome versions
+    # ===== CHROME BOTS (FAKE) - MORE AGGRESSIVE =====
+    r'Chrome/91\.0\.4472\.114',  # Exact match for the bot
+    r'Chrome/91\.',              # ANY Chrome 91.x
+    r'Chrome/120\.',             # ANY Chrome 120.x
+    r'Chrome/[0-9][0-9]\.0\.',   # Chrome 10x.0.x - likely bots
+    r'Chrome/[0-9][0-9]\.[0-9]+\.[0-9]+\.[0-9]+',  # Chrome with 4-part version
     
     # ===== AI CRAWLERS =====
     r'GPTBot', r'ClaudeBot', r'Bytespider', r'ChatGPT',
@@ -54,46 +56,43 @@ BOT_PATTERNS = [
     
     # ===== EMPTY USER-AGENT =====
     r'^$',
+    
+    # ===== ADD MORE SUSPICIOUS PATTERNS =====
+    r'headless', r'phantom', r'selenium',
+    r'puppeteer', r'playwright',
 ]
 
-# Bot IP ranges
-BOT_IP_PATTERNS = [
-    r'^66\.249\.',    # Googlebot
-    r'^157\.55\.',    # Bing
-    r'^40\.77\.',     # Bing
-    r'^207\.46\.',    # Bing
-    r'^52\.\d+\.\d+\.\d+',  # AWS
-    r'^54\.\d+\.\d+\.\d+',  # AWS
-    r'^35\.\d+\.\d+\.\d+',  # Google Cloud
-    r'^34\.\d+\.\d+\.\d+',  # Google Cloud
-    r'^100\.\d+\.\d+\.\d+', # Cloudflare
-    r'^104\.\d+\.\d+\.\d+', # Cloudflare
-]
-
+# ✅ Also add this - block requests that are too fast (potential bots)
+# But this is handled at the server level
 
 def is_bot(request):
     """Enhanced bot detection"""
     user_agent = request.META.get('HTTP_USER_AGENT', '')
     ip = get_client_ip(request)
     
-    # 1. Check user agent
+    # 1. Check if user agent is a bot
     if not user_agent or len(user_agent) < 10:
+        print(f"🤖 BOT DETECTED: No user agent")
         return True
     
     user_agent_lower = user_agent.lower()
     
+    # Check against all patterns
     for pattern in BOT_PATTERNS:
         if re.search(pattern, user_agent_lower, re.IGNORECASE):
+            print(f"🤖 BOT DETECTED: {user_agent[:50]}... (matched: {pattern})")
             return True
     
-    # 2. Check IP
+    # 2. Check IP against bot IP patterns
     if ip:
         for pattern in BOT_IP_PATTERNS:
             if re.search(pattern, ip):
+                print(f"🤖 BOT DETECTED (IP): {ip}")
                 return True
     
-    # 3. Check for known bot user-agents
-    if 'obbidian' in user_agent_lower:
+    # 3. Check for headless browser indicators
+    if 'headless' in user_agent_lower or 'webdriver' in user_agent_lower:
+        print(f"🤖 BOT DETECTED: Headless browser")
         return True
     
     return False
