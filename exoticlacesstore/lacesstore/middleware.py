@@ -4,7 +4,7 @@ from django.utils.deprecation import MiddlewareMixin
 from django.utils import timezone
 from .models import Visitor, DailyVisitorStats
 
-# Comprehensive bot patterns (kept from your original)
+# ✅ COMPREHENSIVE BOT PATTERNS - Add obbidian and similar tools
 BOT_PATTERNS = [
     # Search engines
     r'googlebot', r'bingbot', r'slurp', r'duckduckbot',
@@ -18,25 +18,37 @@ BOT_PATTERNS = [
     r'curl', r'wget', r'python-requests', r'http-client',
     r'java/', r'okhttp', r'go-http-client',
     r'headless', r'phantomjs', r'selenium', r'puppeteer',
+    r'webdriver', r'headlesschrome', r'headlessfirefox',
     
-    # AI crawlers (new)
+    # ✅ ADD THESE - Tools and scrapers
+    r'obbidian',      # <-- THIS IS YOUR CULPRIT
+    r'scrapy', r'httpx', r'aiohttp',
+    r'axios', r'fetch', r'node-fetch',
+    r'php', r'ruby', r'perl',
+    r'nutch', r'heritrix',  # Web crawlers
+    r'scrape', r'scraper', r'scraping',
+    
+    # AI crawlers
     r'GPTBot', r'ClaudeBot', r'Bytespider', r'ChatGPT',
     r'Google-Extended', r'CCBot', r'PerplexityBot',
+    r'Claude-Web', r'FacebookBot', r'AppleBot',
+    r'Amazonbot', r'Applebot', r'AhrefsBot',
     
-    # Monitoring services
+    # Empty or missing user-agent
+    r'^$',  # Empty string
+    
+    # Cloud and monitoring
     r'pingdom', r'uptimerobot', r'statuscake',
     r'newrelic', r'datadog', r'grafana', r'prometheus',
-    
-    # Cloud providers
     r'amazonaws', r'cloudflare', r'googlecloud',
-    r'azure', r'digitalocean',
+    r'azure', r'digitalocean', r'aws-lambda',
     
-    # Other
-    r'feedfetcher', r'pulse', r'subscriptions',
-    r'readability', r'instapaper', r'pocket',
+    # Python libraries
+    r'python', r'urllib', r'requests',
+    r'scrapy', r'httpx', r'aiohttp',
 ]
 
-# Bot IP patterns
+# Bot IP ranges
 BOT_IP_PATTERNS = [
     r'^66\.249\.',    # Googlebot
     r'^157\.55\.',    # Bing
@@ -46,42 +58,51 @@ BOT_IP_PATTERNS = [
     r'^54\.\d+\.\d+\.\d+',  # AWS
     r'^35\.\d+\.\d+\.\d+',  # Google Cloud
     r'^34\.\d+\.\d+\.\d+',  # Google Cloud
+    r'^100\.\d+\.\d+\.\d+', # Cloudflare
+    r'^104\.\d+\.\d+\.\d+', # Cloudflare
 ]
 
 
-def is_bot(user_agent, ip=None):
-    """Check if the request is from a bot"""
-    # No user agent = bot
-    if not user_agent:
+def is_bot(request):
+    """Enhanced bot detection"""
+    user_agent = request.META.get('HTTP_USER_AGENT', '')
+    ip = get_client_ip(request)
+    
+    # 1. Check user agent
+    if not user_agent or len(user_agent) < 10:
         return True
     
     user_agent_lower = user_agent.lower()
     
-    # Check user agent against patterns
     for pattern in BOT_PATTERNS:
-        if re.search(pattern, user_agent_lower):
+        if re.search(pattern, user_agent_lower, re.IGNORECASE):
             return True
     
-    # Check IP if provided
+    # 2. Check IP
     if ip:
         for pattern in BOT_IP_PATTERNS:
             if re.search(pattern, ip):
                 return True
     
+    # 3. Check for known bot user-agents
+    if 'obbidian' in user_agent_lower:
+        return True
+    
     return False
+
+
+def get_client_ip(request):
+    """Get client IP address"""
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 
 
 class VisitorTrackingMiddleware(MiddlewareMixin):
     """Middleware to track unique visitors and filter out bots"""
-    
-    def get_client_ip(self, request):
-        """Get client IP address"""
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
-        else:
-            ip = request.META.get('REMOTE_ADDR')
-        return ip
     
     def process_request(self, request):
         # ✅ Skip admin, static, media, and API paths
@@ -89,12 +110,8 @@ class VisitorTrackingMiddleware(MiddlewareMixin):
         if any(request.path.startswith(path) for path in skip_paths):
             return None
         
-        # ✅ Get user agent and IP
-        user_agent = request.META.get('HTTP_USER_AGENT', '')
-        ip = self.get_client_ip(request)
-        
-        # ✅ Skip bot detection
-        if is_bot(user_agent, ip):
+        # ✅ Skip if it's a bot
+        if is_bot(request):
             return None
         
         # ✅ Track real visitors
@@ -103,6 +120,8 @@ class VisitorTrackingMiddleware(MiddlewareMixin):
             request.session.create()
             session_key = request.session.session_key
         
+        ip = get_client_ip(request)
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
         referer = request.META.get('HTTP_REFERER', '')
         
         # ✅ Get or create visitor
@@ -117,7 +136,6 @@ class VisitorTrackingMiddleware(MiddlewareMixin):
         )
         
         if not created:
-            # ✅ Update existing visitor
             visitor.last_visit = timezone.now()
             visitor.visit_count += 1
             visitor.user_agent = user_agent
@@ -136,7 +154,7 @@ class VisitorTrackingMiddleware(MiddlewareMixin):
                 stats.guest_users += 1
             stats.save()
         
-        # ✅ Fire Facebook CAPI event (kept from your original)
+        # ✅ Fire Facebook CAPI event
         try:
             from .facebook_capi import send_facebook_event
             import uuid
