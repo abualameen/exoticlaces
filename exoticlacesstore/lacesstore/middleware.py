@@ -27,21 +27,21 @@ BOT_PATTERNS = [
     # ===== TOOLS & SCRAPERS =====
     r'obbidian', r'nutch', r'heritrix', r'scrape', r'scraping',
     r'TLM-Audit-Scanner', r'pathscan', r'scanner', r'scan',
-    r'SERanKingBacklinksBot',   # ✅ Added
-    r'SecurityResearch',         # ✅ Added
-    r'MSIE',                     # ✅ Added - Internet Explorer bots
+    r'SERanKingBacklinksBot',
+    r'SecurityResearch',
+    r'MSIE',
     
     # ===== CHROME BOTS (FAKE) =====
     r'Chrome/91\.0\.4472\.114',
     r'Chrome/91\.',
-    r'Chrome/103\.0\.5067\.93',  # ✅ Added
+    r'Chrome/103\.0\.5067\.93',
     r'Chrome/120\.',
     r'Chrome/[0-9][0-9]\.0\.',
     r'Chrome/[0-9][0-9]\.[0-9]+\.[0-9]+\.[0-9]+',
     
     # ===== FIREFOX BOTS (FAKE) =====
-    r'rv:140\.',                 # ✅ Added - Fake Firefox
-    r'rv:14[0-9]\.',             # ✅ Added - Fake Firefox versions
+    r'rv:140\.',
+    r'rv:14[0-9]\.',
     
     # ===== AI CRAWLERS =====
     r'GPTBot', r'ClaudeBot', r'Bytespider', r'ChatGPT',
@@ -52,7 +52,7 @@ BOT_PATTERNS = [
     # ===== SECURITY SCANNERS =====
     r'wp-admin', r'wp-json', r'xmlrpc', r'wp-login',
     r'install\.php', r'\.env', r'config', r'backup',
-    r'WordPress', r'SecurityResearch',
+    r'WordPress',
     
     # ===== MONITORING SERVICES =====
     r'pingdom', r'uptimerobot', r'statuscake',
@@ -69,6 +69,29 @@ BOT_PATTERNS = [
     r'headless', r'phantom', r'selenium',
     r'puppeteer', r'playwright',
 ]
+
+# ✅ ADD THIS - Bot IP patterns (was missing!)
+BOT_IP_PATTERNS = [
+    r'^66\.249\.',    # Googlebot
+    r'^157\.55\.',    # Bing
+    r'^40\.77\.',     # Bing
+    r'^207\.46\.',    # Bing
+    r'^52\.\d+\.\d+\.\d+',  # AWS
+    r'^54\.\d+\.\d+\.\d+',  # AWS
+    r'^35\.\d+\.\d+\.\d+',  # Google Cloud
+    r'^34\.\d+\.\d+\.\d+',  # Google Cloud
+    r'^100\.\d+\.\d+\.\d+', # Cloudflare
+    r'^104\.\d+\.\d+\.\d+', # Cloudflare
+]
+
+def get_client_ip(request):
+    """Get client IP address"""
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 
 def is_bot(request):
     """Enhanced bot detection"""
@@ -98,8 +121,8 @@ def is_bot(request):
     
     # 4. Check for suspicious user-agent patterns (additional)
     suspicious_patterns = [
-        'compatible; MSIE',      # Internet Explorer compatibility mode (bots)
-        'rv:',                   # Firefox version (often faked by bots)
+        'compatible; MSIE',
+        'rv:',
         'SecurityResearch',
         'SERanKingBacklinksBot',
     ]
@@ -108,15 +131,6 @@ def is_bot(request):
             return True
     
     return False
-
-def get_client_ip(request):
-    """Get client IP address"""
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
 
 class VisitorTrackingMiddleware(MiddlewareMixin):
     """Middleware to track unique visitors and filter out bots"""
