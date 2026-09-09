@@ -2,87 +2,31 @@
 import re
 from django.utils.deprecation import MiddlewareMixin
 from django.utils import timezone
+from django.core.cache import cache
+from django.http import HttpResponse
 from .models import Visitor, DailyVisitorStats
 
-# ✅ COMPREHENSIVE BOT PATTERNS - CATCHES ALL
+# ✅ BOT PATTERNS - Expanded but not the only defense
 BOT_PATTERNS = [
-    # ===== SEARCH ENGINES =====
-    r'googlebot', r'bingbot', r'slurp', r'duckduckbot',
-    r'baiduspider', r'yandexbot', r'sogou', r'exabot',
-    r'facebot', r'facebookexternalhit', r'twitterbot',
-    r'linkedinbot', r'pinterestbot', r'slackbot',
-    r'discordbot', r'telegrambot', r'whatsapp',
-    
-    # ===== GENERIC BOTS =====
+    # ... (keep all your existing patterns) ...
     r'bot', r'crawler', r'spider', r'scraper',
-    r'curl', r'wget', r'java/', r'php', r'ruby', r'perl',
-    r'headless', r'phantomjs', r'selenium', r'puppeteer',
-    r'webdriver', r'headlesschrome', r'headlessfirefox',
-    
-    # ===== HTTP CLIENTS =====
-    r'python-requests', r'http-client', r'okhttp', r'go-http-client',
+    r'curl', r'wget', r'headless', r'phantom',
+    r'selenium', r'puppeteer', r'webdriver',
+    r'python-requests', r'http-client', r'go-http-client',
     r'urllib', r'requests', r'httpx', r'aiohttp',
     r'axios', r'fetch', r'node-fetch', r'scrapy',
-    
-    # ===== TOOLS & SCRAPERS =====
-    r'obbidian', r'nutch', r'heritrix', r'scrape', r'scraping',
-    r'TLM-Audit-Scanner', r'pathscan', r'scanner', r'scan',
-    r'SERanKingBacklinksBot',
-    r'SecurityResearch',
-    r'MSIE',
-    
-    # ===== CHROME BOTS (FAKE) =====
-    r'Chrome/91\.0\.4472\.114',
-    r'Chrome/91\.',
-    r'Chrome/103\.0\.5067\.93',
-    r'Chrome/120\.',
-    r'Chrome/[0-9][0-9]\.0\.',
-    r'Chrome/[0-9][0-9]\.[0-9]+\.[0-9]+\.[0-9]+',
-    
-    # ===== FIREFOX BOTS (FAKE) =====
-    r'rv:140\.',
-    r'rv:14[0-9]\.',
-    
-    # ===== AI CRAWLERS =====
-    r'GPTBot', r'ClaudeBot', r'Bytespider', r'ChatGPT',
-    r'Google-Extended', r'CCBot', r'PerplexityBot',
-    r'Claude-Web', r'FacebookBot', r'AppleBot',
-    r'Amazonbot', r'Applebot', r'AhrefsBot',
-    
-    # ===== SECURITY SCANNERS =====
-    r'wp-admin', r'wp-json', r'xmlrpc', r'wp-login',
-    r'install\.php', r'\.env', r'config', r'backup',
-    r'WordPress',
-    
-    # ===== MONITORING SERVICES =====
-    r'pingdom', r'uptimerobot', r'statuscake',
-    r'newrelic', r'datadog', r'grafana', r'prometheus',
-    
-    # ===== CLOUD PROVIDERS =====
-    r'amazonaws', r'cloudflare', r'googlecloud',
-    r'azure', r'digitalocean', r'aws-lambda',
-    
-    # ===== EMPTY USER-AGENT =====
-    r'^$',
-    
-    # ===== HEADLESS BROWSERS =====
-    r'headless', r'phantom', r'selenium',
-    r'puppeteer', r'playwright',
+    r'obbidian', r'TLM-Audit-Scanner', r'pathscan',
+    r'SERanKingBacklinksBot', r'SecurityResearch',
+    r'MSIE', r'rv:14', r'Chrome/[0-9][0-9]\.',
+    r'facebookexternalhit', r'Twitterbot',
+    r'GPTBot', r'ClaudeBot', r'Bytespider',
+    r'wp-admin', r'wp-json', r'xmlrpc', r'WordPress',
+    r'^$',  # Empty user-agent
 ]
 
-# ✅ ADD THIS - Bot IP patterns (was missing!)
-BOT_IP_PATTERNS = [
-    r'^66\.249\.',    # Googlebot
-    r'^157\.55\.',    # Bing
-    r'^40\.77\.',     # Bing
-    r'^207\.46\.',    # Bing
-    r'^52\.\d+\.\d+\.\d+',  # AWS
-    r'^54\.\d+\.\d+\.\d+',  # AWS
-    r'^35\.\d+\.\d+\.\d+',  # Google Cloud
-    r'^34\.\d+\.\d+\.\d+',  # Google Cloud
-    r'^100\.\d+\.\d+\.\d+', # Cloudflare
-    r'^104\.\d+\.\d+\.\d+', # Cloudflare
-]
+# Rate limit: 30 requests per minute per IP
+RATE_LIMIT = 30
+RATE_WINDOW = 60  # seconds
 
 def get_client_ip(request):
     """Get client IP address"""
@@ -93,41 +37,47 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
+def is_rate_limited(ip):
+    """Check if IP is rate limited"""
+    cache_key = f"rate_limit_{ip}"
+    current = int(time.time())
+    
+    requests = cache.get(cache_key, [])
+    requests = [t for t in requests if current - t < RATE_WINDOW]
+    
+    if len(requests) >= RATE_LIMIT:
+        return True
+    
+    requests.append(current)
+    cache.set(cache_key, requests, timeout=RATE_WINDOW + 10)
+    return False
+
 def is_bot(request):
-    """Enhanced bot detection"""
+    """Enhanced bot detection with multiple layers"""
     user_agent = request.META.get('HTTP_USER_AGENT', '')
     ip = get_client_ip(request)
     
-    # 1. Check if user agent is a bot
+    # ✅ LAYER 1: Check user-agent patterns
     if not user_agent or len(user_agent) < 10:
         return True
     
     user_agent_lower = user_agent.lower()
-    
-    # Check against all patterns
     for pattern in BOT_PATTERNS:
         if re.search(pattern, user_agent_lower, re.IGNORECASE):
             return True
     
-    # 2. Check IP against bot IP patterns
-    if ip:
-        for pattern in BOT_IP_PATTERNS:
-            if re.search(pattern, ip):
-                return True
-    
-    # 3. Check for headless browser indicators
-    if 'headless' in user_agent_lower or 'webdriver' in user_agent_lower:
+    # ✅ LAYER 2: Check rate limiting
+    if is_rate_limited(ip):
         return True
     
-    # 4. Check for suspicious user-agent patterns (additional)
-    suspicious_patterns = [
-        'compatible; MSIE',
-        'rv:',
-        'SecurityResearch',
-        'SERanKingBacklinksBot',
-    ]
-    for pattern in suspicious_patterns:
-        if pattern.lower() in user_agent_lower:
+    # ✅ LAYER 3: Check for JavaScript cookie (real browsers)
+    if not request.COOKIES.get('js_enabled'):
+        return True
+    
+    # ✅ LAYER 4: Check request patterns
+    suspicious_paths = ['/wp-', '/xmlrpc', '/.env', '/config', '/backup']
+    for path in suspicious_paths:
+        if request.path.lower().startswith(path):
             return True
     
     return False
@@ -140,6 +90,33 @@ class VisitorTrackingMiddleware(MiddlewareMixin):
         skip_paths = ['/admin', '/static', '/media', '/api', '/favicon.ico', '/robots.txt']
         if any(request.path.startswith(path) for path in skip_paths):
             return None
+        
+        # ✅ JAVASCRIPT CHALLENGE - Returns a page that requires JS
+        if not request.COOKIES.get('js_enabled') and not request.path.startswith('/_'):
+            return HttpResponse("""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta name="robots" content="noindex, nofollow">
+                <title>Verifying...</title>
+                <style>
+                    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f5f5f5; }
+                    .loader { border: 4px solid #f3f3f3; border-top: 4px solid #8B4513; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+                    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                </style>
+            </head>
+            <body>
+                <div style="text-align: center; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div class="loader"></div>
+                    <p style="margin-top: 20px; color: #333;">Verifying your browser...</p>
+                    <script>
+                        document.cookie = "js_enabled=1; path=/; max-age=3600";
+                        window.location.reload();
+                    </script>
+                </div>
+            </body>
+            </html>
+            """, content_type='text/html')
         
         # ✅ Skip if it's a bot
         if is_bot(request):

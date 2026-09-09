@@ -50,8 +50,7 @@
     </noscript>
     <!-- End Meta Pixel Code -->
 
-
-        <!-- ✅ TikTok Pixel -->
+    <!-- ✅ TikTok Pixel -->
     {% if TIKTOK_PIXEL_ID %}
     <script>
     !function (w, d, t) {
@@ -72,6 +71,15 @@
   </head>
   
   <body>
+    <!-- ✅ JavaScript Challenge - Sets cookie for real browsers -->
+    <script>
+        // This ensures real browsers have the js_enabled cookie
+        // The middleware checks for this cookie to block bots
+        if (document.cookie.indexOf('js_enabled') === -1) {
+            document.cookie = "js_enabled=1; path=/; max-age=3600";
+        }
+    </script>
+    
     <!-- ✅ Navbar -->
     {% include 'navbar.html' %}
 
