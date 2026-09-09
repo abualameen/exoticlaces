@@ -6,47 +6,54 @@ from .models import Visitor, DailyVisitorStats
 
 # ✅ COMPREHENSIVE BOT PATTERNS - Add obbidian and similar tools
 BOT_PATTERNS = [
-    # Search engines
-    r'Chrome/91\.0\.4472\.114',  # Fake Chrome (the main culprit!)
+    # ===== SEARCH ENGINES =====
     r'googlebot', r'bingbot', r'slurp', r'duckduckbot',
     r'baiduspider', r'yandexbot', r'sogou', r'exabot',
     r'facebot', r'facebookexternalhit', r'twitterbot',
     r'linkedinbot', r'pinterestbot', r'slackbot',
     r'discordbot', r'telegrambot', r'whatsapp',
     
-    # Generic bots
+    # ===== GENERIC BOTS =====
     r'bot', r'crawler', r'spider', r'scraper',
-    r'curl', r'wget', r'python-requests', r'http-client',
-    r'java/', r'okhttp', r'go-http-client',
+    r'curl', r'wget', r'java/', r'php', r'ruby', r'perl',
     r'headless', r'phantomjs', r'selenium', r'puppeteer',
     r'webdriver', r'headlesschrome', r'headlessfirefox',
     
-    # ✅ ADD THESE - Tools and scrapers
-    r'obbidian',      # <-- THIS IS YOUR CULPRIT
-    r'scrapy', r'httpx', r'aiohttp',
-    r'axios', r'fetch', r'node-fetch',
-    r'php', r'ruby', r'perl',
-    r'nutch', r'heritrix',  # Web crawlers
-    r'scrape', r'scraper', r'scraping',
+    # ===== HTTP CLIENTS =====
+    r'python-requests', r'http-client', r'okhttp', r'go-http-client',
+    r'urllib', r'requests', r'httpx', r'aiohttp',
+    r'axios', r'fetch', r'node-fetch', r'scrapy',
     
-    # AI crawlers
+    # ===== TOOLS & SCRAPERS =====
+    r'obbidian', r'nutch', r'heritrix', r'scrape', r'scraping',
+    r'TLM-Audit-Scanner', r'pathscan', r'scanner', r'scan',
+    
+    # ===== CHROME BOTS (FAKE) =====
+    r'Chrome/91\.',           # Blocks ALL Chrome 91.x versions
+    r'Chrome/120\.',          # Blocks ALL Chrome 120.x versions
+    r'Chrome/[0-9][0-9]\.0\.[0-9]+\.[0-9]+ Safari/537\.36',  # Blocks old Chrome versions
+    
+    # ===== AI CRAWLERS =====
     r'GPTBot', r'ClaudeBot', r'Bytespider', r'ChatGPT',
     r'Google-Extended', r'CCBot', r'PerplexityBot',
     r'Claude-Web', r'FacebookBot', r'AppleBot',
     r'Amazonbot', r'Applebot', r'AhrefsBot',
     
-    # Empty or missing user-agent
-    r'^$',  # Empty string
+    # ===== SECURITY SCANNERS =====
+    r'wp-admin', r'wp-json', r'xmlrpc', r'wp-login',
+    r'install\.php', r'\.env', r'config', r'backup',
+    r'WordPress',
     
-    # Cloud and monitoring
+    # ===== MONITORING SERVICES =====
     r'pingdom', r'uptimerobot', r'statuscake',
     r'newrelic', r'datadog', r'grafana', r'prometheus',
+    
+    # ===== CLOUD PROVIDERS =====
     r'amazonaws', r'cloudflare', r'googlecloud',
     r'azure', r'digitalocean', r'aws-lambda',
     
-    # Python libraries
-    r'python', r'urllib', r'requests',
-    r'scrapy', r'httpx', r'aiohttp',
+    # ===== EMPTY USER-AGENT =====
+    r'^$',
 ]
 
 # Bot IP ranges
