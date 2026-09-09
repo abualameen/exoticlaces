@@ -4,7 +4,7 @@ from django.utils.deprecation import MiddlewareMixin
 from django.utils import timezone
 from .models import Visitor, DailyVisitorStats
 
-# ✅ COMPREHENSIVE BOT PATTERNS - MORE AGGRESSIVE
+# ✅ COMPREHENSIVE BOT PATTERNS - CATCHES ALL
 BOT_PATTERNS = [
     # ===== SEARCH ENGINES =====
     r'googlebot', r'bingbot', r'slurp', r'duckduckbot',
@@ -27,13 +27,21 @@ BOT_PATTERNS = [
     # ===== TOOLS & SCRAPERS =====
     r'obbidian', r'nutch', r'heritrix', r'scrape', r'scraping',
     r'TLM-Audit-Scanner', r'pathscan', r'scanner', r'scan',
+    r'SERanKingBacklinksBot',   # ✅ Added
+    r'SecurityResearch',         # ✅ Added
+    r'MSIE',                     # ✅ Added - Internet Explorer bots
     
-    # ===== CHROME BOTS (FAKE) - MORE AGGRESSIVE =====
-    r'Chrome/91\.0\.4472\.114',  # Exact match for the bot
-    r'Chrome/91\.',              # ANY Chrome 91.x
-    r'Chrome/120\.',             # ANY Chrome 120.x
-    r'Chrome/[0-9][0-9]\.0\.',   # Chrome 10x.0.x - likely bots
-    r'Chrome/[0-9][0-9]\.[0-9]+\.[0-9]+\.[0-9]+',  # Chrome with 4-part version
+    # ===== CHROME BOTS (FAKE) =====
+    r'Chrome/91\.0\.4472\.114',
+    r'Chrome/91\.',
+    r'Chrome/103\.0\.5067\.93',  # ✅ Added
+    r'Chrome/120\.',
+    r'Chrome/[0-9][0-9]\.0\.',
+    r'Chrome/[0-9][0-9]\.[0-9]+\.[0-9]+\.[0-9]+',
+    
+    # ===== FIREFOX BOTS (FAKE) =====
+    r'rv:140\.',                 # ✅ Added - Fake Firefox
+    r'rv:14[0-9]\.',             # ✅ Added - Fake Firefox versions
     
     # ===== AI CRAWLERS =====
     r'GPTBot', r'ClaudeBot', r'Bytespider', r'ChatGPT',
@@ -44,7 +52,7 @@ BOT_PATTERNS = [
     # ===== SECURITY SCANNERS =====
     r'wp-admin', r'wp-json', r'xmlrpc', r'wp-login',
     r'install\.php', r'\.env', r'config', r'backup',
-    r'WordPress',
+    r'WordPress', r'SecurityResearch',
     
     # ===== MONITORING SERVICES =====
     r'pingdom', r'uptimerobot', r'statuscake',
@@ -57,13 +65,10 @@ BOT_PATTERNS = [
     # ===== EMPTY USER-AGENT =====
     r'^$',
     
-    # ===== ADD MORE SUSPICIOUS PATTERNS =====
+    # ===== HEADLESS BROWSERS =====
     r'headless', r'phantom', r'selenium',
     r'puppeteer', r'playwright',
 ]
-
-# ✅ Also add this - block requests that are too fast (potential bots)
-# But this is handled at the server level
 
 def is_bot(request):
     """Enhanced bot detection"""
@@ -72,7 +77,6 @@ def is_bot(request):
     
     # 1. Check if user agent is a bot
     if not user_agent or len(user_agent) < 10:
-        print(f"🤖 BOT DETECTED: No user agent")
         return True
     
     user_agent_lower = user_agent.lower()
@@ -80,23 +84,30 @@ def is_bot(request):
     # Check against all patterns
     for pattern in BOT_PATTERNS:
         if re.search(pattern, user_agent_lower, re.IGNORECASE):
-            print(f"🤖 BOT DETECTED: {user_agent[:50]}... (matched: {pattern})")
             return True
     
     # 2. Check IP against bot IP patterns
     if ip:
         for pattern in BOT_IP_PATTERNS:
             if re.search(pattern, ip):
-                print(f"🤖 BOT DETECTED (IP): {ip}")
                 return True
     
     # 3. Check for headless browser indicators
     if 'headless' in user_agent_lower or 'webdriver' in user_agent_lower:
-        print(f"🤖 BOT DETECTED: Headless browser")
         return True
     
+    # 4. Check for suspicious user-agent patterns (additional)
+    suspicious_patterns = [
+        'compatible; MSIE',      # Internet Explorer compatibility mode (bots)
+        'rv:',                   # Firefox version (often faked by bots)
+        'SecurityResearch',
+        'SERanKingBacklinksBot',
+    ]
+    for pattern in suspicious_patterns:
+        if pattern.lower() in user_agent_lower:
+            return True
+    
     return False
-
 
 def get_client_ip(request):
     """Get client IP address"""
@@ -106,7 +117,6 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
-
 
 class VisitorTrackingMiddleware(MiddlewareMixin):
     """Middleware to track unique visitors and filter out bots"""
