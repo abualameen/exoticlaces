@@ -1,6 +1,7 @@
 # lacesstore/middleware.py
 import re
 from django.utils.deprecation import MiddlewareMixin
+import time  # ✅ ADD THIS - was missing!
 from django.utils import timezone
 from django.core.cache import cache
 from django.http import HttpResponse
