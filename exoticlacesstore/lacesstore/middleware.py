@@ -7,6 +7,7 @@ from .models import Visitor, DailyVisitorStats
 # ✅ COMPREHENSIVE BOT PATTERNS - Add obbidian and similar tools
 BOT_PATTERNS = [
     # Search engines
+    r'Chrome/91\.0\.4472\.114',  # Fake Chrome (the main culprit!)
     r'googlebot', r'bingbot', r'slurp', r'duckduckbot',
     r'baiduspider', r'yandexbot', r'sogou', r'exabot',
     r'facebot', r'facebookexternalhit', r'twitterbot',
