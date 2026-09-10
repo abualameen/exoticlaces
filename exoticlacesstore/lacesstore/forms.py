@@ -44,6 +44,18 @@ class ContactForm(forms.Form):
 		widget=forms.Textarea(),
 		help_text='write here your message!'
 	)
+    # ✅ Honeypot field (bots fill this, humans don't)
+    website = forms.CharField(required=False, widget=forms.HiddenInput())
+    
+    # ✅ reCAPTCHA
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox)
+    
+    def clean_website(self):
+        website = self.cleaned_data.get('website')
+        if website:
+            raise forms.ValidationError("Spam detected.")
+        return website
+
 
 
 

@@ -808,7 +808,9 @@ def sendEmail(request, order_id):
 
 
 
+from django_ratelimit.decorators import ratelimit
 
+@ratelimit(key='ip', rate='3/h', method='POST', block=True)
 def contactPage(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
